@@ -5,17 +5,23 @@ export interface Asset {
   name: string;
   type: AssetKind;
   openingValue: number;
+  openingAt?: string;
+  version?: number;
+  isArchived?: boolean;
 }
 export interface Category {
   id: string;
   name: string;
   kind: TransactionKind;
+  version?: number;
+  isArchived?: boolean;
 }
 export interface Allocation {
   assetId: string;
   amount: number;
 }
 export interface Transaction {
+  version?: number;
   id: string;
   title: string;
   categoryId: string;
@@ -27,17 +33,30 @@ export interface Transaction {
   allocations: Allocation[];
 }
 export interface MonthlyPlan {
+  id?: string;
+  version?: number;
   categoryId: string;
   month: string;
   amount: number;
 }
 export interface Adjustment {
+  version?: number;
   id: string;
   assetId: string;
   delta: number;
   occurredAt: string;
 }
+export interface Transfer {
+  id: string;
+  version?: number;
+  fromAssetId: string;
+  toAssetId: string;
+  amount: number;
+  occurredAt: string;
+  note?: string;
+}
 export interface FinanceState {
+  transfers?: Transfer[];
   assets: Asset[];
   categories: Category[];
   transactions: Transaction[];

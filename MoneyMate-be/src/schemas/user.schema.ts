@@ -1,19 +1,23 @@
-import type { RegisterUserData, RegisterUserInput } from '../types/user.types.ts';
 import { z } from 'zod';
-export const registerUserSchema = z.strictObject({
-  email: z.string().trim().toLowerCase().pipe(z.email()),
-  password: z.string().min(12).max(128),
-  displayName: z.string().trim().normalize('NFC').min(1).max(100),
-  timezone: z
-    .string()
-    .trim()
-    .refine((value) => {
-      try {
-        new Intl.DateTimeFormat('en', { timeZone: value });
-        return true;
-      } catch {
-        return false;
-      }
-    }, 'Invalid timezone')
-    .default('Asia/Ho_Chi_Minh'),
-}) satisfies z.ZodType<RegisterUserData, RegisterUserInput>;
+import {
+  displayNameValidation,
+  emailValidation,
+  passwordValidation,
+} from '../validations/auth.validation.ts';
+export {
+  registerValidation as registerUserSchema,
+  loginValidation as loginUserSchema,
+} from '../validations/auth.validation.ts';
+export const updateUserSchema = z
+  .strictObject({
+    displayName: displayNameValidation.optional(),
+    email: emailValidation.optional(),
+    currentPassword: z.string().min(1).max(128).optional(),
+    newPassword: passwordValidation.optional(),
+  })
+  .refine((data) => !!(data.displayName || data.email || data.newPassword), 'Không có thay đổi.')
+  .refine(
+    (data) => !(data.email || data.newPassword) || !!data.currentPassword,
+    'Cần mật khẩu hiện tại khi đổi email hoặc mật khẩu.',
+  );
+export const deleteUserSchema = z.strictObject({ password: z.string().min(1).max(128) });

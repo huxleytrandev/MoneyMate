@@ -1,3 +1,4 @@
+import { TRANSACTION_KINDS } from '../constants/finance.constant.ts';
 import { sql } from 'drizzle-orm';
 import {
   pgTable,
@@ -21,19 +22,19 @@ export const MonthlyPlanModel = pgTable(
       .notNull()
       .references(() => UserModel.id, { onDelete: 'restrict' }),
     categoryId: uuid('category_id').notNull(),
-    kind: text('kind', { enum: ['income', 'expense'] }).notNull(),
+    kind: text('kind', { enum: TRANSACTION_KINDS }).notNull(),
     month: date('month', { mode: 'string' }).notNull(),
     plannedAmount: bigint('planned_amount', { mode: 'bigint' }).notNull(),
     note: text('note'),
     ...auditColumns(),
   },
-  (t) => [
+  (plan) => [
     foreignKey({
-      columns: [t.userId, t.categoryId, t.kind],
+      columns: [plan.userId, plan.categoryId, plan.kind],
       foreignColumns: [CategoryModel.userId, CategoryModel.id, CategoryModel.kind],
     }).onDelete('restrict'),
     uniqueIndex('plans_active_category_month_unique')
-      .on(t.userId, t.categoryId, t.month)
+      .on(plan.userId, plan.categoryId, plan.month)
       .where(sql`"deleted_at" is null`),
     check('plans_month_check', sql`extract(day from "month") = 1`),
     check('plans_amount_check', sql`"planned_amount" >= 0`),

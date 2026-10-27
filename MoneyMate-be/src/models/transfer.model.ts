@@ -27,19 +27,27 @@ export const TransferModel = pgTable(
     note: text('note'),
     ...auditColumns(),
   },
-  (t) => [
+  (transfer) => [
     foreignKey({
       name: 'transfers_source_owner_fk',
-      columns: [t.userId, t.fromAssetAccountId],
+      columns: [transfer.userId, transfer.fromAssetAccountId],
       foreignColumns: [AssetAccountModel.userId, AssetAccountModel.id],
     }).onDelete('restrict'),
     foreignKey({
       name: 'transfers_target_owner_fk',
-      columns: [t.userId, t.toAssetAccountId],
+      columns: [transfer.userId, transfer.toAssetAccountId],
       foreignColumns: [AssetAccountModel.userId, AssetAccountModel.id],
     }).onDelete('restrict'),
-    index('transfers_source_date_idx').on(t.userId, t.fromAssetAccountId, t.occurredAt),
-    index('transfers_target_date_idx').on(t.userId, t.toAssetAccountId, t.occurredAt),
+    index('transfers_source_date_idx').on(
+      transfer.userId,
+      transfer.fromAssetAccountId,
+      transfer.occurredAt,
+    ),
+    index('transfers_target_date_idx').on(
+      transfer.userId,
+      transfer.toAssetAccountId,
+      transfer.occurredAt,
+    ),
     check(
       'transfers_different_accounts_check',
       sql`"from_asset_account_id" <> "to_asset_account_id"`,

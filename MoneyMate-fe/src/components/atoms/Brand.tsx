@@ -1,25 +1,25 @@
-import { Text, View, StyleSheet } from 'react-native';
-import { colors as c } from '@/theme/colors';
+import { colors } from '@/theme/colors';
+import { StyleSheet, Text, View } from 'react-native';
 export function Brand() {
   return (
-    <View style={s.row}>
-      <View style={s.mark}>
-        <Text style={s.m}>m.</Text>
+    <View style={styles.row}>
+      <View style={styles.mark}>
+        <Text style={styles.m}>m.</Text>
       </View>
-      <Text style={s.word}>MoneyMate</Text>
+      <Text style={styles.word}>MoneyMate</Text>
     </View>
   );
 }
-const s = StyleSheet.create({
+const styles = StyleSheet.create({
   row: { flexDirection: 'row', gap: 10, alignItems: 'center' },
   mark: {
     width: 38,
     height: 38,
     borderRadius: 13,
-    backgroundColor: c.ink,
+    backgroundColor: colors.ink,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  m: { color: c.lime, fontSize: 27, fontWeight: '800', marginTop: -5 },
-  word: { color: c.ink, fontWeight: '700', fontSize: 22, letterSpacing: -0.8 },
+  m: { color: colors.lime, fontSize: 27, fontWeight: '800', marginTop: -5 },
+  word: { color: colors.ink, fontWeight: '700', fontSize: 22, letterSpacing: -0.8 },
 });

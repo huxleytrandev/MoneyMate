@@ -1,5 +1,5 @@
-import { Pressable, Text, StyleSheet } from 'react-native';
-import { colors as c } from '@/theme/colors';
+import { colors } from '@/theme/colors';
+import { Pressable, StyleSheet, Text } from 'react-native';
 export function Chip({
   label,
   selected,
@@ -14,19 +14,19 @@ export function Chip({
       accessibilityRole="button"
       accessibilityState={{ selected }}
       onPress={onPress}
-      style={[s.chip, selected && { backgroundColor: c.green }]}
+      style={[styles.chip, selected && { backgroundColor: colors.green }]}
     >
-      <Text style={[s.text, selected && { color: 'white' }]}>{label}</Text>
+      <Text style={[styles.text, selected && { color: 'white' }]}>{label}</Text>
     </Pressable>
   );
 }
-const s = StyleSheet.create({
+const styles = StyleSheet.create({
   chip: {
     borderRadius: 20,
-    backgroundColor: c.surface,
+    backgroundColor: colors.surface,
     paddingHorizontal: 16,
     paddingVertical: 13,
     minHeight: 44,
   },
-  text: { color: c.green, fontSize: 12, fontWeight: '600' },
+  text: { color: colors.green, fontSize: 12, fontWeight: '600' },
 });

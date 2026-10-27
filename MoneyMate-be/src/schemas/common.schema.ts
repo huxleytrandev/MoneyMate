@@ -1,9 +1,10 @@
+import { TRANSACTION_KINDS } from '../constants/finance.constant.ts';
 import { z } from 'zod';
 
 export const idSchema = z.uuid();
 export const nameSchema = z.string().trim().normalize('NFC').min(1).max(100);
 export const noteSchema = z.string().trim().normalize('NFC').max(2000).optional();
-export const kindSchema = z.enum(['income', 'expense']);
+export const kindSchema = z.enum(TRANSACTION_KINDS);
 export const timestampSchema = z.iso
   .datetime({ offset: true })
   .transform((value) => new Date(value).toISOString());

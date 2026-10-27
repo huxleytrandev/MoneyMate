@@ -1,7 +1,7 @@
-import { useRouter } from 'expo-router';
-import { useAuth } from '@/hooks/useAuth';
 import { ROUTES } from '@/constants/routes';
+import { useAuth } from '@/hooks/useAuth';
 import DashboardScreen from '@/screens/DashboardScreen/DashboardScreen';
+import { useRouter } from 'expo-router';
 export default function DashboardRoute() {
   const { session, logout } = useAuth();
   const router = useRouter();

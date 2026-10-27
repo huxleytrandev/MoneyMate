@@ -1,0 +1,16 @@
+export const API_MESSAGES = {
+  invalidBody: 'Invalid request body',
+  tooLarge: 'Request body too large',
+  internal: 'Internal server error',
+  validation: 'Dữ liệu chưa hợp lệ.',
+  duplicate: 'Dữ liệu đã tồn tại. Hãy tải lại trước khi thử lại.',
+  reference: 'Dữ liệu tham chiếu hoặc số tiền không hợp lệ.',
+  origin: 'Nguồn gửi yêu cầu không được phép.',
+  json: 'Yêu cầu phải dùng JSON.',
+  retry: 'Vui lòng thử lại sau.',
+  rate: 'Quá nhiều lần đăng nhập. Hãy thử lại sau.',
+  notFound: 'Dữ liệu không tồn tại.',
+  immutableId: 'Không thể thay đổi ID.',
+  reportRange: 'Khoảng thống kê tối đa 2 năm.',
+  reconciliation: 'Đối soát số dư',
+} as const;

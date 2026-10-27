@@ -89,5 +89,5 @@ test('assistant preview never promises reminders or pretends to answer arbitrary
 
   const unknown = buildAssistantReply(state, '2026-10', 'Kể chuyện cổ tích');
   assert.match(unknown, /bản xem trước, chưa kết nối AI/);
-  assert.match(unknown, /dữ liệu demo/);
+  assert.match(unknown, /dữ liệu tài khoản/);
 });

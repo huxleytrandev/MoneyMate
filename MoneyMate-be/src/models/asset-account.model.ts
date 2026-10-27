@@ -1,3 +1,4 @@
+import { ASSET_TYPES } from '../constants/finance.constant.ts';
 import { sql } from 'drizzle-orm';
 import {
   pgTable,
@@ -22,16 +23,16 @@ export const AssetAccountModel = pgTable(
       .notNull()
       .references(() => UserModel.id, { onDelete: 'restrict' }),
     name: varchar('name', { length: 100 }).notNull(),
-    type: text('type', { enum: ['cash', 'bank', 'other'] }).notNull(),
+    type: text('type', { enum: ASSET_TYPES }).notNull(),
     openingValue: bigint('opening_value', { mode: 'bigint' }).notNull(),
     openingAt: timestamp('opening_at', { withTimezone: true, mode: 'string' }).notNull(),
     note: text('note'),
     isArchived: boolean('is_archived').default(false).notNull(),
     ...auditColumns(),
   },
-  (t) => [
-    unique('assets_owner_id_unique').on(t.userId, t.id),
-    index('assets_owner_idx').on(t.userId),
+  (asset) => [
+    unique('assets_owner_id_unique').on(asset.userId, asset.id),
+    index('assets_owner_idx').on(asset.userId),
     check('assets_type_check', sql`'cash' = "type" or "type" in ('bank','other')`),
     check('assets_value_check', sql`"opening_value" >= 0`),
     check('asset_accounts_version_check', sql`"version" >= 1`),

@@ -130,8 +130,10 @@ test('environment requires PostgreSQL config and rejects invalid ports', () => {
 
 test('readiness checks database and does not expose connection errors', async () => {
   let connected = true;
-  const application = createApplication(async () => {
-    if (!connected) throw new Error('secret database password');
+  const application = createApplication({
+    checkReadiness: async () => {
+      if (!connected) throw new Error('secret database password');
+    },
   });
   const app = application.listen(0, '127.0.0.1');
   await new Promise<void>((resolve) => app.once('listening', resolve));
@@ -154,31 +156,27 @@ test('readiness checks database and does not expose connection errors', async ()
 
 import { secretSchema } from '../src/schemas/secret.schema.ts';
 
-test('configuration works without JWT keys and validates expiry and hashing cost', () => {
+test('configuration uses Better Auth instead of unused JWT expiry and salt options', () => {
   const base = {
     DATABASE_URL: 'postgresql://user:password@localhost:5432/moneymate',
+    BETTER_AUTH_SECRET: 'test-only-secret-with-more-than-32-characters',
   };
   const config = secretSchema.parse(base);
-  assert.equal(config.ACCESS_EXPIRES_IN, '15m');
-  assert.equal(config.REFRESH_EXPIRES_IN, '7d');
-  assert.equal(config.SALT_ROUNDS, 10);
+  assert.equal(config.BETTER_AUTH_URL, 'http://localhost:3000/api/auth');
   assert.equal(config.SERVER_URL, 'http://localhost:3000/api');
   assert.equal(config.FRONTEND_BASE_URL, undefined);
   assert.equal(
-    secretSchema.parse({ ...base, PORT: '4000' }).SERVER_URL,
-    'http://localhost:4000/api',
+    secretSchema.parse({ ...base, PORT: '4000' }).BETTER_AUTH_URL,
+    'http://localhost:4000/api/auth',
   );
-  for (const invalid of [
-    { ACCESS_EXPIRES_IN: '0m' },
-    { SALT_ROUNDS: '9' },
-    { SALT_ROUNDS: 'abc' },
-    { FRONTEND_BASE_URL: 'not-a-url' },
-  ])
-    assert.equal(secretSchema.safeParse({ ...base, ...invalid }).success, false);
+  assert.equal(secretSchema.safeParse({ ...base, FRONTEND_BASE_URL: 'not-a-url' }).success, false);
 });
 
 test('Express config serves docs, JSON errors and configured CORS only', async () => {
-  const application = createApplication(async () => {}, 'http://localhost:8081');
+  const application = createApplication({
+    checkReadiness: async () => {},
+    frontendBaseUrl: 'http://localhost:8081',
+  });
   const server = application.listen(0, '127.0.0.1');
   await new Promise<void>((resolve) => server.once('listening', resolve));
   try {
@@ -189,6 +187,10 @@ test('Express config serves docs, JSON errors and configured CORS only', async (
       headers: { Origin: 'http://localhost:8081' },
     });
     assert.equal(health.status, 200);
+    assert.equal(health.headers.get('x-content-type-options'), 'nosniff');
+    assert.equal(health.headers.get('x-frame-options'), 'SAMEORIGIN');
+    assert.ok(health.headers.get('content-security-policy'));
+    assert.equal(health.headers.get('x-powered-by'), null);
     assert.equal(health.headers.get('access-control-allow-origin'), 'http://localhost:8081');
     assert.equal(health.headers.get('access-control-allow-credentials'), 'true');
     const unknown = await fetch(base + '/missing');
@@ -221,7 +223,7 @@ test('Express config serves docs, JSON errors and configured CORS only', async (
 });
 
 test('CORS does not enable browser access when no frontend origin is configured', async () => {
-  const application = createApplication(async () => {});
+  const application = createApplication({ checkReadiness: async () => {} });
   const server = application.listen(0, '127.0.0.1');
   await new Promise<void>((resolve) => server.once('listening', resolve));
   try {
@@ -250,4 +252,69 @@ test('database diagnostics give useful guidance without leaking raw error values
     databaseErrorMessage({ code: 'ENOTFOUND', message: sensitive }).includes('private-host'),
     false,
   );
+});
+
+import express from 'express';
+import { createUserRoutes } from '../src/routes/user.route.ts';
+test('sensitive user routes share a rate limit while profile reads remain available', async () => {
+  const app = express();
+  app.use(express.json());
+  app.use(
+    '/users',
+    createUserRoutes({
+      me: (_request, response) => {
+        response.json({ ok: true });
+      },
+      verifyPassword: (_request, response) => {
+        response.status(400).json({ error: 'Wrong password' });
+      },
+      remove: (_request, response) => {
+        response.status(400).json({ error: 'Wrong password' });
+      },
+    }),
+  );
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise<void>((resolve) => server.once('listening', resolve));
+  try {
+    const address = server.address();
+    assert.ok(address && typeof address !== 'string');
+    const base = 'http://127.0.0.1:' + address.port;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      const result = await fetch(base + '/users/me/verify-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{"password":"wrong"}',
+      });
+      assert.equal(result.status, 400);
+    }
+    const blocked = await fetch(base + '/users/me', { method: 'DELETE' });
+    assert.equal(blocked.status, 429);
+    assert.ok(blocked.headers.get('retry-after'));
+    assert.equal((await fetch(base + '/users/me')).status, 200);
+  } finally {
+    server.closeAllConnections();
+    await new Promise<void>((resolve, reject) =>
+      server.close((failure) => (failure ? reject(failure) : resolve())),
+    );
+  }
+});
+test('production Helmet enables HSTS and HTTPS upgrades', async () => {
+  const app = createApplication({ checkReadiness: async () => {}, environment: 'production' });
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise<void>((resolve) => server.once('listening', resolve));
+  try {
+    const address = server.address();
+    assert.ok(address && typeof address !== 'string');
+    const response = await fetch('http://127.0.0.1:' + address.port + '/api/health');
+    assert.match(response.headers.get('strict-transport-security') ?? '', /max-age=31536000/);
+    assert.match(
+      response.headers.get('content-security-policy') ?? '',
+      /upgrade-insecure-requests/,
+    );
+  } finally {
+    server.closeAllConnections();
+    await new Promise<void>((resolve, reject) =>
+      server.close((failure) => (failure ? reject(failure) : resolve())),
+    );
+  }
 });

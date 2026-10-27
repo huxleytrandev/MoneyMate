@@ -3,7 +3,6 @@ export interface User {
   email: string;
   displayName: string;
   timezone: string;
-  passwordHash: string;
   createdAt: string;
   updatedAt: string;
 }

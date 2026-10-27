@@ -1,5 +1,5 @@
-import { Pressable, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { colors as c } from '@/theme/colors';
+import { colors } from '@/theme/colors';
+import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 type Props = {
   title: string;
   onPress: () => void;
@@ -24,20 +24,24 @@ export function Button({
       disabled={disabled || loading}
       onPress={onPress}
       style={({ pressed }) => [
-        s.base,
-        variant === 'primary' ? s.primary : variant === 'secondary' ? s.secondary : s.text,
+        styles.base,
+        variant === 'primary'
+          ? styles.primary
+          : variant === 'secondary'
+            ? styles.secondary
+            : styles.text,
         (pressed || disabled || loading) && { opacity: 0.6 },
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' ? 'white' : c.green} />
+        <ActivityIndicator color={variant === 'primary' ? 'white' : colors.green} />
       ) : (
-        <Text style={[s.label, variant === 'primary' && { color: 'white' }]}>{title}</Text>
+        <Text style={[styles.label, variant === 'primary' && { color: 'white' }]}>{title}</Text>
       )}
     </Pressable>
   );
 }
-const s = StyleSheet.create({
+const styles = StyleSheet.create({
   base: {
     minHeight: 54,
     borderRadius: 20,
@@ -46,8 +50,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  primary: { backgroundColor: c.green },
-  secondary: { backgroundColor: c.lime },
+  primary: { backgroundColor: colors.green },
+  secondary: { backgroundColor: colors.lime },
   text: { backgroundColor: 'transparent' },
-  label: { fontSize: 14, fontWeight: '700', color: c.green },
+  label: { fontSize: 14, fontWeight: '700', color: colors.green },
 });

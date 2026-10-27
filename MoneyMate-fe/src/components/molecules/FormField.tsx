@@ -1,40 +1,40 @@
-import { TextInput, Text, View, StyleSheet, type TextInputProps } from 'react-native';
-import { colors as c } from '@/theme/colors';
+import { colors } from '@/theme/colors';
+import { StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
 type Props = TextInputProps & { label: string; error?: string; hint?: string };
 export function FormField({ label, error, hint, ...props }: Props) {
   return (
-    <View style={s.group}>
-      <Text style={s.label}>{label}</Text>
+    <View style={styles.group}>
+      <Text style={styles.label}>{label}</Text>
       <TextInput
         accessibilityLabel={label}
-        placeholderTextColor={c.muted}
+        placeholderTextColor={colors.muted}
         {...props}
-        style={[s.input, error ? { borderColor: '#A33B28' } : null, props.style]}
+        style={[styles.input, error ? { borderColor: '#A33B28' } : null, props.style]}
       />
       {error ? (
-        <Text accessibilityRole="alert" style={s.error}>
+        <Text accessibilityRole="alert" style={styles.error}>
           {error}
         </Text>
       ) : hint ? (
-        <Text style={s.hint}>{hint}</Text>
+        <Text style={styles.hint}>{hint}</Text>
       ) : null}
     </View>
   );
 }
-const s = StyleSheet.create({
+const styles = StyleSheet.create({
   group: { gap: 8 },
-  label: { fontSize: 13, fontWeight: '600', color: c.ink },
+  label: { fontSize: 13, fontWeight: '600', color: colors.ink },
   input: {
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: c.border,
-    backgroundColor: c.surface,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
     paddingHorizontal: 16,
     paddingVertical: 16,
     fontSize: 16,
-    color: c.ink,
+    color: colors.ink,
     minHeight: 52,
   },
   error: { fontSize: 12, color: '#A33B28', lineHeight: 18 },
-  hint: { fontSize: 11, color: c.muted, lineHeight: 17 },
+  hint: { fontSize: 11, color: colors.muted, lineHeight: 17 },
 });

@@ -1,10 +1,10 @@
+import { colors } from '@/theme/colors';
 import type { PropsWithChildren } from 'react';
-import { ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors as c } from '@/theme/colors';
 export function ScreenTemplate({ children }: PropsWithChildren) {
   return (
-    <SafeAreaView edges={['top', 'left', 'right']} style={s.safe}>
+    <SafeAreaView edges={['top', 'left', 'right']} style={styles.safe}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -12,7 +12,7 @@ export function ScreenTemplate({ children }: PropsWithChildren) {
         <ScrollView
           keyboardShouldPersistTaps="handled"
           automaticallyAdjustKeyboardInsets
-          contentContainerStyle={s.page}
+          contentContainerStyle={styles.page}
         >
           {children}
         </ScrollView>
@@ -20,8 +20,8 @@ export function ScreenTemplate({ children }: PropsWithChildren) {
     </SafeAreaView>
   );
 }
-const s = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: c.background },
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: colors.background },
   page: {
     width: '100%',
     maxWidth: 600,

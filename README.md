@@ -1,93 +1,56 @@
 # MoneyMate
 
-MoneyMate is your personal finance companion, built around your life and aspirations.
+Ứng dụng quản lý tài sản và thu chi cá nhân: React Native/Expo → Express API → PostgreSQL trên Supabase.
 
-## Cấu trúc
+## Chạy local
 
-- MoneyMate-fe/: ứng dụng mobile React Native + Expo SDK 58 + TypeScript.
-- MoneyMate-be/: API server Node.js + TypeScript; kết nối DB sẽ được triển khai ở đây.
-- docs/: tài liệu kiến trúc chung.
-- .git/: một repo quản lý cả hai phần.
+Mở hai terminal từ folder MoneyMate.
 
-Hai ứng dụng có package.json, tsconfig.json, node_modules và pnpm-lock.yaml riêng.
-Chạy lệnh trong đúng thư mục. Repo gốc không phải ứng dụng Node.
+Backend:
 
-## Yêu cầu
-Node.js LTS (backend cần ít nhất 22.18; khuyến nghị 24 LTS), npm/npx.
-Sau khi cài Node, mở lại terminal VS Code.
+```powershell
+cd .\MoneyMate-be
+npx.cmd pnpm install
+npx.cmd pnpm dev
+```
 
-## Frontend
-Mở terminal tại thư mục MoneyMate:
+Frontend:
 
-~~~powershell
+```powershell
 cd .\MoneyMate-fe
 npx.cmd pnpm install
 npx.cmd pnpm start --clear
-~~~
+```
 
-Quét QR bằng Expo Go SDK 58. Điện thoại và máy tính cùng Wi-Fi.
-Nếu cổng cũ đang bận, dừng terminal Expo cũ bằng Ctrl+C rồi chạy lại.
-Xem nhanh web: npx.cmd pnpm web.
+Database đã được tạo bằng migrations trong quá trình triển khai API. Khi thêm model hoặc đổi database đích, xem hướng dẫn migration trong MoneyMate-be/README.md.
 
-## Backend
-Mở terminal thứ hai tại thư mục MoneyMate:
+Điện thoại dùng Expo Go SDK 58 và cùng Wi-Fi với máy tính. Backend cần HOST=0.0.0.0 trong MoneyMate-be/.env. Frontend tự lấy IP máy chạy Expo; có thể ghi đè bằng EXPO_PUBLIC_API_URL=http://IP_MAY_TINH:3000/api trong MoneyMate-fe/.env. Khởi động lại Expo sau khi đổi biến môi trường. Chạy Expo bằng tunnel không tự tạo tunnel cho backend.
 
-~~~powershell
-cd .\MoneyMate-be
-npx.cmd pnpm install
-# T?o .env t? .env.example v? ?i?n DATABASE_URL cloud tr??c
-npx.cmd pnpm db:check
-npx.cmd pnpm dev
-~~~
+Web mặc định chạy ở http://localhost:8081. FRONTEND_BASE_URL trong backend phải khớp origin đang mở. Swagger: http://localhost:3000/api/docs.
 
-Mở http://127.0.0.1:3000/api/health để kiểm tra:
-~~~json
-{"status":"ok","service":"MoneyMate-be"}
-~~~
+## Sử dụng
 
-Backend mặc định chỉ lắng nghe trên máy tính. Chưa có API thu chi hoặc kết nối DB.
-Frontend hiện chưa gọi backend và vẫn chạy độc lập bằng dữ liệu mẫu.
-Khi kết nối điện thoại thật, cần dùng IP LAN của máy tính, cấu hình HOST,
-và API URL phù hợp; localhost trên điện thoại là chính điện thoại đó.
+1. Đăng ký hoặc đăng nhập tài khoản thật.
+2. Thêm tiền mặt, từng tài khoản ngân hàng và các tài sản Khác. Nhập số dư tại ngày bắt đầu.
+3. Đặt kế hoạch tháng cho danh mục thu và chi.
+4. Ghi giao dịch với danh mục và nguồn tiền cụ thể, hoặc chia đủ số tiền vào nhiều nguồn.
+5. Chạm giao dịch để sửa/xóa; thay đổi cập nhật lại số dư và actual.
+6. Chuyển tiền nội bộ chỉ ghi nhận giữa các nguồn, không thực hiện lệnh chuyển tiền ngân hàng.
+7. Đối soát tài sản, xem biểu đồ tài sản và kế hoạch/thực tế.
+8. Tải lại app vẫn đọc lại dữ liệu từ Supabase. Không còn nút vào demo hoặc số dư mẫu.
+
+## Đọc code
+
+- Backend: routes → controllers → services → repositories → models/database.
+- Frontend: app → routes → screens → Atomic Design components.
+- Xem docs/architecture.md, docs/api.md và README trong từng ứng dụng.
+- Hai package dùng pnpm, có lockfile riêng. Không import source chéo frontend/backend.
+- Không commit .env hoặc thông tin kết nối.
 
 ## Kiểm tra
-Trong từng thư mục con: npx.cmd pnpm typecheck.
-Trong MoneyMate-fe:
-~~~powershell
-npx.cmd pnpm exec expo export --platform android --platform web
-~~~
 
-## Đọc code frontend
+Trong mỗi package: npx.cmd pnpm check và npx.cmd pnpm test.
+Frontend: npx.cmd pnpm exec expo export --platform android --platform web.
+Kiểm thử PostgreSQL thật được bật riêng trong backend bằng RUN_DB_TESTS=1; xem README backend.
 
-Frontend hiện dùng Atomic Design: app → routes → screens → components.
-Xem MoneyMate-fe/README.md cho cấu trúc, hướng dẫn thử ba màn hình và giới hạn bản mẫu.
-Đăng nhập/đăng ký chưa kết nối API; dùng Khám phá bản trải nghiệm để xem trang chính.
-
-## Giới hạn bản mẫu
-Giao dịch chỉ tồn tại trong state, mất khi khởi động lại.
-Bước tiếp theo: thiết kế DB và API trong backend, rồi frontend gọi API.
-Nếu cần offline, sẽ thiết kế bộ nhớ đệm và đồng bộ riêng.
-
-
-## ESLint và Prettier
-
-Chạy trong thư mục backend hoặc frontend:
-
-~~~powershell
-npx.cmd pnpm lint
-npx.cmd pnpm lint:fix
-npx.cmd pnpm format
-npx.cmd pnpm format:check
-npx.cmd pnpm check
-~~~
-
-- ESLint phát hiện lỗi và các vấn đề code; lint:fix chỉ sửa những lỗi có thể tự sửa.
-- Prettier chuẩn hóa format: 2 spaces, dấu chấm phẩy, single quotes, độ rộng 100, xuống dòng LF.
-- check chạy lint, format:check và typecheck; không thay đổi file.
-- Mỗi ứng dụng có eslint.config.*, .prettierrc.json và .prettierignore riêng.
-- Bỏ qua thư viện, kết quả build, cache Expo, tài nguyên và lockfile khi format.
-- VS Code: cài extension ESLint (Microsoft) và Prettier; cấu hình tự format và sửa lint khi lưu đã có.
-- Có thể mở repo gốc hoặc riêng một thư mục con, cấu hình editor hỗ trợ cả hai.
-- Frontend dùng ESLint 9 với eslint-config-expo 58: plugin React hiện chưa chạy được trên ESLint 10.
-- Backend dùng ESLint 10 với typescript-eslint. Kiểm tra lại tương thích khi nâng cấp.
-- Prettier chạy riêng; eslint-config-prettier tắt các quy tắc format xung đột.
+Phần trợ lý hiện tóm tắt số liệu bằng quy tắc thống kê; chưa tích hợp mô hình AI, nhắc nhở đẩy, đăng nhập Google/Apple hay email khôi phục mật khẩu. Chưa có chế độ offline/sync.

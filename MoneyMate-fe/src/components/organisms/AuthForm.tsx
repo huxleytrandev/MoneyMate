@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Text, View, Pressable } from 'react-native';
 import { APP_CONFIG } from '@/configs/app.config';
 import { useAuthForm } from '@/hooks/useAuthForm';
+import { colors } from '@/theme/colors';
+import { ui } from '@/theme/layout';
+import { useState } from 'react';
+import { Pressable, Text, View } from 'react-native';
+import { Button } from '../atoms/Button';
 import { FormField } from '../molecules/FormField';
 import { PasswordField } from '../molecules/PasswordField';
-import { Button } from '../atoms/Button';
-import { ui } from '@/theme/layout';
-import { colors as c } from '@/theme/colors';
 export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const { values, errors, message, busy, setField, submit } = useAuthForm(mode);
   const [forgot, setForgot] = useState(false);
@@ -17,7 +17,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
           label="Họ và tên"
           placeholder="Nguyễn Văn A"
           value={values.displayName}
-          onChangeText={(v) => setField('displayName', v)}
+          onChangeText={(value) => setField('displayName', value)}
           error={errors.displayName}
           autoComplete="name"
         />
@@ -26,7 +26,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         label="Email"
         placeholder="email@vi-du.com"
         value={values.email}
-        onChangeText={(v) => setField('email', v)}
+        onChangeText={(value) => setField('email', value)}
         error={errors.email}
         autoCapitalize="none"
         autoCorrect={false}
@@ -36,14 +36,14 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
       <PasswordField
         label="Mật khẩu"
         value={values.password}
-        onChangeText={(v) => setField('password', v)}
+        onChangeText={(value) => setField('password', value)}
         error={errors.password}
       />
       {mode === 'register' && (
         <PasswordField
           label="Xác nhận mật khẩu"
           value={values.confirmPassword}
-          onChangeText={(v) => setField('confirmPassword', v)}
+          onChangeText={(value) => setField('confirmPassword', value)}
           error={errors.confirmPassword}
         />
       )}
@@ -52,15 +52,18 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
       ) : (
         <Pressable
           accessibilityRole="button"
-          onPress={() => setForgot((v) => !v)}
+          onPress={() => setForgot((value) => !value)}
           style={{ alignSelf: 'flex-end', minHeight: 36, justifyContent: 'center', marginTop: -12 }}
         >
-          <Text style={{ fontSize: 12, color: c.green, fontWeight: '600' }}>Quên mật khẩu?</Text>
+          <Text style={{ fontSize: 12, color: colors.green, fontWeight: '600' }}>
+            Quên mật khẩu?
+          </Text>
         </Pressable>
       )}
       {forgot && (
         <Text accessibilityRole="alert" style={ui.body}>
-          Khôi phục mật khẩu sẽ khả dụng khi tài khoản được kết nối.
+          Nếu bạn vẫn đăng nhập, hãy đổi mật khẩu ở Hồ sơ tài khoản. Khôi phục qua email chưa được
+          hỗ trợ.
         </Text>
       )}
       {!!message && (
@@ -73,7 +76,9 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         loading={busy}
         onPress={() => void submit()}
       />
-      <Text style={{ color: c.muted, fontSize: 11, lineHeight: 17 }}>{APP_CONFIG.authNotice}</Text>
+      <Text style={{ color: colors.muted, fontSize: 11, lineHeight: 17 }}>
+        {APP_CONFIG.authNotice}
+      </Text>
     </View>
   );
 }

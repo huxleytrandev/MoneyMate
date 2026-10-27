@@ -1,7 +1,7 @@
-import { Redirect, useRouter } from 'expo-router';
+import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/hooks/useAuth';
 import RegisterScreen from '@/screens/RegisterScreen/RegisterScreen';
-import { ROUTES } from '@/constants/routes';
+import { Redirect, useRouter } from 'expo-router';
 export default function RegisterRoute() {
   const { session } = useAuth();
   const router = useRouter();

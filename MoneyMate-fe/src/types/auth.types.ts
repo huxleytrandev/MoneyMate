@@ -6,7 +6,21 @@ export interface RegisterInput extends LoginInput {
   displayName: string;
   confirmPassword: string;
 }
-export interface DemoSession {
+export interface UserSession {
+  id: string;
+  email: string;
   displayName: string;
-  mode: 'demo';
+  timezone: string;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface AuthResult {
+  user: UserSession;
+}
+
+export interface ProfileInput {
+  displayName: string;
+  email?: string;
+  currentPassword?: string;
+  newPassword?: string;
 }

@@ -1,7 +1,7 @@
 import type { FinanceState } from '../types/finance.types';
+import { monthLabel } from './date.ts';
 import { categoryActual, monthlyTotals, monthlyTransactions } from './finance.ts';
 import { formatMoney } from './money.ts';
-import { monthLabel } from './date.ts';
 
 export function expensePlanStatus(state: FinanceState, month: string) {
   return state.categories
@@ -65,7 +65,7 @@ export function buildAssistantReply(state: FinanceState, month: string, question
   if (/goi y|cat giam|ngan sach|ke hoach/.test(prompt)) {
     const largest = [...status]
       .filter(({ actual }) => actual > 0)
-      .sort((a, b) => b.actual - a.actual)[0];
+      .sort((asset, otherRecord) => otherRecord.actual - asset.actual)[0];
     return (
       (largest
         ? 'Trong ' +
@@ -119,5 +119,5 @@ export function buildAssistantReply(state: FinanceState, month: string, question
     );
   }
 
-  return 'Đây là bản xem trước, chưa kết nối AI. Bạn có thể chọn “Tóm tắt thu chi”, hỏi danh mục nào chi vượt hoặc xem gợi ý quản lý ngân sách từ dữ liệu demo.';
+  return 'Đây là bản xem trước, chưa kết nối AI. Bạn có thể chọn “Tóm tắt thu chi”, hỏi danh mục nào chi vượt hoặc xem gợi ý quản lý ngân sách từ dữ liệu tài khoản.';
 }

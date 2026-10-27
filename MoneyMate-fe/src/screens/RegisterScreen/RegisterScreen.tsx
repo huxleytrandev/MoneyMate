@@ -1,7 +1,7 @@
-import { Text, View, Pressable } from 'react-native';
-import { AuthTemplate } from '@/components/templates/AuthTemplate';
 import { AuthForm } from '@/components/organisms/AuthForm';
-import { colors as c } from '@/theme/colors';
+import { AuthTemplate } from '@/components/templates/AuthTemplate';
+import { colors } from '@/theme/colors';
+import { Pressable, Text, View } from 'react-native';
 export default function RegisterScreen({ onLogin }: { onLogin: () => void }) {
   return (
     <AuthTemplate
@@ -18,9 +18,9 @@ export default function RegisterScreen({ onLogin }: { onLogin: () => void }) {
           flexWrap: 'wrap',
         }}
       >
-        <Text style={{ fontSize: 13, color: c.muted }}>Đã có tài khoản?</Text>
+        <Text style={{ fontSize: 13, color: colors.muted }}>Đã có tài khoản?</Text>
         <Pressable accessibilityRole="button" onPress={onLogin} style={{ padding: 12 }}>
-          <Text style={{ fontSize: 14, fontWeight: '600', color: c.green }}>Đăng nhập</Text>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: colors.green }}>Đăng nhập</Text>
         </Pressable>
       </View>
     </AuthTemplate>

@@ -1,3 +1,4 @@
+import { ADJUSTMENT_REASONS } from '../constants/finance.constant.ts';
 import type {
   CreateAssetAdjustmentData,
   CreateAssetAdjustmentInput,
@@ -7,7 +8,7 @@ import { idSchema, signedMoneySchema, timestampSchema } from './common.schema.ts
 export const createAssetAdjustmentSchema = z.strictObject({
   assetAccountId: idSchema,
   deltaAmount: signedMoneySchema,
-  reason: z.enum(['valuation', 'reconciliation']),
+  reason: z.enum(ADJUSTMENT_REASONS),
   note: z.string().trim().normalize('NFC').min(1).max(2000),
   occurredAt: timestampSchema,
 }) satisfies z.ZodType<CreateAssetAdjustmentData, CreateAssetAdjustmentInput>;

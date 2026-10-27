@@ -1,10 +1,10 @@
+import { ROUTES } from '@/constants/routes';
+import { useAuth } from '@/hooks/useAuth';
+import { FinanceProvider } from '@/providers/FinanceProvider';
+import { colors } from '@/theme/colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Redirect, Tabs } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAuth } from '@/hooks/useAuth';
-import { FinanceProvider } from '@/providers/FinanceProvider';
-import { colors as c } from '@/theme/colors';
-import { ROUTES } from '@/constants/routes';
 export default function MainRoute() {
   const { session } = useAuth();
   const insets = useSafeAreaInsets();
@@ -14,8 +14,8 @@ export default function MainRoute() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: c.green,
-          tabBarInactiveTintColor: c.muted,
+          tabBarActiveTintColor: colors.green,
+          tabBarInactiveTintColor: colors.muted,
           tabBarHideOnKeyboard: true,
           tabBarLabelPosition: 'below-icon',
           tabBarItemStyle: { paddingVertical: 3 },
@@ -27,13 +27,13 @@ export default function MainRoute() {
             flexShrink: 0,
           },
           tabBarStyle: {
-            backgroundColor: c.background,
-            borderTopColor: c.border,
+            backgroundColor: colors.background,
+            borderTopColor: colors.border,
             height: 74 + insets.bottom,
             paddingTop: 6,
             paddingBottom: Math.max(insets.bottom, 10),
           },
-          sceneStyle: { backgroundColor: c.background },
+          sceneStyle: { backgroundColor: colors.background },
         }}
       >
         <Tabs.Screen
@@ -43,7 +43,7 @@ export default function MainRoute() {
             tabBarIcon: ({ color, size }) => (
               <Ionicons
                 name="home-outline"
-                color={typeof color === 'string' ? color : c.muted}
+                color={typeof color === 'string' ? color : colors.muted}
                 size={size}
               />
             ),
@@ -56,7 +56,7 @@ export default function MainRoute() {
             tabBarIcon: ({ color, size }) => (
               <Ionicons
                 name="list-outline"
-                color={typeof color === 'string' ? color : c.muted}
+                color={typeof color === 'string' ? color : colors.muted}
                 size={size}
               />
             ),
@@ -69,7 +69,7 @@ export default function MainRoute() {
             tabBarIcon: ({ color, size }) => (
               <Ionicons
                 name="wallet-outline"
-                color={typeof color === 'string' ? color : c.muted}
+                color={typeof color === 'string' ? color : colors.muted}
                 size={size}
               />
             ),
@@ -82,7 +82,7 @@ export default function MainRoute() {
             tabBarIcon: ({ color, size }) => (
               <Ionicons
                 name="pie-chart-outline"
-                color={typeof color === 'string' ? color : c.muted}
+                color={typeof color === 'string' ? color : colors.muted}
                 size={size}
               />
             ),
@@ -95,7 +95,7 @@ export default function MainRoute() {
             tabBarIcon: ({ color, size }) => (
               <Ionicons
                 name="chatbubbles-outline"
-                color={typeof color === 'string' ? color : c.muted}
+                color={typeof color === 'string' ? color : colors.muted}
                 size={size}
               />
             ),

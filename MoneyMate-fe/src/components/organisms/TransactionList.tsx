@@ -1,10 +1,12 @@
-import { Text, View, StyleSheet } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import type { Transaction, FinanceState } from '@/types/finance.types';
 import { formatDateTime } from '@/helpers/date';
 import { formatMoney } from '@/helpers/money';
-import { colors as c } from '@/theme/colors';
+import { colors } from '@/theme/colors';
 import { ui } from '@/theme/layout';
+import type { FinanceState, Transaction } from '@/types/finance.types';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { TransactionForm } from './TransactionForm';
 export function TransactionList({
   transactions,
   state,
@@ -12,6 +14,7 @@ export function TransactionList({
   transactions: Transaction[];
   state: FinanceState;
 }) {
+  const [editing, setEditing] = useState<Transaction | null>(null);
   return (
     <View style={{ gap: 10 }}>
       {transactions.length === 0 ? (
@@ -19,36 +22,48 @@ export function TransactionList({
           <Text style={ui.body}>Chưa có giao dịch phù hợp.</Text>
         </View>
       ) : (
-        transactions.map((t) => (
-          <View key={t.id} style={s.card}>
+        transactions.map((transaction) => (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={'Sửa giao dịch ' + transaction.title}
+            onPress={() => setEditing(transaction)}
+            key={transaction.id}
+            style={styles.card}
+          >
             <View
               style={[
-                s.icon,
-                { backgroundColor: t.kind === 'income' ? c.softGreen : c.background },
+                styles.icon,
+                {
+                  backgroundColor:
+                    transaction.kind === 'income' ? colors.softGreen : colors.background,
+                },
               ]}
             >
               <Ionicons
                 name={
-                  t.kind === 'income'
+                  transaction.kind === 'income'
                     ? 'wallet'
-                    : t.categoryId === 'food'
+                    : transaction.categoryId === 'food'
                       ? 'restaurant'
-                      : t.categoryId === 'travel'
+                      : transaction.categoryId === 'travel'
                         ? 'car'
                         : 'receipt'
                 }
                 size={19}
-                color={t.kind === 'income' ? c.income : c.ink}
+                color={transaction.kind === 'income' ? colors.income : colors.ink}
               />
             </View>
             <View style={{ flex: 1, gap: 5 }}>
-              <Text style={s.title}>{t.title}</Text>
-              <Text style={s.meta}>
-                {t.allocations
-                  .map((a) => state.assets.find((asset) => asset.id === a.assetId)?.name)
+              <Text style={styles.title}>{transaction.title}</Text>
+              <Text style={styles.meta}>
+                {transaction.allocations
+                  .map(
+                    (allocation) =>
+                      state.assets.find((asset) => asset.id === allocation.assetId)?.name,
+                  )
                   .join(' + ')}
               </Text>
-              <Text style={s.meta}>{formatDateTime(t.occurredAt)}</Text>
+              <Text style={styles.meta}>{formatDateTime(transaction.occurredAt)}</Text>
             </View>
             <View style={{ alignItems: 'flex-end', maxWidth: '44%', gap: 5 }}>
               <Text
@@ -57,34 +72,35 @@ export function TransactionList({
                 style={{
                   fontSize: 13,
                   fontWeight: '700',
-                  color: t.kind === 'income' ? c.income : c.expense,
+                  color: transaction.kind === 'income' ? colors.income : colors.expense,
                 }}
               >
-                {t.kind === 'income' ? '+' : '−'}
-                {formatMoney(t.amount)}
+                {transaction.kind === 'income' ? '+' : '−'}
+                {formatMoney(transaction.amount)}
               </Text>
-              <Text style={s.meta}>
-                {state.categories.find((category) => category.id === t.categoryId)?.name}
+              <Text style={styles.meta}>
+                {state.categories.find((category) => category.id === transaction.categoryId)?.name}
               </Text>
             </View>
-          </View>
+          </Pressable>
         ))
       )}
+      {editing && <TransactionForm transaction={editing} onClose={() => setEditing(null)} />}
     </View>
   );
 }
-const s = StyleSheet.create({
+const styles = StyleSheet.create({
   card: {
-    backgroundColor: c.surface,
+    backgroundColor: colors.surface,
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: c.border,
+    borderColor: colors.border,
     padding: 16,
     gap: 12,
     flexDirection: 'row',
     alignItems: 'center',
   },
   icon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 14, fontWeight: '600', color: c.ink },
-  meta: { fontSize: 10, color: c.muted, lineHeight: 16 },
+  title: { fontSize: 14, fontWeight: '600', color: colors.ink },
+  meta: { fontSize: 10, color: colors.muted, lineHeight: 16 },
 });

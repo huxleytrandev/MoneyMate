@@ -1,3 +1,4 @@
+import { ADJUSTMENT_REASONS } from '../constants/finance.constant.ts';
 import { sql } from 'drizzle-orm';
 import {
   pgTable,
@@ -22,18 +23,22 @@ export const AssetAdjustmentModel = pgTable(
       .references(() => UserModel.id, { onDelete: 'restrict' }),
     assetAccountId: uuid('asset_account_id').notNull(),
     deltaAmount: bigint('delta_amount', { mode: 'bigint' }).notNull(),
-    reason: text('reason', { enum: ['valuation', 'reconciliation'] }).notNull(),
+    reason: text('reason', { enum: ADJUSTMENT_REASONS }).notNull(),
     note: text('note').notNull(),
     occurredAt: timestamp('occurred_at', { withTimezone: true, mode: 'string' }).notNull(),
     ...auditColumns(),
   },
-  (t) => [
+  (adjustment) => [
     foreignKey({
       name: 'adjustments_owner_asset_fk',
-      columns: [t.userId, t.assetAccountId],
+      columns: [adjustment.userId, adjustment.assetAccountId],
       foreignColumns: [AssetAccountModel.userId, AssetAccountModel.id],
     }).onDelete('restrict'),
-    index('adjustments_asset_date_idx').on(t.userId, t.assetAccountId, t.occurredAt),
+    index('adjustments_asset_date_idx').on(
+      adjustment.userId,
+      adjustment.assetAccountId,
+      adjustment.occurredAt,
+    ),
     check('adjustments_amount_check', sql`"delta_amount" <> 0`),
     check('adjustments_reason_check', sql`"reason" in ('valuation','reconciliation')`),
     check('adjustments_note_check', sql`length(trim("note")) > 0`),

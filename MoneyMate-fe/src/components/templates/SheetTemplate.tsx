@@ -1,9 +1,9 @@
-import type { PropsWithChildren } from 'react';
-import { Modal, Text, View, Pressable } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { ScreenTemplate } from './ScreenTemplate';
+import { colors } from '@/theme/colors';
 import { ui } from '@/theme/layout';
-import { colors as c } from '@/theme/colors';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import type { PropsWithChildren } from 'react';
+import { Modal, Pressable, Text, View } from 'react-native';
+import { ScreenTemplate } from './ScreenTemplate';
 export function SheetTemplate({
   title,
   onClose,
@@ -20,13 +20,13 @@ export function SheetTemplate({
             style={{
               width: 44,
               height: 44,
-              backgroundColor: c.surface,
+              backgroundColor: colors.surface,
               borderRadius: 22,
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <Ionicons name="close" size={23} color={c.ink} />
+            <Ionicons name="close" size={23} color={colors.ink} />
           </Pressable>
           <Text style={[ui.heading, { flex: 1, textAlign: 'center' }]}>{title}</Text>
           <View style={{ width: 44 }} />

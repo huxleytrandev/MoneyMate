@@ -1,4 +1,5 @@
-// Only call from user events; these IDs are for session-only demo data.
-export function createDemoId() {
-  return new Date().getTime().toString(36) + Math.random().toString(36).slice(2);
+import { randomUUID } from 'expo-crypto';
+// Client-generated UUID prevents duplicate creation when the same request is retried.
+export function createId() {
+  return randomUUID();
 }

@@ -9,7 +9,7 @@ import {
   categoryActual,
 } from '../src/helpers/finance.ts';
 import { monthKey, localDateTime, shiftMonth } from '../src/helpers/date.ts';
-import { createDemoState } from '../src/constants/demo.ts';
+import { createFinanceFixture } from './fixtures/finance.ts';
 
 test('auth validates and normalizes identity without modifying passwords', () => {
   assert.equal(
@@ -72,7 +72,7 @@ test('transaction requires category, valid datetime and exact allocation', () =>
     assert.equal(transactionSchema.safeParse({ ...base, ...change }).success, false);
 });
 test('split expense updates correct assets and category/month actual once', () => {
-  const state = createDemoState();
+  const state = createFinanceFixture();
   const now = new Date().toISOString();
   const month = monthKey(new Date());
   const before = assetBalance(state, 'cash');
@@ -109,7 +109,7 @@ test('calendar helpers handle month boundaries and impossible local dates', () =
   assert.ok(localDateTime('2026-10-27', '23:59'));
 });
 test('asset valuation adjustment changes assets without inflating actual income', () => {
-  const state = createDemoState();
+  const state = createFinanceFixture();
   const month = monthKey(new Date());
   const actual = categoryActual(state, 'salary', month);
   const adjusted = {

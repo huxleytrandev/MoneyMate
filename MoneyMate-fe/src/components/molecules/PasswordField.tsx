@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import { colors } from '@/theme/colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { FormField } from './FormField';
-import { colors as c } from '@/theme/colors';
 export function PasswordField({
   label,
   value,
@@ -31,15 +31,19 @@ export function PasswordField({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={visible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
-        onPress={() => setVisible((v) => !v)}
-        style={s.eye}
+        onPress={() => setVisible((value) => !value)}
+        style={styles.eye}
       >
-        <Ionicons name={visible ? 'eye-off-outline' : 'eye-outline'} color={c.muted} size={21} />
+        <Ionicons
+          name={visible ? 'eye-off-outline' : 'eye-outline'}
+          color={colors.muted}
+          size={21}
+        />
       </Pressable>
     </View>
   );
 }
-const s = StyleSheet.create({
+const styles = StyleSheet.create({
   eye: {
     position: 'absolute',
     top: 28,

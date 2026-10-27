@@ -1,19 +1,41 @@
 import { z } from 'zod';
 import { environmentSchema } from './environment.schema.ts';
 import type { SecretConfig } from '../types/secret.types.ts';
-
-const duration = z
+const httpUrl = z
   .string()
-  .regex(/^[1-9]\d*(s|m|h|d)$/, 'Use a positive duration such as 15m or 7d');
+  .trim()
+  .refine((value) => {
+    try {
+      const url = new URL(value);
+      return (
+        ['http:', 'https:'].includes(url.protocol) &&
+        !!url.hostname &&
+        !url.username &&
+        !url.password
+      );
+    } catch {
+      return false;
+    }
+  }, 'Use a valid HTTP(S) URL');
 export const secretSchema = environmentSchema
   .extend({
-    ACCESS_EXPIRES_IN: duration.default('15m'),
-    REFRESH_EXPIRES_IN: duration.default('7d'),
-    SALT_ROUNDS: z.coerce.number().int().min(10).max(15).default(10),
-    SERVER_URL: z.httpUrl().optional(),
-    FRONTEND_BASE_URL: z.httpUrl().optional(),
+    SERVER_URL: httpUrl.optional(),
+    FRONTEND_BASE_URL: httpUrl.optional(),
+    BETTER_AUTH_SECRET: z.string().min(32),
+    BETTER_AUTH_URL: httpUrl.optional(),
   })
-  .transform((data) => ({
-    ...data,
-    SERVER_URL: (data.SERVER_URL ?? 'http://localhost:' + data.PORT + '/api').replace(/\/$/, ''),
-  })) satisfies z.ZodType<SecretConfig>;
+  .transform((data) => {
+    const serverURL = (data.SERVER_URL ?? 'http://localhost:' + data.PORT + '/api').replace(
+      /\/$/,
+      '',
+    );
+    return {
+      ...data,
+      SERVER_URL: serverURL,
+      BETTER_AUTH_URL: data.BETTER_AUTH_URL ?? serverURL + '/auth',
+    };
+  })
+  .refine((data) => data.NODE_ENV !== 'production' || data.BETTER_AUTH_URL.startsWith('https://'), {
+    path: ['BETTER_AUTH_URL'],
+    message: 'Production authentication requires HTTPS',
+  }) satisfies z.ZodType<SecretConfig>;

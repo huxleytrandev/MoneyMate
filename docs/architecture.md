@@ -1,70 +1,57 @@
 # MoneyMate architecture
 
-## Repository
+## Luồng backend
 
-- MoneyMate-fe: Expo SDK 58, React Native, TypeScript.
-- MoneyMate-be: Express, PostgreSQL/Supabase, Drizzle ORM, Zod.
-- Hai ứng dụng độc lập, có package.json và lockfile riêng.
+HTTP → routes → middlewares → controllers → services → repositories → Drizzle models → PostgreSQL.
 
-## Frontend: Atomic Design
+Controller giữ xử lý giao tiếp HTTP. Service kiểm tra nghiệp vụ và điều phối transaction. Repository thực hiện truy vấn được ràng buộc chủ sở hữu, trạng thái xóa mềm và version. Model mô tả cấu trúc database; types mô tả kiểu TypeScript; schemas kiểm tra/chuẩn hóa runtime.
 
-Luồng: app -> routes -> screens -> components.
+Các quy tắc đăng ký/đăng nhập nằm trong validations/auth.validation.ts và được schemas/user.schema.ts tái sử dụng. utils là hàm hỗ trợ dùng chung; constants tách theo user/finance.
 
-- app/_layout.tsx: lắp AppProviders, StatusBar và Stack.
-- app/index.tsx, login.tsx, register.tsx: nối welcome/auth đến route.
-- app/(main)/: layout và 5 tab home, transactions, assets, budget, assistant. Từng file chỉ nối route.
-- routes/main.route.tsx: bảo vệ phiên demo, bọc FinanceProvider và định nghĩa thanh tab. Đổi tab dùng chung dữ liệu; thoát demo hủy provider.
-- routes: kiểm tra session và điều hướng. Chưa có xác thực thật.
-- screens: kết nối dữ liệu và nội dung màn hình.
-- components/atoms: Button, Chip, Brand.
-- components/molecules: FormField, PasswordField, PlanCard.
-- components/organisms: các biểu mẫu và danh sách hoàn chỉnh.
-- components/templates: bố cục màn hình, auth và modal.
-- types: interface TypeScript.
-- schemas: Zod kiểm tra và chuẩn hóa dữ liệu nhập.
-- hooks: hành vi form, đọc context.
-- providers: session demo và state tài chính. Không cần Redux ở bước này.
-- services: biên tích hợp backend. Auth chưa có API nên báo chưa khả dụng.
-- helpers: hàm thuần tính tài sản, actual theo tháng và định dạng.
-- configs/constants/theme: cấu hình, đường dẫn, dữ liệu mẫu và thiết kế.
-  Không còn folder features hoặc utils trong frontend.
+src/app.ts lắp dependencies, kết nối database rồi mới mở cổng. configs/express.config.ts tạo app có thể inject database để kiểm thử.
 
-## Hành vi bản mẫu
+## Phiên và quyền
 
-- Đăng ký/đăng nhập có validation nhưng chưa tạo tài khoản hay token.
-- Chế độ demo ghi nhãn rõ, không lưu mật khẩu, dữ liệu chỉ ở trong bộ nhớ.
-- Tài sản gồm tiền mặt, tài khoản và Khác, tất cả VND.
-- Giao dịch bắt buộc có danh mục và phân bổ đủ vào nguồn tiền.
-- Không chọn nguồn thì mở bước phân bổ trước khi lưu.
-- Planned theo danh mục/tháng, actual theo thời điểm phát sinh.
-- Điều chỉnh tài sản không được tính thành thu/chi.
-- Giao diện theo UXPilot: welcome, auth, tổng quan, giao dịch, tài sản, ngân sách, trợ lý và modal thêm giao dịch.
-- Biểu đồ cơ cấu tài sản và planned/actual lấy dữ liệu trong phiên. Trợ lý chỉ tóm tắt local và ghi rõ bản xem trước, chưa có AI/nhắc nhở thật.
-- Chưa có auth/CRUD backend, persistence, sync, biểu đồ lịch sử hay onboarding tài khoản thật.
-  Xem MoneyMate-fe/README.md cho hướng dẫn thử và giới hạn.
+Mật khẩu scrypt. Token phiên ngẫu nhiên, database lưu hash, hết hạn 7 ngày. Native lưu token trong SecureStore; web dùng cookie HttpOnly. Middleware đọc phiên và xác định userId; client không được quyết định chủ sở hữu.
 
-## Backend
+Service không cho tham chiếu tài sản hoặc danh mục người khác. FK ghép bảo vệ thêm quan hệ chủ sở hữu. RLS không cấp mobile quyền gọi Supabase trực tiếp.
 
-- src/app.ts là entry point duy nhất; chờ kết nối DB trước khi listen.
-- configs: environment, secrets, pg pool + Drizzle, Express factory, Swagger, lifecycle.
-- routes/index.ts: ghép router và đường dẫn; mỗi đối tượng có file route riêng.
-- constants: giữ cho hằng dùng chung.
-- models: bảng/cột Drizzle, PK/FK, index, check, mặc định và RLS.
-- types: interface nghiệp vụ, DTO và cấu hình.
-- schemas: Zod validate/normalize input.
-- middlewares: xử lý lỗi JSON.
-- drizzle/: migration SQL và snapshots sinh từ models.
-- db:generate chỉ sinh SQL local; db:migrate thay đổi DB đích.
-  Không tự áp dụng migration lên cloud ngoài phạm vi công việc.
-- Backend chỉ có health/readiness và Swagger; chưa có auth hoặc CRUD.
-- Service tương lai phải kiểm tra quyền, trạng thái tài sản, ngày và tổng phân bổ.
-- Audit updatedAt/version và lọc soft-delete phải thực hiện trong query/service.
-- RLS đã khai báo, chưa có policy cho mobile gọi Data API trực tiếp.
-- Tiền bigint khi xuất JSON phải chuyển thành chuỗi.
-- Không log mật khẩu hoặc DATABASE_URL.
+## Tài chính và đồng thời
 
-## Kiểm tra
+VND nguyên, bigint ở server và chuỗi trong JSON. Frontend giới hạn số nguyên an toàn. Timestamps API chuẩn ISO UTC, kỳ lịch theo múi giờ tài khoản.
 
-Frontend: pnpm check, pnpm test, Expo export Android/web.
-Backend: pnpm check, pnpm test.
-Kết nối DB thật: pnpm db:check từ backend với .env đã cấu hình.
+Giao dịch luôn có danh mục phù hợp và phân bổ đủ tổng tiền. Ghi/sửa transaction và allocations trong cùng transaction. Ghi cùng tài khoản được tuần tự hóa; version chặn update/delete và đối soát từ dữ liệu cũ.
+
+Số dư tính từ nguồn dữ liệu hiện có, không duy trì cột balance dư thừa. Chuyển tiền là hai chiều giữa tài sản; không ghi thu/chi. Đối soát/định giá là delta tài sản; không cộng actual.
+
+Planned theo category và tháng; 0 khác chưa lập kế hoạch. Actual lọc theo tháng occurredAt. Biểu đồ tài sản tính cuối kỳ và không cộng khoản ở tương lai. Khi số dư đầu khoảng bằng 0, growthPercent trả null.
+
+Báo cáo được tính lại từ các bản ghi chưa xóa; đây không phải sổ cái bất biến. Sửa/xóa hoặc ghi lùi ngày có thể làm thay đổi báo cáo quá khứ.
+
+## Frontend
+
+app → routes → screens → Atomic Design components. App/layout và từng file route giữ nhẹ.
+
+AuthProvider quản lý phiên thật. FinanceProvider nằm trên 5 tab để chia sẻ snapshot, phản hồi lỗi và ghi qua API; không dùng dữ liệu mẫu. Sau mutation thành công tải lại snapshot; khi chưa xác nhận lưu thành công không cập nhật số dư.
+
+Các màn hình: Welcome, auth, Tổng quan, Giao dịch, Tài sản, Ngân sách và Trợ lý. Thành phần organisms có các form quản lý tài sản, category, kế hoạch, giao dịch, chuyển tiền, hồ sơ và thống kê.
+
+Tài khoản mới có danh mục mặc định nhưng không có tài sản hoặc giao dịch giả. Người dùng nhập tiền đang có và ngày bắt đầu. Trợ lý hiện dùng quy tắc thống kê, chưa dùng LLM.
+
+## Kiểm tra và giới hạn
+
+Unit/HTTP tests cho validation, tiền, password/session và HTTP. Integration test riêng tạo tài khoản disposable trên PostgreSQL thật và dọn lại. Frontend có kiểm thử mapping API, múi giờ, phân bổ, chuyển tiền và planned/actual; export Android/web để kiểm tra cấu trúc Expo.
+
+Chưa có offline/sync, OAuth, SMTP hoặc nhắc nhở đẩy. Chưa kiểm thử giao diện trên điện thoại vật lý trong môi trường này. Snapshot và báo cáo cần tối ưu SQL khi lịch sử lớn; rate limit cần shared storage khi chạy nhiều server.
+
+Xem README từng package và docs/api.md.
+
+## Phân chia controller
+
+Controller tách theo auth, user, asset, category, plan, transaction, transfer, adjustment và statistics. finance.controller.ts chỉ xử lý snapshot /api/state. routes/resource.route.ts chỉ tái sử dụng mẫu URL CRUD, không chọn nghiệp vụ thay cho controller. Các controller dùng cùng service để giữ nguyên transaction, kiểm tra sở hữu và version.
+
+### Small functions and explicit operations
+
+Backend financial writes expose create, update and remove commands instead of a flag-driven write method. Resource preparers validate each domain; movement tracking and report calculations have dedicated functions. All writes retain the same user lock and database transaction.
+
+Frontend providers compose loading, mutation coordination and API actions. Screen hooks own interaction state; helpers prepare payloads, search transactions and calculate planned/actual summaries without mutating source data. Larger dashboard, budget, asset and assistant sections render separately. Archive/restore and detail/allocation submission use explicit actions.

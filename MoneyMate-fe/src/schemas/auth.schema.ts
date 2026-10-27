@@ -11,7 +11,7 @@ export const registerSchema = z
     password: z.string().min(12, 'Mật khẩu cần ít nhất 12 ký tự.').max(128),
     confirmPassword: z.string(),
   })
-  .refine((v) => v.password === v.confirmPassword, {
+  .refine((value) => value.password === value.confirmPassword, {
     path: ['confirmPassword'],
     message: 'Mật khẩu xác nhận chưa khớp.',
   }) satisfies z.ZodType<RegisterInput>;

@@ -1,6 +1,6 @@
-import type { FinanceState } from '../types/finance.types';
-import { monthKey } from '../helpers/date.ts';
-export function createDemoState(): FinanceState {
+import type { FinanceState } from '../../src/types/finance.types';
+import { monthKey } from '../../src/helpers/date.ts';
+export function createFinanceFixture(): FinanceState {
   const now = new Date();
   const month = monthKey(now);
   const at = (day: number) =>

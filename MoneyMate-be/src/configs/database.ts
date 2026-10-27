@@ -4,13 +4,16 @@ import * as models from '../models/index.ts';
 import pg from 'pg';
 import type { Environment } from '../types/environment.types.ts';
 
-export function createDatabase(environment: Environment) {
+export function createDatabase(
+  environment: Environment,
+  options: { queryTimeoutMs?: number } = {},
+) {
   const pool = new pg.Pool({
     connectionString: environment.DATABASE_URL,
     max: environment.DB_POOL_MAX,
     connectionTimeoutMillis: environment.DB_CONNECTION_TIMEOUT_MS,
     idleTimeoutMillis: 30000,
-    query_timeout: 5000,
+    query_timeout: options.queryTimeoutMs ?? 5000,
   });
   pool.on('error', () => console.error('Unexpected PostgreSQL pool connection error.'));
   return { pool, db: drizzle(pool, { schema: models }) };

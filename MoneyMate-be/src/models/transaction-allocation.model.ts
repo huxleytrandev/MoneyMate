@@ -30,18 +30,21 @@ export const TransactionAllocationModel = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (t) => [
+  (allocation) => [
     foreignKey({
-      columns: [t.userId, t.transactionId],
+      columns: [allocation.userId, allocation.transactionId],
       foreignColumns: [TransactionModel.userId, TransactionModel.id],
     }).onDelete('restrict'),
     foreignKey({
       name: 'allocations_owner_asset_fk',
-      columns: [t.userId, t.assetAccountId],
+      columns: [allocation.userId, allocation.assetAccountId],
       foreignColumns: [AssetAccountModel.userId, AssetAccountModel.id],
     }).onDelete('restrict'),
-    unique('allocations_transaction_asset_unique').on(t.transactionId, t.assetAccountId),
-    index('allocations_asset_idx').on(t.userId, t.assetAccountId),
+    unique('allocations_transaction_asset_unique').on(
+      allocation.transactionId,
+      allocation.assetAccountId,
+    ),
+    index('allocations_asset_idx').on(allocation.userId, allocation.assetAccountId),
     check('allocations_amount_check', sql`"amount" > 0`),
   ],
 ).enableRLS();
