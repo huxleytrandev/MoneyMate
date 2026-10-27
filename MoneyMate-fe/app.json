@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "MoneyMate",
+    "slug": "moneymate",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "moneymate",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F6F7F2",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.moneymate.app"
+    },
+    "web": {
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-image",
+      "expo-splash-screen",
+      "expo-status-bar",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
