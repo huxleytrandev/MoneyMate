@@ -2,13 +2,13 @@ import { buildAssistantReply, expensePlanStatus } from '@/helpers/assistant';
 import { monthKey } from '@/helpers/date';
 import { createId } from '@/helpers/id';
 import { formatMoney } from '@/helpers/money';
-import { useFinance } from '@/hooks/useFinance';
+import { useMonthlyFinance } from '@/hooks/useMonthlyFinance';
 import type { AssistantMessage } from '@/types/assistant.types';
 import { useRef, useState, type ComponentRef } from 'react';
 import { Keyboard, ScrollView } from 'react-native';
 export function useAssistantScreen({ onViewBudget }: { onViewBudget: () => void }) {
-  const { state } = useFinance();
   const month = monthKey(new Date());
+  const { state } = useMonthlyFinance(month);
   const scroll = useRef<ComponentRef<typeof ScrollView>>(null);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<AssistantMessage[]>([]);

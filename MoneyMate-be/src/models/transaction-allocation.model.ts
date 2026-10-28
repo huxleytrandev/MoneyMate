@@ -31,6 +31,11 @@ export const TransactionAllocationModel = pgTable(
       .notNull(),
   },
   (allocation) => [
+    index('allocations_owner_transaction_idx').on(
+      allocation.userId,
+      allocation.transactionId,
+      allocation.assetAccountId,
+    ),
     foreignKey({
       columns: [allocation.userId, allocation.transactionId],
       foreignColumns: [TransactionModel.userId, TransactionModel.id],

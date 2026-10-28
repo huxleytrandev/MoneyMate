@@ -1,3 +1,4 @@
+import { useAssetAdjustmentHistory } from './useAssetAdjustmentHistory';
 import { dateKey, localDateTime } from '@/helpers/date';
 import { assetBalance } from '@/helpers/finance';
 import { createId } from '@/helpers/id';
@@ -7,6 +8,7 @@ import type { Asset, AssetKind } from '@/types/finance.types';
 import { useState } from 'react';
 export function useAssetEditor({ asset, onClose }: { asset?: Asset; onClose: () => void }) {
   const { state, addAsset, adjustAsset, updateAsset, removeRecord, busy } = useFinance();
+  const history = useAssetAdjustmentHistory(asset?.id);
   const [id] = useState(() => asset?.id ?? createId());
   const [name, setName] = useState(asset?.name ?? '');
   const [type, setType] = useState<AssetKind>(asset?.type ?? 'cash');
@@ -78,6 +80,6 @@ export function useAssetEditor({ asset, onClose }: { asset?: Asset; onClose: () 
     setConfirm,
     removeRecord,
     setError,
-    state,
+    history,
   };
 }

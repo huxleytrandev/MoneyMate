@@ -27,13 +27,19 @@ export async function loadSnapshot(database: Executor, userId: string) {
     transfers = await financeRepositories.transfers.list(userId),
     adjustments = await financeRepositories.adjustments.list(userId),
     allocations = await financeRepositories.allocations.list(userId);
+  const allocationsByTransaction = new Map<string, typeof allocations>();
+  for (const allocation of allocations) {
+    const group = allocationsByTransaction.get(allocation.transactionId) ?? [];
+    group.push(allocation);
+    allocationsByTransaction.set(allocation.transactionId, group);
+  }
   return {
     assets,
     categories,
     plans,
     transactions: transactions.map((transaction) => ({
       ...transaction,
-      allocations: allocations.filter((allocation) => allocation.transactionId === transaction.id),
+      allocations: allocationsByTransaction.get(transaction.id) ?? [],
     })),
     transfers,
     adjustments,

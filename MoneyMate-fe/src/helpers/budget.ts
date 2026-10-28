@@ -3,12 +3,16 @@ import type { FinanceState, TransactionKind } from '../types/finance.types';
 import { categoryActual } from './finance.ts';
 
 export function budgetRows(state: FinanceState, month: string, kind: TransactionKind): BudgetRow[] {
+  const plans = new Map(
+    state.plans
+      .filter((plan) => plan.month === month)
+      .map((plan) => [plan.categoryId, plan.amount]),
+  );
   return state.categories
     .filter((category) => category.kind === kind)
     .map((category) => ({
       category,
-      planned: state.plans.find((plan) => plan.categoryId === category.id && plan.month === month)
-        ?.amount,
+      planned: plans.get(category.id),
       actual: categoryActual(state, category.id, month),
     }));
 }

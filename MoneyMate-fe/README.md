@@ -47,3 +47,13 @@ npx.cmd pnpm exec expo export --platform android --platform web
 Dữ liệu cố định chỉ tồn tại trong tests/fixtures; không import vào ứng dụng.
 
 Sau migration Better Auth, cần đăng nhập lại một lần. Không lưu Bearer token thủ công. Cấu hình server và các giới hạn email ở ../docs/authentication.md.
+
+## Hiệu năng với lịch sử lớn
+
+Frontend gọi /state?month=YYYY-MM&limit=50, không tải toàn bộ lịch sử. Số dư tài sản, tổng thu/chi tháng và actual theo danh mục lấy từ các trường tổng hợp của server; các giá trị này không được suy ra từ trang giao dịch đang hiển thị.
+
+Ngân sách giữ tối đa ba snapshot tháng và vô hiệu hóa cache sau khi ghi thành công. Giao dịch dùng truy vấn cursor riêng, debounce tìm kiếm 250 ms, hủy request cũ và SectionList ảo hóa. Khi sửa/xóa bản ghi ngoài snapshot đầu, gửi version của bản ghi đang mở.
+
+Các helper thu/chi và số dư dùng Map/WeakMap; formatter ngày/tiền được tái sử dụng. tests/performance.test.ts kiểm tra 20.000 giao dịch, giới hạn formatter, độ chính xác của tổng tháng và tổng ngày khi phân trang.
+
+Lịch sử đối soát trong từng tài sản dùng GET /adjustments?assetId=...&page=...&limit=30 với nút trang trước/sau. Không suy ra lịch sử tài sản từ danh sách điều chỉnh gần đây của dashboard; trước khi tải xong không hiển thị thông báo trống.

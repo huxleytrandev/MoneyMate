@@ -10,3 +10,5 @@ assets/
 
 # Generated migration metadata and SQL
 drizzle/
+
+.perf/

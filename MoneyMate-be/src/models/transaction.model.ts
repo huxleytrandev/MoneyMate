@@ -32,6 +32,17 @@ export const TransactionModel = pgTable(
     ...auditColumns(),
   },
   (transaction) => [
+    index('transactions_active_user_date_id_idx')
+      .on(transaction.userId, transaction.occurredAt.desc(), transaction.id.desc())
+      .where(sql`"deleted_at" is null`),
+    index('transactions_active_user_kind_date_idx')
+      .on(
+        transaction.userId,
+        transaction.kind,
+        transaction.occurredAt.desc(),
+        transaction.id.desc(),
+      )
+      .where(sql`"deleted_at" is null`),
     unique('transactions_owner_id_unique').on(transaction.userId, transaction.id),
     foreignKey({
       columns: [transaction.userId, transaction.categoryId, transaction.kind],

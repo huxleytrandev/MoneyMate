@@ -25,10 +25,14 @@ export interface FinanceActions {
 }
 export interface FinanceContextValue extends FinanceActions {
   state: FinanceState;
+  monthStates: Readonly<Record<string, FinanceState>>;
+  revision: number;
+  loadMonth: (month: string) => Promise<void>;
   refresh: () => Promise<void>;
   busy: boolean;
 }
 export interface FinanceActionDependencies {
   getState: () => FinanceState;
+  getStateForMonth: (month: string) => FinanceState;
   execute: <Result>(operation: () => Promise<Result>) => Promise<Result>;
 }

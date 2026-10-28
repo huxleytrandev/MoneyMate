@@ -4,11 +4,9 @@ import type { FinanceOperationContext, RecordWriter } from '../types/finance-ope
 import { AppError } from '../utils/app-error.ts';
 import {
   requireRecord,
-  assetHasMovements,
-  categoryIsUsed,
   assertNotFuture,
-  assertMovementDate,
-  assertActiveCategory,
+  assertMovementReferences,
+  assertCategoryReference,
 } from '../utils/finance-validation.ts';
 
 function recordCommands<Input, Record>(
@@ -22,57 +20,53 @@ function recordCommands<Input, Record>(
       requireRecord(await repository.update(context.userId, recordId, version, data)),
   };
 }
-function assertAssetHistory(
+async function assertAssetHistory(
   context: FinanceOperationContext,
   data: ReturnType<typeof createSchemas.assets.parse>,
 ) {
-  if (!context.recordId || !assetHasMovements(context.state, context.recordId)) return;
-  const original = requireRecord(
-    context.state.assets.find((asset) => asset.id === context.recordId),
-  );
+  if (!context.recordId) return;
+  const original = requireRecord(context.current);
+  if (!('openingValue' in original)) throw new AppError(404, FINANCE_MESSAGES.notFound);
   const changed =
     data.openingValue !== original.openingValue ||
     data.openingAt !== new Date(original.openingAt).toISOString() ||
     data.type !== original.type;
-  if (changed) throw new AppError(409, FINANCE_MESSAGES.usedAsset);
+  if (changed && (await context.queries.assetIsUsed(context.recordId)))
+    throw new AppError(409, FINANCE_MESSAGES.usedAsset);
 }
-function prepareAsset(context: FinanceOperationContext, input: unknown) {
+async function prepareAsset(context: FinanceOperationContext, input: unknown) {
   const data = createSchemas.assets.parse(input);
   assertNotFuture(data.openingAt);
-  assertAssetHistory(context, data);
+  await assertAssetHistory(context, data);
   return recordCommands(context.repositories.assets, context, data);
 }
-function assertUniqueCategory(
+async function assertUniqueCategory(
   context: FinanceOperationContext,
   data: ReturnType<typeof createSchemas.categories.parse>,
 ) {
-  const duplicate = context.state.categories.some(
-    (category) =>
-      category.id !== context.recordId &&
-      category.kind === data.kind &&
-      category.name.toLocaleLowerCase('vi') === data.name.toLocaleLowerCase('vi'),
-  );
-  if (duplicate) throw new AppError(409, FINANCE_MESSAGES.duplicateCategory);
+  if (await context.queries.categoryNameExists({ ...data, excludeId: context.recordId }))
+    throw new AppError(409, FINANCE_MESSAGES.duplicateCategory);
 }
-function assertCategoryHistory(
+async function assertCategoryHistory(
   context: FinanceOperationContext,
   data: ReturnType<typeof createSchemas.categories.parse>,
 ) {
-  if (!context.recordId || !categoryIsUsed(context.state, context.recordId)) return;
-  const original = requireRecord(
-    context.state.categories.find((category) => category.id === context.recordId),
-  );
-  if (original.kind !== data.kind) throw new AppError(409, FINANCE_MESSAGES.usedCategory);
+  if (!context.recordId) return;
+  const original = requireRecord(context.current);
+  if (!('kind' in original) || !('name' in original))
+    throw new AppError(404, FINANCE_MESSAGES.notFound);
+  if (original.kind !== data.kind && (await context.queries.categoryIsUsed(context.recordId)))
+    throw new AppError(409, FINANCE_MESSAGES.usedCategory);
 }
-function prepareCategory(context: FinanceOperationContext, input: unknown) {
+async function prepareCategory(context: FinanceOperationContext, input: unknown) {
   const data = createSchemas.categories.parse(input);
-  assertUniqueCategory(context, data);
-  assertCategoryHistory(context, data);
+  await assertUniqueCategory(context, data);
+  await assertCategoryHistory(context, data);
   return recordCommands(context.repositories.categories, context, data);
 }
-function preparePlan(context: FinanceOperationContext, input: unknown) {
+async function preparePlan(context: FinanceOperationContext, input: unknown) {
   const data = createSchemas.plans.parse(input);
-  assertActiveCategory(context.state, data);
+  assertCategoryReference(await context.queries.activeCategory(data));
   return recordCommands(context.repositories.plans, context, data);
 }
 async function replaceAllocations<TransactionRecord extends { id: string }>(
@@ -83,13 +77,14 @@ async function replaceAllocations<TransactionRecord extends { id: string }>(
   await context.repositories.allocations.replace(context.userId, transaction.id, allocations);
   return { ...transaction, allocations };
 }
-function prepareTransaction(context: FinanceOperationContext, input: unknown) {
+async function prepareTransaction(context: FinanceOperationContext, input: unknown) {
   const data = createSchemas.transactions.parse(input);
-  assertActiveCategory(context.state, data);
-  assertMovementDate(context.state, {
-    assetIds: data.allocations.map((allocation) => allocation.assetAccountId),
-    occurredAt: data.occurredAt,
-  });
+  assertNotFuture(data.occurredAt);
+  const assetIds = data.allocations.map((allocation) => allocation.assetAccountId);
+  assertMovementReferences(
+    await context.queries.movementReferences({ ...data, assetIds }),
+    assetIds,
+  );
   const { allocations, ...transactionData } = data;
   const commands = recordCommands(context.repositories.transactions, context, transactionData);
   return {
@@ -98,23 +93,26 @@ function prepareTransaction(context: FinanceOperationContext, input: unknown) {
       replaceAllocations(context, await commands.update(recordId, version), allocations),
   };
 }
-function prepareTransfer(context: FinanceOperationContext, input: unknown) {
+async function prepareTransfer(context: FinanceOperationContext, input: unknown) {
   const data = createSchemas.transfers.parse(input);
-  assertMovementDate(context.state, {
-    assetIds: [data.fromAssetAccountId, data.toAssetAccountId],
-    occurredAt: data.occurredAt,
-  });
+  assertNotFuture(data.occurredAt);
+  const assetIds = [data.fromAssetAccountId, data.toAssetAccountId];
+  assertMovementReferences(
+    await context.queries.movementReferences({ ...data, assetIds }),
+    assetIds,
+  );
   return recordCommands(context.repositories.transfers, context, data);
 }
-function prepareAdjustment(context: FinanceOperationContext, input: unknown) {
+async function prepareAdjustment(context: FinanceOperationContext, input: unknown) {
   const data = createSchemas.adjustments.parse(input);
-  assertMovementDate(context.state, {
-    assetIds: [data.assetAccountId],
-    occurredAt: data.occurredAt,
-  });
+  assertNotFuture(data.occurredAt);
+  const assetIds = [data.assetAccountId];
+  assertMovementReferences(
+    await context.queries.movementReferences({ ...data, assetIds }),
+    assetIds,
+  );
   return recordCommands(context.repositories.adjustments, context, data);
 }
-
 export const resourcePreparers = {
   assets: prepareAsset,
   categories: prepareCategory,

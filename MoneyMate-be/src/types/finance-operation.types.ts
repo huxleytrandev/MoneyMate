@@ -1,12 +1,17 @@
 import type { repositories } from '../repositories/finance.repository.ts';
-import type { FinanceSnapshot } from './finance-snapshot.types.ts';
+import type { financeWriteRepository } from '../repositories/finance-write.repository.ts';
 import type { ResourceName } from '../schemas/api.schema.ts';
 
+type FinanceWriteRepository = ReturnType<typeof financeWriteRepository>;
+export type CurrentFinanceRecord = NonNullable<
+  Awaited<ReturnType<FinanceWriteRepository['findRecord']>>
+>;
 export interface FinanceOperationContext {
   userId: string;
-  state: FinanceSnapshot;
   repositories: ReturnType<typeof repositories>;
+  queries: FinanceWriteRepository;
   recordId?: string;
+  current?: CurrentFinanceRecord;
 }
 export interface CreateFinanceCommand {
   userId: string;

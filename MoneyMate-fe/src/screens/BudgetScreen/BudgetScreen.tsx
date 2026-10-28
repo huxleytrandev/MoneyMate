@@ -12,9 +12,12 @@ import { styles } from '@/screens/BudgetScreen/BudgetScreen.styles';
 import { colors } from '@/theme/colors';
 import { ui } from '@/theme/layout';
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 export default function BudgetScreen() {
   const {
+    loading,
+    error,
+    retry,
     setAddingCategory,
     setMonth,
     month,
@@ -96,45 +99,60 @@ export default function BudgetScreen() {
         ))}
       </View>
 
-      <BudgetSummary
-        plannedCount={plannedCount}
-        planned={planned}
-        actual={actual}
-        overspent={overspent}
-        complete={complete}
-        remaining={remaining}
-        message={message}
-        categoryCount={rows.length}
-      />
+      {loading && <ActivityIndicator color={colors.green} />}
+      {!!error && (
+        <View style={{ gap: 12 }}>
+          <Text style={ui.error}>{error}</Text>
+          <Button title="Thử lại" onPress={retry} />
+        </View>
+      )}
+      {!loading && !error && (
+        <>
+          <BudgetSummary
+            plannedCount={plannedCount}
+            planned={planned}
+            actual={actual}
+            overspent={overspent}
+            complete={complete}
+            remaining={remaining}
+            message={message}
+            categoryCount={rows.length}
+          />
 
-      <BudgetComparisonChart rows={rows} maxValue={maxValue} kind={kind} />
+          <BudgetComparisonChart rows={rows} maxValue={maxValue} kind={kind} />
 
-      <View style={ui.row}>
-        <Text style={styles.sectionTitle}>Theo danh mục</Text>
-        <Text style={styles.coverage}>{rows.length} danh mục</Text>
-      </View>
-      <View style={{ gap: 12 }}>
-        {rows.map((row) => (
-          <View key={row.category.id} style={{ gap: 5 }}>
-            <PlanCard
-              key={row.category.id}
-              category={row.category}
-              planned={row.planned}
-              actual={row.actual}
-              onEdit={() =>
-                row.category.isArchived ? setCategoryEditor(row.category) : setEditor(row.category)
-              }
-            />
-            <Button
-              title={
-                (row.category.isArchived ? 'Đã lưu trữ · ' : '') + 'Quản lý ' + row.category.name
-              }
-              variant="text"
-              onPress={() => setCategoryEditor(row.category)}
-            />
+          <View style={ui.row}>
+            <Text style={styles.sectionTitle}>Theo danh mục</Text>
+            <Text style={styles.coverage}>{rows.length} danh mục</Text>
           </View>
-        ))}
-      </View>
+          <View style={{ gap: 12 }}>
+            {rows.map((row) => (
+              <View key={row.category.id} style={{ gap: 5 }}>
+                <PlanCard
+                  key={row.category.id}
+                  category={row.category}
+                  planned={row.planned}
+                  actual={row.actual}
+                  onEdit={() =>
+                    row.category.isArchived
+                      ? setCategoryEditor(row.category)
+                      : setEditor(row.category)
+                  }
+                />
+                <Button
+                  title={
+                    (row.category.isArchived ? 'Đã lưu trữ · ' : '') +
+                    'Quản lý ' +
+                    row.category.name
+                  }
+                  variant="text"
+                  onPress={() => setCategoryEditor(row.category)}
+                />
+              </View>
+            ))}
+          </View>
+        </>
+      )}
       <Button
         title="+ Thêm danh mục và kế hoạch"
         variant="text"

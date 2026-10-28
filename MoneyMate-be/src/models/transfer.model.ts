@@ -28,6 +28,9 @@ export const TransferModel = pgTable(
     ...auditColumns(),
   },
   (transfer) => [
+    index('transfers_active_owner_date_idx')
+      .on(transfer.userId, transfer.occurredAt.desc(), transfer.id.desc())
+      .where(sql`"deleted_at" is null`),
     foreignKey({
       name: 'transfers_source_owner_fk',
       columns: [transfer.userId, transfer.fromAssetAccountId],

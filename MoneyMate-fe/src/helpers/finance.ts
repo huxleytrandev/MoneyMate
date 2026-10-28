@@ -1,66 +1,85 @@
 import type { FinanceState, Transaction } from '../types/finance.types';
-import { monthKey } from './date.ts';
-export function monthlyTransactions(state: FinanceState, month: string) {
-  return state.transactions.filter(
-    (transaction) => monthKey(new Date(transaction.occurredAt)) === month,
-  );
+import { monthKey, getFinanceTimezone } from './date.ts';
+interface FinanceIndex {
+  timezone: string | undefined;
+  assets: Map<string, FinanceState['assets'][number]>;
+  categories: Map<string, FinanceState['categories'][number]>;
+  balances: Map<string, number>;
+  byMonth: Map<string, Transaction[]>;
+  actualByMonth: Map<string, Map<string, number>>;
 }
-export function assetBalance(state: FinanceState, id: string) {
-  const opening = state.assets.find((asset) => asset.id === id)?.openingValue ?? 0;
-  const movements = state.transactions.reduce(
-    (sum, transaction) =>
-      sum +
-      transaction.allocations
-        .filter((allocation) => allocation.assetId === id)
-        .reduce(
-          (total, allocation) =>
-            total + (transaction.kind === 'income' ? allocation.amount : -allocation.amount),
-          0,
-        ),
-    0,
-  );
-  return (
-    opening +
-    movements +
-    (state.transfers ?? []).reduce(
-      (sum, transfer) =>
-        sum +
-        (transfer.toAssetId === id ? transfer.amount : 0) -
-        (transfer.fromAssetId === id ? transfer.amount : 0),
-      0,
-    ) +
-    state.adjustments
-      .filter((adjustment) => adjustment.assetId === id)
-      .reduce((total, adjustment) => total + adjustment.delta, 0)
-  );
+const indexes = new WeakMap<FinanceState, FinanceIndex>();
+function addBalance(balances: Map<string, number>, assetId: string, amount: number) {
+  balances.set(assetId, (balances.get(assetId) ?? 0) + amount);
+}
+function indexTransactions(state: FinanceState, index: FinanceIndex) {
+  for (const transaction of state.transactions) {
+    const month = monthKey(new Date(transaction.occurredAt));
+    const transactions = index.byMonth.get(month) ?? [];
+    transactions.push(transaction);
+    index.byMonth.set(month, transactions);
+    const actual = index.actualByMonth.get(month) ?? new Map<string, number>();
+    actual.set(
+      transaction.categoryId,
+      (actual.get(transaction.categoryId) ?? 0) + transaction.amount,
+    );
+    index.actualByMonth.set(month, actual);
+    for (const allocation of transaction.allocations)
+      addBalance(
+        index.balances,
+        allocation.assetId,
+        transaction.kind === 'income' ? allocation.amount : -allocation.amount,
+      );
+  }
+}
+export function financeIndex(state: FinanceState) {
+  const cached = indexes.get(state);
+  if (cached && cached.timezone === getFinanceTimezone()) return cached;
+  const index: FinanceIndex = {
+    timezone: getFinanceTimezone(),
+    assets: new Map(state.assets.map((asset) => [asset.id, asset])),
+    categories: new Map(state.categories.map((category) => [category.id, category])),
+    balances: new Map(state.assets.map((asset) => [asset.id, asset.openingValue])),
+    byMonth: new Map(),
+    actualByMonth: new Map(),
+  };
+  indexTransactions(state, index);
+  for (const transfer of state.transfers ?? []) {
+    addBalance(index.balances, transfer.fromAssetId, -transfer.amount);
+    addBalance(index.balances, transfer.toAssetId, transfer.amount);
+  }
+  for (const adjustment of state.adjustments)
+    addBalance(index.balances, adjustment.assetId, adjustment.delta);
+  for (const asset of state.assets)
+    if (asset.currentBalance !== undefined) index.balances.set(asset.id, asset.currentBalance);
+  indexes.set(state, index);
+  return index;
+}
+export function monthlyTransactions(state: FinanceState, month: string) {
+  return [...(financeIndex(state).byMonth.get(month) ?? [])];
+}
+export function assetBalance(state: FinanceState, assetId: string) {
+  return financeIndex(state).balances.get(assetId) ?? 0;
 }
 export function monthlyTotals(transactions: Transaction[]) {
-  return transactions.reduce(
-    (total, transaction) => ({
-      ...total,
-      [transaction.kind]: total[transaction.kind] + transaction.amount,
-    }),
-    {
-      income: 0,
-      expense: 0,
-    },
-  );
+  const totals = { income: 0, expense: 0 };
+  for (const transaction of transactions) totals[transaction.kind] += transaction.amount;
+  return totals;
+}
+export function totalsForMonth(state: FinanceState, month: string) {
+  if (state.summary?.month === month)
+    return { income: state.summary.income, expense: state.summary.expense };
+  return monthlyTotals(monthlyTransactions(state, month));
 }
 export function categoryActual(state: FinanceState, categoryId: string, month: string) {
-  return monthlyTransactions(state, month)
-    .filter((transaction) => transaction.categoryId === categoryId)
-    .reduce((total, transaction) => total + transaction.amount, 0);
+  if (state.summary?.month === month) return state.summary.actualByCategory[categoryId] ?? 0;
+  return financeIndex(state).actualByMonth.get(month)?.get(categoryId) ?? 0;
 }
 export function addTransaction(state: FinanceState, transaction: Transaction): FinanceState {
-  const category = state.categories.find(
-    (category) => category.id === transaction.categoryId && category.kind === transaction.kind,
-  );
-  if (!category) throw new Error('Hãy chọn danh mục phù hợp.');
-  if (
-    transaction.allocations.some(
-      (allocation) => !state.assets.some((asset) => asset.id === allocation.assetId),
-    )
-  )
+  const index = financeIndex(state);
+  if (index.categories.get(transaction.categoryId)?.kind !== transaction.kind)
+    throw new Error('Hãy chọn danh mục phù hợp.');
+  if (transaction.allocations.some((allocation) => !index.assets.has(allocation.assetId)))
     throw new Error('Nguồn tiền không tồn tại.');
   if (
     transaction.allocations.reduce((total, allocation) => total + allocation.amount, 0) !==

@@ -56,7 +56,7 @@ npx.cmd pnpm db:generate
 npx.cmd pnpm db:migrate
 ```
 
-generate tạo SQL local. migrate thay đổi database trong DATABASE_URL; rà soát SQL và đúng đích trước khi chạy. Các migration 0000–0003 đã được áp dụng lên Supabase, gồm chuyển đổi Better Auth.
+generate tạo SQL local. migrate thay đổi database trong DATABASE_URL; rà soát SQL và đúng đích trước khi chạy. Các migration 0000–0004 đã được áp dụng lên Supabase, gồm chuyển đổi Better Auth.
 
 RLS bật cho các bảng, chưa cấp policy cho anon/authenticated. App chỉ gọi backend. Backend phải dùng role có quyền phù hợp; không đưa DATABASE_URL hoặc quyền quản trị Supabase xuống frontend.
 
@@ -77,7 +77,7 @@ Remove-Item Env:RUN_DB_TESTS
 
 Integration test tạo hai tài khoản riêng với email example.invalid, chạy HTTP API với Supabase thật và xóa các tài khoản đó trong finally. Không dùng tài khoản người dùng để kiểm thử.
 
-Giới hạn đăng nhập hiện lưu trong bộ nhớ process; khi chạy nhiều instance cần giới hạn tập trung ở gateway/Redis. Báo cáo/snapshot hiện tải dữ liệu của người dùng để tính toán; cần tổng hợp SQL và phân trang snapshot khi quy mô lịch sử lớn.
+Giới hạn đăng nhập hiện lưu trong bộ nhớ process; khi chạy nhiều instance cần giới hạn tập trung ở gateway/Redis. Báo cáo hiện tổng hợp tại SQL; list/detail và mutation chỉ đọc dữ liệu cần thiết. Frontend tải snapshot tháng giới hạn 50 dòng với tổng hợp đầy đủ. Xem ../docs/performance.md và benchmark:finance/benchmark:statistics.
 
 ## Controllers theo đối tượng
 
@@ -87,10 +87,12 @@ Giới hạn đăng nhập hiện lưu trong bộ nhớ process; khi chạy nhi�
 - statistics: báo cáo thống kê.
 - finance: chỉ snapshot tổng hợp /api/state để frontend tải dữ liệu ban đầu.
 
-Mỗi route nối với controller tương ứng. utils/controller.ts dùng chung việc lấy người dùng đã xác thực, phân trang và tìm bản ghi; configs/auth.config.ts giữ cấu hình Better Auth. Logic nghiệp vụ và transaction vẫn nằm trong service/repository.
+Mỗi route nối với controller tương ứng. utils/controller.ts dùng chung việc lấy người dùng đã xác thực; truy vấn/phân trang nằm trong repositories; configs/auth.config.ts giữ cấu hình Better Auth. Logic nghiệp vụ và transaction vẫn nằm trong service/repository.
 
 Integration test dùng thời gian chờ kết nối/truy vấn 30 giây để chịu được độ trễ Supabase cloud; cấu hình truy vấn mặc định của API vẫn là 5 giây.
 
 BETTER_AUTH_SECRET là bắt buộc và phải giữ riêng trong .env. BETTER_AUTH_URL mặc định http://localhost:3000/api/auth; dùng HTTPS ở production. Helmet bảo vệ HTTP headers cho API và Swagger. Cookie/token cũ yêu cầu đăng nhập lại.
 
 Các endpoint xác nhận mật khẩu/xóa tài khoản của ứng dụng dùng express-rate-limit (10 yêu cầu/phút/IP). Bộ giới hạn của Better Auth áp dụng cho auth handler. Cả hai đang dùng memory store; nhiều instance cần shared storage.
+
+Migration 0004_finance_query_indexes đã áp dụng để hỗ trợ truy vấn mới. /state?month=YYYY-MM là luồng tải mobile; bare /state giữ tương thích toàn lịch sử. Đọc thêm [performance.md](../docs/performance.md).

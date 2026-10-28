@@ -1,6 +1,13 @@
 let timezone: string | undefined;
+let partsFormatter: Intl.DateTimeFormat | undefined;
+let displayFormatter: Intl.DateTimeFormat | undefined;
+export function getFinanceTimezone() {
+  return timezone;
+}
 export function setFinanceTimezone(value: string | undefined) {
   timezone = value;
+  partsFormatter = undefined;
+  displayFormatter = undefined;
 }
 function dateParts(date: Date) {
   if (!timezone)
@@ -11,7 +18,7 @@ function dateParts(date: Date) {
       hour: date.getHours(),
       minute: date.getMinutes(),
     };
-  const parts = new Intl.DateTimeFormat('en-CA', {
+  partsFormatter ??= new Intl.DateTimeFormat('en-CA', {
     timeZone: timezone,
     year: 'numeric',
     month: '2-digit',
@@ -19,7 +26,8 @@ function dateParts(date: Date) {
     hour: '2-digit',
     minute: '2-digit',
     hourCycle: 'h23',
-  }).formatToParts(date);
+  });
+  const parts = partsFormatter.formatToParts(date);
   const component = (name: string) => Number(parts.find((part) => part.type === name)?.value);
   return {
     year: component('year'),
@@ -77,11 +85,12 @@ export function localDateTime(date: string, time: string): string | null {
   return matches ? timestamp.toISOString() : null;
 }
 export function formatDateTime(value: string) {
-  return new Date(value).toLocaleString('vi-VN', {
+  displayFormatter ??= new Intl.DateTimeFormat('vi-VN', {
     ...(timezone ? { timeZone: timezone } : {}),
     day: '2-digit',
     month: '2-digit',
     hour: '2-digit',
     minute: '2-digit',
   });
+  return displayFormatter.format(new Date(value));
 }

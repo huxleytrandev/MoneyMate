@@ -37,13 +37,22 @@ export function balanceAt(state: FinanceSnapshot, assetId: string, asOf = Date.n
     adjustmentBalance(state, assetId, asOf)
   );
 }
-export function localDay(iso: string, timezone: string) {
-  const parts = new Intl.DateTimeFormat('en-CA', {
+const dateFormatters = new Map<string, Intl.DateTimeFormat>();
+function dateFormatter(timezone: string) {
+  const cached = dateFormatters.get(timezone);
+  if (cached) return cached;
+  if (dateFormatters.size >= 32) dateFormatters.delete(dateFormatters.keys().next().value!);
+  const formatter = new Intl.DateTimeFormat('en-CA', {
     timeZone: timezone,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-  }).formatToParts(new Date(iso));
+  });
+  dateFormatters.set(timezone, formatter);
+  return formatter;
+}
+export function localDay(iso: string, timezone: string) {
+  const parts = dateFormatter(timezone).formatToParts(new Date(iso));
   return ['year', 'month', 'day']
     .map((component) => parts.find((part) => part.type === component)?.value)
     .join('-');

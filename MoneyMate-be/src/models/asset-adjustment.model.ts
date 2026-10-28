@@ -29,6 +29,9 @@ export const AssetAdjustmentModel = pgTable(
     ...auditColumns(),
   },
   (adjustment) => [
+    index('adjustments_active_owner_date_idx')
+      .on(adjustment.userId, adjustment.occurredAt.desc(), adjustment.id.desc())
+      .where(sql`"deleted_at" is null`),
     foreignKey({
       name: 'adjustments_owner_asset_fk',
       columns: [adjustment.userId, adjustment.assetAccountId],

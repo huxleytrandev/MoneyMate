@@ -1,0 +1,110 @@
+{
+  "dataset": {
+    "transactions": 20000,
+    "assets": 8,
+    "categories": 32,
+    "days": 366
+  },
+  "measurement": "Backend service and PostgreSQL network wall time; excludes HTTP auth/mobile rendering. Before one run of retained legacy algorithm; after median of3 runs. No shared Redis/result cache.",
+  "before": {
+    "seed": {
+      "ms": 729.02
+    },
+    "snapshot": {
+      "ms": 16504.5,
+      "bytes": 13911503,
+      "serializeMs": 349.29
+    },
+    "create": {
+      "ms": 8953.37
+    },
+    "remove": {
+      "ms": 11131.17
+    },
+    "report": {
+      "ms": 41636.47
+    }
+  },
+  "after": {
+    "snapshot": {
+      "ms": 3973.18,
+      "samplesMs": [3625.4, 3973.18, 4233.07],
+      "bytes": 13911503
+    },
+    "window": {
+      "ms": 129.95,
+      "samplesMs": [128.11, 129.95, 295.97],
+      "bytes": 63231,
+      "transactionCount": 50
+    },
+    "list": {
+      "ms": 111.94,
+      "samplesMs": [106.39, 111.94, 121.41]
+    },
+    "nextPage": {
+      "ms": 108.18,
+      "samplesMs": [106.02, 108.18, 128.39]
+    },
+    "search": {
+      "ms": 146.72,
+      "samplesMs": [130.36, 146.72, 170.53]
+    },
+    "create": {
+      "ms": 791.15,
+      "samplesMs": [788.23, 791.15, 809.57]
+    },
+    "remove": {
+      "ms": 694.12,
+      "samplesMs": [689.63, 694.12, 741.4]
+    },
+    "report": {
+      "ms": 226.27,
+      "samplesMs": [225.1, 226.27, 250.2],
+      "bytes": 6951
+    }
+  },
+  "freshLoadVerification": {
+    "records": 20000,
+    "assets": 8,
+    "categories": 32,
+    "scope": "Backend services + PostgreSQL network wall time; excludes HTTP auth and mobile rendering",
+    "measurements": {
+      "window": {
+        "medianMs": 168.32,
+        "samplesMs": [162.29, 168.32, 391.67],
+        "bytes": 60020
+      },
+      "page": {
+        "medianMs": 108.99,
+        "samplesMs": [108.45, 108.99, 109.23]
+      },
+      "report": {
+        "medianMs": 246.84,
+        "samplesMs": [245.9, 246.84, 257.38]
+      },
+      "create": {
+        "medianMs": 812.16,
+        "samplesMs": [807.42, 812.16, 819.3]
+      },
+      "update": {
+        "medianMs": 992.77,
+        "samplesMs": [990.53, 992.77, 997.72]
+      },
+      "remove": {
+        "medianMs": 716.26,
+        "samplesMs": [687.19, 716.26, 717.02]
+      },
+      "reconcile": {
+        "medianMs": 796.53,
+        "samplesMs": [794.63, 796.53, 797.81]
+      }
+    },
+    "measuredDate": "2026-10-28",
+    "methodology": "Fresh disposable user and 20,000 rows, without manual ANALYZE. Median of three service calls. Reconcile includes reading current asset/version first.",
+    "queryPlan": {
+      "beforeBarrierMs": 22445.183,
+      "afterBarrierMs": 68.739,
+      "beforeJoinComparisonsRemoved": 199990000
+    }
+  }
+}

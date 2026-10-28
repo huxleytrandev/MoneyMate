@@ -2,6 +2,7 @@ import { TRANSACTION_KINDS } from '../constants/finance.constant.ts';
 import { sql } from 'drizzle-orm';
 import {
   pgTable,
+  index,
   uuid,
   text,
   bigint,
@@ -29,6 +30,9 @@ export const MonthlyPlanModel = pgTable(
     ...auditColumns(),
   },
   (plan) => [
+    index('plans_active_owner_month_idx')
+      .on(plan.userId, plan.month)
+      .where(sql`"deleted_at" is null`),
     foreignKey({
       columns: [plan.userId, plan.categoryId, plan.kind],
       foreignColumns: [CategoryModel.userId, CategoryModel.id, CategoryModel.kind],

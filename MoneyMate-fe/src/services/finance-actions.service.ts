@@ -23,17 +23,17 @@ async function persistTransaction(
     .getState()
     .transactions.find((record) => record.id === transaction.id);
   const body = transactionPayload(transaction);
-  if (!existing) {
+  if (!existing && transaction.version === undefined) {
     await financeApi.createRecord('transactions', { ...body, id: transaction.id });
     return;
   }
   await financeApi.updateRecord('transactions', transaction.id, {
     ...body,
-    version: transaction.version ?? existing.version,
+    version: transaction.version ?? existing?.version,
   });
 }
 async function persistPlan(dependencies: FinanceActionDependencies, input: PlanInput) {
-  const { existing, body } = preparePlan(dependencies.getState(), input);
+  const { existing, body } = preparePlan(dependencies.getStateForMonth(input.month), input);
   if (!existing?.id) {
     await financeApi.createRecord('plans', body);
     return;
@@ -46,7 +46,7 @@ async function persistPlan(dependencies: FinanceActionDependencies, input: PlanI
 async function persistTransfer(dependencies: FinanceActionDependencies, transfer: Transfer) {
   const body = transferPayload(transfer);
   const exists = dependencies.getState().transfers?.some((record) => record.id === transfer.id);
-  if (!exists) {
+  if (!exists && transfer.version === undefined) {
     await financeApi.createRecord('transfers', { ...body, id: transfer.id });
     return;
   }
@@ -67,8 +67,9 @@ async function removeFinanceRecord(
   const record = dependencies
     .getState()
     [input.resource]?.find((candidate) => candidate.id === input.id);
-  if (!record?.version) throw new Error('Hãy tải lại dữ liệu.');
-  await financeApi.deleteRecord(input.resource, input.id, input.expectedVersion ?? record.version);
+  const version = input.expectedVersion ?? record?.version;
+  if (version === undefined) throw new Error('Hãy tải lại dữ liệu.');
+  await financeApi.deleteRecord(input.resource, input.id, version);
 }
 async function createAsset(asset: Asset) {
   await financeApi.createRecord('assets', {

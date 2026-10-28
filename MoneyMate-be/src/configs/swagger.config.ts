@@ -92,7 +92,24 @@ const paths: Record<string, unknown> = {
     },
   },
   '/api/state': {
-    get: { summary: 'Snapshot dữ liệu thuộc người dùng', security, responses: { 200: response } },
+    get: {
+      summary: 'Snapshot dữ liệu thuộc người dùng',
+      security,
+      parameters: [
+        {
+          in: 'query',
+          name: 'month',
+          schema: { type: 'string', pattern: '^[0-9]{4}-[0-9]{2}$' },
+          description: 'Tháng theo múi giờ tài khoản',
+        },
+        {
+          in: 'query',
+          name: 'limit',
+          schema: { type: 'integer', minimum: 1, maximum: 100, default: 50 },
+        },
+      ],
+      responses: { 200: response },
+    },
   },
   '/api/statistics': {
     get: {
@@ -128,12 +145,35 @@ const paths: Record<string, unknown> = {
     },
   },
 };
+
+const transactionQueryParameters = [
+  {
+    in: 'query',
+    name: 'month',
+    schema: { type: 'string', pattern: '^[0-9]{4}-[0-9]{2}$' },
+    description: 'Tháng theo múi giờ tài khoản',
+  },
+  {
+    in: 'query',
+    name: 'cursor',
+    schema: { type: 'string' },
+    description: 'Con trỏ trả về ở page.nextCursor',
+  },
+  { in: 'query', name: 'kind', schema: { type: 'string', enum: ['income', 'expense'] } },
+  { in: 'query', name: 'assetType', schema: { type: 'string', enum: ['cash', 'bank', 'other'] } },
+  { in: 'query', name: 'search', schema: { type: 'string', maxLength: 200 } },
+];
+const assetHistoryParameters = [
+  { in: 'query', name: 'assetId', schema: { type: 'string', format: 'uuid' } },
+];
 for (const resource of RESOURCE_NAMES) {
   paths['/api/' + resource] = {
     get: {
       summary: 'Danh sách ' + resource + ' của người dùng',
       security,
       parameters: [
+        ...(resource === 'transactions' ? transactionQueryParameters : []),
+        ...(resource === 'adjustments' ? assetHistoryParameters : []),
         { in: 'query', name: 'page', schema: { type: 'integer', minimum: 1, default: 1 } },
         {
           in: 'query',

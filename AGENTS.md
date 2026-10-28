@@ -35,7 +35,7 @@
 - Run frontend pnpm check, pnpm test and Expo export for UI structure changes.
 
 - Backend flow: routes -> controllers -> services -> repositories -> models. Auth validations live in validations/auth.validation.ts; constants split by domain; utils are reusable.
-- Existing migrations 0000–0003 were applied for real API integration and Better Auth migration. Future cloud changes still require task authorization.
+- Existing migrations 0000–0004 were applied for real API integration and Better Auth migration. Future cloud changes still require task authorization.
 - pnpm test skips PostgreSQL integration unless RUN_DB_TESTS=1. That test creates and removes its own disposable users; never use real user accounts.
 
 - Function design: keep functions small and focused, use descriptive names, and prefer a parameter object for related arguments.
@@ -43,3 +43,7 @@
 - Prefer named handlers and lookup maps over switch statements; use guard clauses to avoid nested conditions.
 - Keep calculations, validation and payload preparation pure. Isolate intentional database/network/state changes in clearly named repositories, services or hooks.
 - Screens compose UI; hooks manage state and effects; helpers perform reusable calculations. Split long UI sections into named components.
+
+- Performance: writes/list/detail/statistics must not load whole-user snapshots. Use targeted SQL, cursor pagination and aggregate before returning data. Whole-history snapshot is compatibility-only.
+- Month-window transaction arrays are partial; balances and monthly actual must come from currentBalance/summary, not page sums. SQL timezones must use sqlLocalTime and monthWindow helpers to match Intl offsets/aliases/DST.
+- Keep benchmark fixtures disposable and owner-scoped; clean generated rows in finally. benchmark:statistics is CPU-only; benchmark:finance requires RUN_DB_BENCHMARK=1.

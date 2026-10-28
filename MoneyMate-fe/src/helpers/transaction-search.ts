@@ -43,7 +43,9 @@ export function groupTransactionsByDay(transactions: Transaction[]) {
   const groups = new Map<string, Transaction[]>();
   for (const transaction of transactions) {
     const day = dateKey(new Date(transaction.occurredAt));
-    groups.set(day, [...(groups.get(day) ?? []), transaction]);
+    const records = groups.get(day) ?? [];
+    records.push(transaction);
+    groups.set(day, records);
   }
   return groups;
 }

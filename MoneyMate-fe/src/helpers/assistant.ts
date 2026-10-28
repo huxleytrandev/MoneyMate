@@ -1,16 +1,20 @@
 import type { FinanceState } from '../types/finance.types';
 import { monthLabel } from './date.ts';
-import { categoryActual, monthlyTotals, monthlyTransactions } from './finance.ts';
+import { categoryActual, totalsForMonth } from './finance.ts';
 import { formatMoney } from './money.ts';
 
 export function expensePlanStatus(state: FinanceState, month: string) {
+  const plans = new Map(
+    state.plans
+      .filter((plan) => plan.month === month)
+      .map((plan) => [plan.categoryId, plan.amount]),
+  );
   return state.categories
     .filter((category) => category.kind === 'expense')
     .map((category) => ({
       category,
       actual: categoryActual(state, category.id, month),
-      planned: state.plans.find((plan) => plan.categoryId === category.id && plan.month === month)
-        ?.amount,
+      planned: plans.get(category.id),
     }));
 }
 
@@ -85,15 +89,14 @@ export function buildAssistantReply(state: FinanceState, month: string, question
   }
 
   if (/tom tat|phan tich|thu chi|thu nhap|chi tieu|thang/.test(prompt)) {
-    const totals = monthlyTotals(monthlyTransactions(state, month));
+    const totals = totalsForMonth(state, month);
+    const incomeCategories = new Set(
+      state.categories
+        .filter((category) => category.kind === 'income')
+        .map((category) => category.id),
+    );
     const incomePlan = state.plans
-      .filter(
-        (plan) =>
-          plan.month === month &&
-          state.categories.some(
-            (category) => category.id === plan.categoryId && category.kind === 'income',
-          ),
-      )
+      .filter((plan) => plan.month === month && incomeCategories.has(plan.categoryId))
       .reduce((sum, plan) => sum + plan.amount, 0);
     const expensePlan = status.reduce((sum, item) => sum + (item.planned ?? 0), 0);
     return (

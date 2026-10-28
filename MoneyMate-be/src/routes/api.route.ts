@@ -1,3 +1,4 @@
+import { financeReadService } from '../services/finance-read.service.ts';
 import { Router } from 'express';
 import type { Database } from '../types/database.types.ts';
 import type { Authentication } from '../types/auth.types.ts';
@@ -29,16 +30,18 @@ import { createAdjustmentRoutes } from './adjustment.route.ts';
 export function createApiRoutes(db: Database, auth: Authentication, frontendBaseUrl?: string) {
   const router = Router();
   const finance = financeService(db);
+  const queries = financeReadService(db);
+  const services = { commands: finance, queries };
   router.use(browserOrigin(frontendBaseUrl));
   router.use(requireAuth(auth));
   router.use('/users', createUserRoutes(userController(userService(db, auth))));
-  router.use(createFinanceRoutes(financeController(finance)));
+  router.use(createFinanceRoutes(financeController(queries)));
   router.use('/statistics', createStatisticsRoutes(statisticsController(statisticsService(db))));
-  router.use('/assets', createAssetRoutes(assetController(finance)));
-  router.use('/categories', createCategoryRoutes(categoryController(finance)));
-  router.use('/plans', createPlanRoutes(planController(finance)));
-  router.use('/transactions', createTransactionRoutes(transactionController(finance)));
-  router.use('/transfers', createTransferRoutes(transferController(finance)));
-  router.use('/adjustments', createAdjustmentRoutes(adjustmentController(finance)));
+  router.use('/assets', createAssetRoutes(assetController(services)));
+  router.use('/categories', createCategoryRoutes(categoryController(services)));
+  router.use('/plans', createPlanRoutes(planController(services)));
+  router.use('/transactions', createTransactionRoutes(transactionController(services)));
+  router.use('/transfers', createTransferRoutes(transferController(services)));
+  router.use('/adjustments', createAdjustmentRoutes(adjustmentController(services)));
   return router;
 }

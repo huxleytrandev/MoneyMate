@@ -10,10 +10,22 @@ export const FinanceContext = createContext<FinanceContextValue | null>(null);
 export function FinanceProvider({ children }: PropsWithChildren) {
   const data = useFinanceData();
   const mutation = useFinanceMutation({ refresh: data.refresh, setError: data.setError });
-  const actions = createFinanceActions({ getState: data.getState, execute: mutation.execute });
+  const actions = createFinanceActions({
+    getState: data.getState,
+    getStateForMonth: data.getStateForMonth,
+    execute: mutation.execute,
+  });
   return (
     <FinanceContext.Provider
-      value={{ state: data.state, refresh: data.refresh, busy: mutation.busy, ...actions }}
+      value={{
+        state: data.state,
+        monthStates: data.monthStates,
+        revision: data.revision,
+        loadMonth: data.loadMonth,
+        refresh: data.refresh,
+        busy: mutation.busy,
+        ...actions,
+      }}
     >
       <FinanceBoundary loading={data.loading} error={data.error} onRetry={data.retry}>
         {children}

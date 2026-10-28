@@ -6,6 +6,7 @@ export interface Asset {
   type: AssetKind;
   openingValue: number;
   openingAt?: string;
+  currentBalance?: number;
   version?: number;
   isArchived?: boolean;
 }
@@ -62,6 +63,8 @@ export interface FinanceState {
   transactions: Transaction[];
   plans: MonthlyPlan[];
   adjustments: Adjustment[];
+  summary?: FinanceSummary;
+  page?: CursorPage;
 }
 export interface TransactionDraft {
   title: string;
@@ -71,4 +74,16 @@ export interface TransactionDraft {
   date: string;
   time: string;
   allocations: { assetId: string; amount: string }[];
+}
+
+export interface FinanceSummary {
+  month: string;
+  income: number;
+  expense: number;
+  actualByCategory: Record<string, number>;
+  transactionCount: number;
+}
+export interface CursorPage {
+  nextCursor: string | null;
+  hasMore: boolean;
 }

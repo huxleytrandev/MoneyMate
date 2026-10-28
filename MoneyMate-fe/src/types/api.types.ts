@@ -8,6 +8,7 @@ export interface ApiAsset extends ApiRecord {
   name: string;
   type: 'cash' | 'bank' | 'other';
   openingValue: string;
+  currentBalance?: string;
   openingAt: string;
   isArchived: boolean;
 }
@@ -51,10 +52,35 @@ export interface ApiFinanceState {
   transactions: ApiTransaction[];
   transfers: ApiTransfer[];
   adjustments: ApiAdjustment[];
+  summary?: {
+    month: string;
+    income: string;
+    expense: string;
+    actualByCategory: Record<string, string>;
+    transactionCount: number;
+  };
+  page?: { nextCursor: string | null; hasMore: boolean };
 }
 export interface Statistics {
   currency: string;
   timezone: string;
   growthPercent: number | null;
   series: { key: string; income: string; expense: string; assets: string }[];
+}
+
+export interface ApiTransactionPage {
+  data: ApiTransaction[];
+  page: { nextCursor: string | null; hasMore: boolean };
+  totals: { income: string; expense: string; total: number };
+  dayTotals?: Record<string, { income: string; expense: string }>;
+}
+
+export interface ApiPagination {
+  page: number;
+  limit: number;
+  total: number;
+}
+export interface ApiPage<Record> {
+  data: Record[];
+  pagination: ApiPagination;
 }

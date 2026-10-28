@@ -1,0 +1,7 @@
+CREATE INDEX "adjustments_active_owner_date_idx" ON "asset_adjustments" USING btree ("user_id","occurred_at" DESC NULLS LAST,"id" DESC NULLS LAST) WHERE "deleted_at" is null;--> statement-breakpoint
+CREATE INDEX "categories_active_owner_kind_name_idx" ON "categories" USING btree ("user_id","kind",lower("name")) WHERE "deleted_at" is null;--> statement-breakpoint
+CREATE INDEX "plans_active_owner_month_idx" ON "monthly_category_plans" USING btree ("user_id","month") WHERE "deleted_at" is null;--> statement-breakpoint
+CREATE INDEX "allocations_owner_transaction_idx" ON "transaction_allocations" USING btree ("user_id","transaction_id","asset_account_id");--> statement-breakpoint
+CREATE INDEX "transactions_active_user_date_id_idx" ON "transactions" USING btree ("user_id","occurred_at" DESC NULLS LAST,"id" DESC NULLS LAST) WHERE "deleted_at" is null;--> statement-breakpoint
+CREATE INDEX "transactions_active_user_kind_date_idx" ON "transactions" USING btree ("user_id","kind","occurred_at" DESC NULLS LAST,"id" DESC NULLS LAST) WHERE "deleted_at" is null;--> statement-breakpoint
+CREATE INDEX "transfers_active_owner_date_idx" ON "transfers" USING btree ("user_id","occurred_at" DESC NULLS LAST,"id" DESC NULLS LAST) WHERE "deleted_at" is null;

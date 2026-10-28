@@ -18,7 +18,9 @@
     "db:check": "node src/scripts/check-database.ts",
     "test": "node --test tests/*.test.ts",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "node src/scripts/migrate-database.ts"
+    "db:migrate": "node src/scripts/migrate-database.ts",
+    "benchmark:statistics": "node src/scripts/benchmark-statistics.ts",
+    "benchmark:finance": "node src/scripts/benchmark-finance.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -1,5 +1,6 @@
 import { monthLabel } from '@/helpers/date';
 import { useFinance } from '@/hooks/useFinance';
+import { useMonthlyFinance } from '@/hooks/useMonthlyFinance';
 import { amountSchema } from '@/schemas/finance.schema';
 import { ui } from '@/theme/layout';
 import type { Category } from '@/types/finance.types';
@@ -17,7 +18,8 @@ export function PlanEditor({
   month: string;
   onClose: () => void;
 }) {
-  const { state, savePlan, removeRecord, busy } = useFinance();
+  const { savePlan, removeRecord, busy } = useFinance();
+  const { state } = useMonthlyFinance(month);
   const [old] = useState(() =>
     state.plans.find((plan) => plan.categoryId === category.id && plan.month === month),
   );

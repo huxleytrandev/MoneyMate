@@ -55,3 +55,7 @@ Controller tách theo auth, user, asset, category, plan, transaction, transfer, 
 Backend financial writes expose create, update and remove commands instead of a flag-driven write method. Resource preparers validate each domain; movement tracking and report calculations have dedicated functions. All writes retain the same user lock and database transaction.
 
 Frontend providers compose loading, mutation coordination and API actions. Screen hooks own interaction state; helpers prepare payloads, search transactions and calculate planned/actual summaries without mutating source data. Larger dashboard, budget, asset and assistant sections render separately. Archive/restore and detail/allocation submission use explicit actions.
+
+## Performance
+
+Read paths use SQL pagination/aggregation through finance-read.service and repositories, independently of mutation commands. Writes never load a whole-user snapshot. Month windows expose authoritative balances/summary; frontend must not total a partial page. Cursor paging keeps timestamp microseconds plus id. See performance.md for measurements and contracts.

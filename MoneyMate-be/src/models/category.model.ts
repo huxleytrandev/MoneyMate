@@ -30,6 +30,9 @@ export const CategoryModel = pgTable(
     ...auditColumns(),
   },
   (category) => [
+    index('categories_active_owner_kind_name_idx')
+      .on(category.userId, category.kind, sql`lower(${category.name})`)
+      .where(sql`"deleted_at" is null`),
     unique('categories_owner_id_kind_unique').on(category.userId, category.id, category.kind),
     index('categories_owner_idx').on(category.userId),
     check('categories_kind_check', sql`"kind" in ('income','expense')`),

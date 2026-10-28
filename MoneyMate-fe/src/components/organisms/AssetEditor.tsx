@@ -2,7 +2,7 @@ import { Button } from '@/components/atoms/Button';
 import { Chip } from '@/components/atoms/Chip';
 import { FormField } from '@/components/molecules/FormField';
 import { SheetTemplate } from '@/components/templates/SheetTemplate';
-import { formatMoney } from '@/helpers/money';
+import { AssetAdjustmentHistory } from './AssetAdjustmentHistory';
 import { useAssetEditor } from '@/hooks/useAssetEditor';
 import { ui } from '@/theme/layout';
 import { Text, View } from 'react-native';
@@ -28,7 +28,7 @@ export function AssetEditor(props: Parameters<typeof useAssetEditor>[0]) {
     setConfirm,
     removeRecord,
     setError,
-    state,
+    history,
   } = useAssetEditor(props);
   return (
     <SheetTemplate title={asset ? 'Quản lý · ' + asset.name : 'Thêm tài sản'} onClose={onClose}>
@@ -112,26 +112,15 @@ export function AssetEditor(props: Parameters<typeof useAssetEditor>[0]) {
             }}
           />
           <Text style={ui.heading}>Lịch sử đối soát</Text>
-          {state.adjustments
-            .filter((adjustment) => adjustment.assetId === asset.id)
-            .map((adjustment) => (
-              <View key={adjustment.id} style={ui.card}>
-                <Text>
-                  {formatMoney(adjustment.delta)} ·{' '}
-                  {new Date(adjustment.occurredAt).toLocaleDateString('vi-VN')}
-                </Text>
-                <Button
-                  title="Hoàn tác điều chỉnh này"
-                  variant="text"
-                  disabled={busy}
-                  onPress={() =>
-                    void removeRecord('adjustments', adjustment.id, adjustment.version)
-                      .then(onClose)
-                      .catch((failure) => setError(failure.message))
-                  }
-                />
-              </View>
-            ))}
+          <AssetAdjustmentHistory
+            history={history}
+            busy={busy}
+            onUndo={(adjustment) => {
+              void removeRecord('adjustments', adjustment.id, adjustment.version)
+                .then(onClose)
+                .catch((failure) => setError(failure.message));
+            }}
+          />
         </>
       )}
     </SheetTemplate>

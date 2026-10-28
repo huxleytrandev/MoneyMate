@@ -1,0 +1,9 @@
+import { useEffect, useState } from 'react';
+export function useDebouncedValue<Value>(value: Value, delay = 250) {
+  const [settled, setSettled] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setSettled(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return settled;
+}
