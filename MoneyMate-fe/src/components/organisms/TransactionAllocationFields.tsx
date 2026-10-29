@@ -1,5 +1,5 @@
+import { MoneyField } from '@/components/molecules/MoneyField';
 import { Button } from '@/components/atoms/Button';
-import { FormField } from '@/components/molecules/FormField';
 import { formatMoney } from '@/helpers/money';
 import { useTransactionForm } from '@/hooks/useTransactionForm';
 import { ui } from '@/theme/layout';
@@ -21,12 +21,11 @@ export function TransactionAllocationFields({
           các nguồn dưới đây. Chỉ lưu khi phân bổ đủ.
         </Text>
         {state.assets.map((asset) => (
-          <FormField
+          <MoneyField
             key={asset.id}
             label={asset.name + ' (VND)'}
             value={shares[asset.id] ?? ''}
             onChangeText={(value) => setShares((total) => ({ ...total, [asset.id]: value }))}
-            keyboardType="number-pad"
             placeholder="0"
           />
         ))}

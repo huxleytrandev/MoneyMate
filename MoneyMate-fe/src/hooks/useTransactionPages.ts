@@ -28,13 +28,22 @@ export function useTransactionPages(query: TransactionQuery, revision: number) {
   const input = useMemo(
     () => ({
       month: query.month,
+      categoryId: query.categoryId,
       kind: query.kind,
       assetType: query.assetType,
       search: query.search,
       limit: query.limit,
       cursor: query.cursor,
     }),
-    [query.month, query.kind, query.assetType, query.search, query.limit, query.cursor],
+    [
+      query.month,
+      query.categoryId,
+      query.kind,
+      query.assetType,
+      query.search,
+      query.limit,
+      query.cursor,
+    ],
   );
   const key = JSON.stringify([input, revision, attempt]);
   useEffect(() => {

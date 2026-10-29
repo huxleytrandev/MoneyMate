@@ -1,10 +1,10 @@
+import { CategoryIcon } from '@/components/atoms/CategoryIcon';
 import { formatDateTime } from '@/helpers/date';
 import { financeIndex } from '@/helpers/finance';
 import { formatMoney } from '@/helpers/money';
 import { colors } from '@/theme/colors';
 import { ui } from '@/theme/layout';
 import type { Asset, Category, FinanceState, Transaction } from '@/types/finance.types';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo, useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { TransactionForm } from './TransactionForm';
@@ -28,18 +28,12 @@ export const TransactionRow = memo(function TransactionRow({
       onPress={() => onEdit(transaction)}
       style={styles.card}
     >
-      <View
-        style={[
-          styles.icon,
-          { backgroundColor: transaction.kind === 'income' ? colors.softGreen : colors.background },
-        ]}
-      >
-        <Ionicons
-          name={transaction.kind === 'income' ? 'wallet' : 'receipt'}
-          size={19}
-          color={transaction.kind === 'income' ? colors.income : colors.ink}
-        />
-      </View>
+      <CategoryIcon
+        category={
+          categoriesById.get(transaction.categoryId) ?? { name: '', kind: transaction.kind }
+        }
+        size={42}
+      />
       <View style={{ flex: 1, gap: 5 }}>
         <Text style={styles.title}>{transaction.title}</Text>
         <Text style={styles.meta}>

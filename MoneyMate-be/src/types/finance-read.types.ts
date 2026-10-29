@@ -3,6 +3,7 @@ export interface FinanceReadQuery {
   page: number;
   limit: number;
   month?: string;
+  categoryId?: string;
   cursor?: string;
   kind?: 'income' | 'expense';
   assetId?: string;

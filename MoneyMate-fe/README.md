@@ -57,3 +57,22 @@ Ngân sách giữ tối đa ba snapshot tháng và vô hiệu hóa cache sau khi
 Các helper thu/chi và số dư dùng Map/WeakMap; formatter ngày/tiền được tái sử dụng. tests/performance.test.ts kiểm tra 20.000 giao dịch, giới hạn formatter, độ chính xác của tổng tháng và tổng ngày khi phân trang.
 
 Lịch sử đối soát trong từng tài sản dùng GET /adjustments?assetId=...&page=...&limit=30 với nút trang trước/sau. Không suy ra lịch sử tài sản từ danh sách điều chỉnh gần đây của dashboard; trước khi tải xong không hiển thị thông báo trống.
+
+## Giao diện và nhập liệu tài chính
+
+- React Native Paper cung cấp button, menu, dialog và snackbar; theme lấy từ src/theme/colors.ts qua src/theme/paper.ts.
+- SheetTemplate dùng bottom sheet của @expo/ui. Form ngắn dùng size compact; form dài có vùng cuộn và phần tiêu đề riêng. Khi có dữ liệu chưa lưu, nút đóng hỏi xác nhận; thao tác vuốt/nhấn ngoài được khóa để tránh mất dữ liệu. SheetInteractionProvider khóa đồng bộ trường nhập và lựa chọn khi đang ghi.
+- ConfirmActionButton dùng chung xác nhận xóa/hoàn tác, chặn nhấn lặp và hiển thị lỗi tại dialog. Hành động xóa dùng màu đỏ.
+- MoneyInput/MoneyField dùng react-native-currency-input với precision=0 và dấu phân cách ".", ví dụ 2.345.678. State và API vẫn nhận "2345678"; VNĐ hiển thị riêng. Đối soát cho phép nhập số dư âm trong giới hạn an toàn của frontend.
+- CategoryAppearancePicker chọn icon và màu; các giá trị được validate và lưu vào icon/color có sẵn của backend. Lucide được import qua các subpath công khai để chỉ tải icon cần dùng. Babel plugin của Paper giảm import toàn bộ thư viện.
+- Card danh mục mở trang chi tiết. Menu trong card có xem giao dịch, đặt kế hoạch và chỉnh sửa danh mục. Trang chi tiết tải GET /transactions?categoryId=...&month=...&limit=50 với cursor; tổng planned/actual lấy từ dữ liệu tháng đầy đủ.
+- FinanceProvider nằm trên Stack của (main); năm tab ở (main)/(tabs), trang category/[id] nằm ngoài tab. Router SDK 58 dùng unstable_settings.anchor trong layout để cấu hình màn hình gốc. Web dùng output single để hỗ trợ route chi tiết động; khi triển khai web cần phục vụ index.html cho các đường dẫn SPA.
+- Tạo danh mục và lưu kế hoạch là hai API riêng: nếu bước kế hoạch lỗi, form giữ danh mục đã tạo để có thể thử lại mà không tạo trùng. Đổi tên tài sản và đối soát cũng là hai thao tác riêng; nếu đối soát lỗi, tên đã lưu được giữ và UI báo rõ số dư chưa lưu.
+
+Sau khi thay dependency hoặc Babel config, khởi động lại Metro:
+
+```powershell
+npx.cmd pnpm start --clear
+```
+
+Kiểm chứng UI: web ở 390 × 844, gõ số có phân cách rồi đối chiếu API lưu raw VND, lưu icon, xác nhận bỏ thay đổi/xóa, mở chi tiết từ card và quay lại đúng tab ngân sách. Android/web export kiểm tra bundle; chưa kiểm tra trên điện thoại thật. Lỗi native unrs-resolver trên Windows vẫn có thể chặn pnpm check; không giảm quy tắc lint để né lỗi này.

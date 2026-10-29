@@ -1,3 +1,6 @@
+import { ConfirmActionButton } from '@/components/molecules/ConfirmActionButton';
+import { useDirtyFields } from '@/hooks/useDirtyFields';
+import { MoneyField } from '@/components/molecules/MoneyField';
 import { Button } from '@/components/atoms/Button';
 import { Chip } from '@/components/atoms/Chip';
 import { FormField } from '@/components/molecules/FormField';
@@ -20,7 +23,7 @@ export function TransferForm({ onClose, transfer }: { onClose: () => void; trans
   const [date, setDate] = useState(() => dateKey(new Date(transfer?.occurredAt ?? Date.now())));
   const [time, setTime] = useState(() => timeKey(new Date(transfer?.occurredAt ?? Date.now())));
   const [error, setError] = useState('');
-  const [confirm, setConfirm] = useState(false);
+  const dirty = useDirtyFields({ from, to, amount, note, date, time });
   async function save() {
     const parsed = amountSchema.safeParse(amount);
     const occurredAt = localDateTime(date, time);
@@ -44,17 +47,17 @@ export function TransferForm({ onClose, transfer }: { onClose: () => void; trans
     }
   }
   return (
-    <SheetTemplate title={transfer ? 'Sửa chuyển tiền' : 'Chuyển tiền nội bộ'} onClose={onClose}>
+    <SheetTemplate
+      title={transfer ? 'Sửa chuyển tiền' : 'Chuyển tiền nội bộ'}
+      onClose={onClose}
+      dirty={dirty}
+      busy={busy}
+    >
       <Text style={ui.body}>
         Chỉ ghi nhận chuyển giữa các tài sản của bạn, không thực hiện chuyển tiền ngân hàng và không
         tính vào thu nhập hoặc chi tiêu.
       </Text>
-      <FormField
-        label="Số tiền (VNĐ)"
-        value={amount}
-        onChangeText={setAmount}
-        keyboardType="number-pad"
-      />
+      <MoneyField label="Số tiền (VNĐ)" value={amount} onChangeText={setAmount} />
       <Text style={ui.heading}>Từ nguồn</Text>
       <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
         {state.assets
@@ -87,18 +90,14 @@ export function TransferForm({ onClose, transfer }: { onClose: () => void; trans
       {!!error && <Text style={ui.error}>{error}</Text>}
       <Button title="Lưu chuyển tiền" onPress={() => void save()} loading={busy} />
       {transfer && (
-        <Button
-          title={confirm ? 'Xác nhận xóa chuyển tiền' : 'Xóa chuyển tiền'}
-          variant="text"
+        <ConfirmActionButton
+          label="Xóa chuyển tiền"
+          title="Xóa lần chuyển tiền này?"
+          description="Số dư của cả hai nguồn sẽ được tính lại. Thao tác này không phải chuyển tiền ngân hàng."
           disabled={busy}
-          onPress={() => {
-            if (!confirm) {
-              setConfirm(true);
-              return;
-            }
-            void removeRecord('transfers', transfer.id, transfer.version)
-              .then(onClose)
-              .catch((failure) => setError(failure.message));
+          onConfirm={async () => {
+            await removeRecord('transfers', transfer.id, transfer.version);
+            onClose();
           }}
         />
       )}

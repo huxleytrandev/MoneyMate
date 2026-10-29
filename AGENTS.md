@@ -47,3 +47,6 @@
 - Performance: writes/list/detail/statistics must not load whole-user snapshots. Use targeted SQL, cursor pagination and aggregate before returning data. Whole-history snapshot is compatibility-only.
 - Month-window transaction arrays are partial; balances and monthly actual must come from currentBalance/summary, not page sums. SQL timezones must use sqlLocalTime and monthWindow helpers to match Intl offsets/aliases/DST.
 - Keep benchmark fixtures disposable and owner-scoped; clean generated rows in finally. benchmark:statistics is CPU-only; benchmark:finance requires RUN_DB_BENCHMARK=1.
+
+- UI: use the shared Paper theme, SheetTemplate/ConfirmActionButton and MoneyField. Store unformatted integer VND in form state; do not send formatted text to APIs. Lock controls while submitting and confirm dismissal of dirty forms.
+- Keep category detail in the (main) Stack outside (tabs), with server-side categoryId filtering and cursor paging. Use SDK 58 layout anchor settings. Import Lucide via public per-icon subpaths and keep the Paper Babel plugin to avoid bundling unused components.

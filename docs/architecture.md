@@ -59,3 +59,11 @@ Frontend providers compose loading, mutation coordination and API actions. Scree
 ## Performance
 
 Read paths use SQL pagination/aggregation through finance-read.service and repositories, independently of mutation commands. Writes never load a whole-user snapshot. Month windows expose authoritative balances/summary; frontend must not total a partial page. Cursor paging keeps timestamp microseconds plus id. See performance.md for measurements and contracts.
+
+## Điều hướng và UI tài chính
+
+FinanceProvider bao ngoài Stack trong (main). Stack chứa (tabs) với năm màn hình chính và category/[id] cho chi tiết danh mục. Các file src/app chỉ cấu hình/ủy quyền cho routes; screen và hook vẫn tách khỏi layout. Với Expo Router SDK 58, anchor được export từ layout thay vì truyền initialRouteName vào Stack.
+
+Button/ConfirmDialog dùng React Native Paper, SheetTemplate dùng @expo/ui, MoneyInput dùng react-native-currency-input; theme giữ bảng màu chung. MoneyField chỉ định dạng hiển thị, không thay đổi đơn vị hoặc hợp đồng tiền nguyên VNĐ. Icon/màu danh mục được truyền đầy đủ qua types, schema và payload.
+
+Bộ lọc categoryId thực hiện tại transaction-read.repository cùng bộ lọc chủ sở hữu/tháng/xóa mềm, dùng chung cho trang và tổng hợp. Trang chi tiết không lọc từ snapshot 50 giao dịch đầu. Không cần migration mới vì category.icon/color và index theo user/category/date đã có.

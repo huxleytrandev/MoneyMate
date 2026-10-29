@@ -50,7 +50,7 @@ POST /assets/:id/reconcile nhận {value,version,note?}; tính delta so với s�
 
 Allocations là thành phần của transaction; không có API sửa riêng để tránh làm lệch tổng phân bổ.
 
-GET /state?month=YYYY-MM&limit=50 là luồng đọc mobile: assets có currentBalance, summary có tổng thu/chi và actualByCategory của toàn tháng; transactions chỉ là trang đầu. GET /transactions hỗ trợ month, kind, assetType, search, limit và cursor; totals/dayTotals bao phủ toàn bộ bộ lọc. GET /adjustments?assetId=UUID&page=1&limit=30 trả lịch sử từng tài sản. Chi tiết hợp đồng và đo hiệu năng: [performance.md](performance.md).
+GET /state?month=YYYY-MM&limit=50 là luồng đọc mobile: assets có currentBalance, summary có tổng thu/chi và actualByCategory của toàn tháng; transactions chỉ là trang đầu. GET /transactions hỗ trợ categoryId, month, kind, assetType, search, limit và cursor; totals/dayTotals bao phủ toàn bộ bộ lọc. GET /adjustments?assetId=UUID&page=1&limit=30 trả lịch sử từng tài sản. Chi tiết hợp đồng và đo hiệu năng: [performance.md](performance.md).
 
 GET /state không truyền month giữ snapshot toàn bộ lịch sử trong repeatable-read transaction để tương thích client cũ; frontend hiện tại không gọi luồng này.
 

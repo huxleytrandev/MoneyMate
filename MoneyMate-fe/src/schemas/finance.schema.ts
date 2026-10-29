@@ -10,6 +10,15 @@ export const amountSchema = z
     (value) => Number.isSafeInteger(value) && value >= 0 && value <= 1000000000000,
     'Số tiền không hợp lệ.',
   );
+export const balanceSchema = z
+  .string()
+  .trim()
+  .regex(/^-?\d+$/, 'Nhập số tiền VNĐ nguyên.')
+  .transform(Number)
+  .refine(
+    (value) => Number.isSafeInteger(value) && Math.abs(value) <= 1000000000000,
+    'Số tiền không hợp lệ.',
+  );
 export const positiveAmountSchema = amountSchema.refine(
   (value) => value > 0,
   'Số tiền phải lớn hơn 0.',
@@ -53,6 +62,11 @@ export const assetSchema = z.object({
   openingValue: amountSchema,
 });
 export const categorySchema = z.object({
+  icon: z.string().max(50).optional(),
+  color: z
+    .string()
+    .regex(/^#[0-9a-f]{6}$/i)
+    .optional(),
   name: z.string().trim().min(1, 'Nhập tên danh mục.').max(100),
   kind: z.enum(['income', 'expense']),
 });

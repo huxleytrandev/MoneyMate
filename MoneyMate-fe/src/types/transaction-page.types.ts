@@ -1,6 +1,7 @@
 import type { CursorPage, Transaction, TransactionKind, AssetKind } from './finance.types';
 export interface TransactionQuery {
   month: string;
+  categoryId?: string;
   limit?: number;
   cursor?: string;
   kind?: TransactionKind;

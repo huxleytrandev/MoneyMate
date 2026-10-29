@@ -1,5 +1,6 @@
 import { Button } from '@/components/atoms/Button';
-import { Chip } from '@/components/atoms/Chip';
+import { CategoryOption } from '@/components/molecules/CategoryOption';
+import { CategoryAppearancePicker } from '@/components/molecules/CategoryAppearancePicker';
 import { FormField } from '@/components/molecules/FormField';
 import { useTransactionForm } from '@/hooks/useTransactionForm';
 import { ui } from '@/theme/layout';
@@ -18,6 +19,10 @@ export function TransactionCategoryFields({
     | 'setNewCategory'
     | 'createCategory'
     | 'busy'
+    | 'newIcon'
+    | 'setNewIcon'
+    | 'newColor'
+    | 'setNewColor'
   >;
 }) {
   const {
@@ -36,9 +41,9 @@ export function TransactionCategoryFields({
       <Text style={ui.heading}>Danh mục bắt buộc</Text>
       <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
         {categories.map((category) => (
-          <Chip
+          <CategoryOption
             key={category.id}
-            label={category.name}
+            category={category}
             selected={categoryId === category.id}
             onPress={() => setCategory(category.id)}
           />
@@ -56,6 +61,12 @@ export function TransactionCategoryFields({
             placeholder="Ví dụ: Mua sắm"
             value={newCategory}
             onChangeText={setNewCategory}
+          />
+          <CategoryAppearancePicker
+            icon={model.newIcon}
+            color={model.newColor}
+            onIconChange={model.setNewIcon}
+            onColorChange={model.setNewColor}
           />
           <Button
             title="Tạo danh mục"

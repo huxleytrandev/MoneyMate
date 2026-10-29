@@ -88,7 +88,9 @@ export function BudgetComparisonChart({
           </View>
         ))}
       </ScrollView>
-      <Text style={styles.chartHint}>Chạm danh mục bên dưới để điều chỉnh kế hoạch tháng.</Text>
+      <Text style={styles.chartHint}>
+        Chạm danh mục bên dưới để xem giao dịch và kế hoạch tháng.
+      </Text>
     </View>
   );
 }

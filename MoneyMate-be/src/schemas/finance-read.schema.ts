@@ -15,6 +15,7 @@ export const financeReadQuerySchema = z.object({
   cursor: z.string().min(1).max(500).optional(),
   kind: z.enum(['income', 'expense']).optional(),
   assetId: idSchema.optional(),
+  categoryId: idSchema.optional(),
   assetType: z.enum(['cash', 'bank', 'other']).optional(),
   search: z.string().trim().max(200).optional(),
 }) satisfies z.ZodType<FinanceReadQuery>;

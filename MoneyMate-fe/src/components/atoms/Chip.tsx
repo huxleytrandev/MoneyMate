@@ -1,3 +1,4 @@
+import { useSheetBusy } from '@/hooks/useSheetBusy';
 import { colors } from '@/theme/colors';
 import { Pressable, StyleSheet, Text } from 'react-native';
 export function Chip({
@@ -9,10 +10,12 @@ export function Chip({
   selected: boolean;
   onPress: () => void;
 }) {
+  const busy = useSheetBusy();
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityState={{ selected }}
+      accessibilityState={{ selected, disabled: busy }}
+      disabled={busy}
       onPress={onPress}
       style={[styles.chip, selected && { backgroundColor: colors.green }]}
     >

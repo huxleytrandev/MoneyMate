@@ -1,0 +1,26 @@
+export const categoryIcons = [
+  { value: 'utensils', label: 'Ăn uống' },
+  { value: 'coffee', label: 'Cà phê' },
+  { value: 'bus', label: 'Đi lại' },
+  { value: 'shopping-bag', label: 'Mua sắm' },
+  { value: 'house', label: 'Nhà cửa' },
+  { value: 'heart', label: 'Sức khỏe' },
+  { value: 'graduation-cap', label: 'Học tập' },
+  { value: 'gamepad', label: 'Giải trí' },
+  { value: 'briefcase', label: 'Công việc' },
+  { value: 'gift', label: 'Quà tặng' },
+  { value: 'trending-up', label: 'Đầu tư' },
+  { value: 'wallet', label: 'Thu nhập' },
+  { value: 'plane', label: 'Du lịch' },
+  { value: 'piggy-bank', label: 'Tiết kiệm' },
+  { value: 'receipt', label: 'Hóa đơn' },
+  { value: 'tags', label: 'Khác' },
+] as const;
+export const categoryColors = [
+  '#0F766E',
+  '#3777C8',
+  '#A56B32',
+  '#AD5576',
+  '#7265A6',
+  '#66756A',
+] as const;

@@ -11,6 +11,8 @@ export interface Asset {
   isArchived?: boolean;
 }
 export interface Category {
+  icon?: string | null;
+  color?: string | null;
   id: string;
   name: string;
   kind: TransactionKind;

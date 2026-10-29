@@ -99,6 +99,8 @@ export function createFinanceActions(dependencies: FinanceActionDependencies): F
           id: category.id,
           name: category.name,
           kind: category.kind,
+          icon: category.icon,
+          color: category.color,
         }),
       ),
     addAsset: (asset) => execute(() => createAsset(asset)),

@@ -3,14 +3,16 @@ import { useRef, useState } from 'react';
 
 interface MutationDependencies {
   refresh: () => Promise<void>;
+  onSaved?: () => void;
   setError: (message: string) => void;
 }
-export function useFinanceMutation({ refresh, setError }: MutationDependencies) {
+export function useFinanceMutation({ refresh, setError, onSaved }: MutationDependencies) {
   const writing = useRef(false);
   const [busy, setBusy] = useState(false);
   async function refreshAfterSave() {
     try {
       await refresh();
+      onSaved?.();
     } catch {
       setError('Đã lưu nhưng chưa tải lại được dữ liệu. Hãy kết nối lại trước khi thao tác tiếp.');
     }

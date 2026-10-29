@@ -1,3 +1,4 @@
+import { ConfirmActionButton } from '@/components/molecules/ConfirmActionButton';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { Button } from '@/components/atoms/Button';
 import { formatMoney } from '@/helpers/money';
@@ -9,7 +10,7 @@ import type { useAssetAdjustmentHistory } from '@/hooks/useAssetAdjustmentHistor
 interface HistoryProps {
   history: ReturnType<typeof useAssetAdjustmentHistory>;
   busy: boolean;
-  onUndo: (adjustment: Adjustment) => void;
+  onUndo: (adjustment: Adjustment) => Promise<unknown>;
 }
 export function AssetAdjustmentHistory({ history, busy, onUndo }: HistoryProps) {
   if (history.loading)
@@ -35,11 +36,13 @@ export function AssetAdjustmentHistory({ history, busy, onUndo }: HistoryProps) 
           <Text>
             {formatMoney(adjustment.delta)} · {formatDateTime(adjustment.occurredAt)}
           </Text>
-          <Button
-            title="Hoàn tác điều chỉnh này"
-            variant="text"
+          <ConfirmActionButton
+            label="Hoàn tác điều chỉnh"
+            title="Hoàn tác điều chỉnh này?"
+            description="Số dư tài sản sẽ được tính lại khi loại bỏ lần điều chỉnh đã chọn."
+            confirmLabel="Hoàn tác"
             disabled={busy}
-            onPress={() => onUndo(adjustment)}
+            onConfirm={() => onUndo(adjustment)}
           />
         </View>
       ))}

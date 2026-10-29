@@ -38,6 +38,7 @@ function searchPredicate(search: string, userId: string) {
 function transactionPredicates(user: ReadUser, query: FinanceReadQuery) {
   const filters: SQL[] = [sql`entry.user_id=${user.id} AND entry.deleted_at IS NULL`];
   if (query.month) filters.push(monthPredicate(query.month, user.timezone));
+  if (query.categoryId) filters.push(sql`entry.category_id=${query.categoryId}::uuid`);
   if (query.kind) filters.push(sql`entry.kind=${query.kind}`);
   if (query.assetType)
     filters.push(sql`EXISTS (

@@ -1,3 +1,4 @@
+import { transactionQueryParams } from '@/helpers/transaction-query';
 import type {
   ApiAdjustment,
   ApiFinanceState,
@@ -11,9 +12,7 @@ import { api } from './api.service';
 export const fetchState = (month: string, signal?: AbortSignal) =>
   api<ApiFinanceState>('/state?' + new URLSearchParams({ month, limit: '50' }), { signal });
 export function fetchTransactions(input: TransactionQuery, signal?: AbortSignal) {
-  const params = new URLSearchParams({ month: input.month, limit: String(input.limit ?? 50) });
-  for (const key of ['cursor', 'kind', 'assetType', 'search'] as const)
-    if (input[key]) params.set(key, input[key]);
+  const params = transactionQueryParams(input);
   return api<ApiTransactionPage>('/transactions?' + params, { signal });
 }
 export const createRecord = <Result>(resource: string, body: unknown) =>

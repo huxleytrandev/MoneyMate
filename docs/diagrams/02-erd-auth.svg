@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2220" height="1590" viewBox="0 0 2220 1590">
+<rect width="100%" height="100%" fill="white"/>
+<text x="55" y="73" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#18332F">MoneyMate · ERD xác thực</text>
+<text x="55" y="112" font-family="Arial, sans-serif" font-size="21" font-weight="400" fill="#546761">02 / 03   •   Better Auth dùng PostgreSQL qua Drizzle adapter   •   Cùng bảng users với ERD tài chính</text>
+<polyline points="660,265 790,265" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="675" y="253" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">1 → 0..N</text>
+<polyline points="660,330 725,330 725,710 1510,710 1510,345 1535,345" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="1100" y="697" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">1 → 0..N</text>
+<polyline points="300,550 300,840" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="315" y="758" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">1 → 0..N · legacy</text>
+<rect x="40" y="160" width="620" height="390" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="40" y="160" width="620" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="58" y="196" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">users</text>
+<text x="58" y="225" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Tài khoản ứng dụng · không phải auth.users</text>
+<text x="58" y="275" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="507" y="273" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="58" y="306" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">email · varchar(254)</text>
+<text x="507" y="304" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">UQ / NN</text>
+<text x="58" y="337" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">display_name · varchar(100)</text>
+<text x="507" y="335" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="58" y="368" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">email_verified · boolean</text>
+<text x="507" y="366" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="58" y="399" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">image · text</text>
+<text x="507" y="397" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="58" y="430" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">password_hash · text [legacy]</text>
+<text x="507" y="428" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="58" y="461" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">timezone · text</text>
+<text x="507" y="459" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="58" y="492" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="507" y="490" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="58" y="523" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="507" y="521" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<rect x="790" y="160" width="620" height="359" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="790" y="160" width="620" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="808" y="196" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">auth_sessions</text>
+<text x="808" y="225" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Phiên đăng nhập hiện tại do Better Auth quản lý</text>
+<text x="808" y="275" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="1257" y="273" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="808" y="306" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">user_id · uuid → users.id</text>
+<text x="1257" y="304" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK / NN</text>
+<text x="808" y="337" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">token · text</text>
+<text x="1257" y="335" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">UQ / NN</text>
+<text x="808" y="368" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">expires_at · timestamptz</text>
+<text x="1257" y="366" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="808" y="399" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">ip_address · text</text>
+<text x="1257" y="397" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="808" y="430" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">user_agent · text</text>
+<text x="1257" y="428" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="808" y="461" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="1257" y="459" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="808" y="492" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="1257" y="490" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<rect x="1535" y="160" width="620" height="514" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="1535" y="160" width="620" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="1553" y="196" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">auth_accounts</text>
+<text x="1553" y="225" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Thông tin provider và mật khẩu đã hash</text>
+<text x="1553" y="275" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="2002" y="273" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="1553" y="306" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">user_id · uuid → users.id</text>
+<text x="2002" y="304" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK / NN</text>
+<text x="1553" y="337" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">account_id · text</text>
+<text x="2002" y="335" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="1553" y="368" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">provider_id · text</text>
+<text x="2002" y="366" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="1553" y="399" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">password · text (hash)</text>
+<text x="2002" y="397" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="1553" y="430" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">access_token · text</text>
+<text x="2002" y="428" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="1553" y="461" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">refresh_token · text</text>
+<text x="2002" y="459" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="1553" y="492" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">id_token · text</text>
+<text x="2002" y="490" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="1553" y="523" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">access_token_expires_at · timestamptz</text>
+<text x="2002" y="521" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="1553" y="554" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">refresh_token_expires_at · timestamptz</text>
+<text x="2002" y="552" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="1553" y="585" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">scope · text</text>
+<text x="2002" y="583" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="1553" y="616" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="2002" y="614" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="1553" y="647" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="2002" y="645" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<rect x="40" y="840" width="620" height="266" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="40" y="840" width="620" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="58" y="876" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">sessions</text>
+<text x="58" y="905" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Bảng phiên cũ · không dùng cho đăng nhập mới</text>
+<text x="58" y="955" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="507" y="953" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="58" y="986" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">user_id · uuid → users.id</text>
+<text x="507" y="984" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK / NN</text>
+<text x="58" y="1017" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">token_hash · text</text>
+<text x="507" y="1015" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">UQ / NN</text>
+<text x="58" y="1048" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">expires_at · timestamptz</text>
+<text x="507" y="1046" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="58" y="1079" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="507" y="1077" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<rect x="790" y="840" width="620" height="297" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="790" y="840" width="620" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="808" y="876" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">auth_verifications</text>
+<text x="808" y="905" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Token xác minh · không có FK trực tiếp tới users</text>
+<text x="808" y="955" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="1257" y="953" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="808" y="986" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">identifier · text</text>
+<text x="1257" y="984" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="808" y="1017" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">value · text</text>
+<text x="1257" y="1015" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="808" y="1048" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">expires_at · timestamptz</text>
+<text x="1257" y="1046" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="808" y="1079" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="1257" y="1077" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="808" y="1110" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="1257" y="1108" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<rect x="1535" y="840" width="620" height="351" rx="13" fill="#F7FAF9" stroke="#C9D8D3" stroke-width="2"/>
+<text x="1553" y="876" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#18332F">Chú thích xác thực</text>
+<text x="1553" y="912" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">FK user_id → users.id: ON DELETE CASCADE.</text>
+<text x="1553" y="941" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">UQ auth_accounts: (provider_id, account_id).</text>
+<text x="1553" y="970" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">password lưu hash, không lưu mật khẩu rõ.</text>
+<text x="1553" y="999" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Token/provider có thể NULL tùy cách đăng nhập.</text>
+<text x="1553" y="1028" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">auth_verifications liên kết bằng identifier;</text>
+<text x="1553" y="1057" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">không tự suy diễn identifier là khóa ngoại.</text>
+<text x="1553" y="1086" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">users.password_hash là cột legacy còn giữ lại.</text>
+<text x="1553" y="1115" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Phiên hoạt động dùng auth_sessions.</text>
+<text x="1553" y="1144" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Supabase cung cấp PostgreSQL; xác thực app</text>
+<text x="1553" y="1173" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">hiện dùng Better Auth, không Supabase Auth.</text>
+<rect x="40" y="1300" width="1370" height="177" rx="13" fill="#F7FAF9" stroke="#C9D8D3" stroke-width="2"/>
+<text x="58" y="1336" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#18332F">Phạm vi sơ đồ</text>
+<text x="58" y="1372" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">12 bảng ứng dụng được định nghĩa trong src/models; không liệt kê bảng nội bộ Supabase / lịch sử migration.</text>
+<text x="58" y="1401" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Đây là tài liệu theo mã nguồn hiện tại, không phải ảnh chụp catalog database đang chạy.</text>
+<text x="58" y="1430" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Các bảng bật RLS trong model; API truy cập qua backend và luôn kiểm tra user_id / quyền sở hữu.</text>
+<text x="58" y="1459" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Không có giá trị token, mật khẩu, chuỗi kết nối hay dữ liệu người dùng trong tài liệu này.</text>
+</svg>

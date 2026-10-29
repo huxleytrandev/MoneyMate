@@ -1,3 +1,5 @@
+import { ConfirmActionButton } from '@/components/molecules/ConfirmActionButton';
+import { useDirtyFields } from '@/hooks/useDirtyFields';
 import { Button } from '@/components/atoms/Button';
 import { FormField } from '@/components/molecules/FormField';
 import { PasswordField } from '@/components/molecules/PasswordField';
@@ -15,7 +17,7 @@ export function ProfileForm({ onClose }: { onClose: () => void }) {
   const [newPassword, setNew] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const [confirm, setConfirm] = useState(false);
+  const dirty = useDirtyFields({ name, email, currentPassword, newPassword });
   async function save() {
     setBusy(true);
     try {
@@ -39,7 +41,7 @@ export function ProfileForm({ onClose }: { onClose: () => void }) {
     }
   }
   return (
-    <SheetTemplate title="Tài khoản của bạn" onClose={onClose}>
+    <SheetTemplate title="Tài khoản của bạn" onClose={onClose} dirty={dirty} busy={busy}>
       <FormField label="Họ và tên" value={name} onChangeText={setName} />
       <FormField
         label="Email"
@@ -60,33 +62,24 @@ export function ProfileForm({ onClose }: { onClose: () => void }) {
       </Text>
       {!!error && <Text style={ui.error}>{error}</Text>}
       <Button title="Lưu thông tin tài khoản" onPress={() => void save()} loading={busy} />
-      <Button
-        title={confirm ? 'Xác nhận xóa vĩnh viễn tài khoản' : 'Xóa tài khoản và toàn bộ dữ liệu'}
-        variant="text"
+      <ConfirmActionButton
+        label="Xóa tài khoản và toàn bộ dữ liệu"
+        title="Xóa vĩnh viễn tài khoản?"
+        description="Toàn bộ giao dịch, tài sản và kế hoạch sẽ bị xóa vĩnh viễn. Không thể hoàn tác. Hãy nhập mật khẩu hiện tại trước khi xác nhận."
+        confirmLabel="Xóa vĩnh viễn"
         disabled={busy}
-        onPress={() => {
-          if (!confirm) {
-            setConfirm(true);
-            return;
-          }
-          if (!currentPassword) {
-            setError('Nhập mật khẩu hiện tại để xác nhận.');
-            return;
-          }
+        onConfirm={async () => {
+          if (!currentPassword) throw new Error('Nhập mật khẩu hiện tại để xác nhận.');
           setBusy(true);
-          void auth
-            .deleteUser(currentPassword)
-            .then(() => forgetSession())
-            .then(onClose)
-            .catch((failure) => setError(failure.message))
-            .finally(() => setBusy(false));
+          try {
+            await auth.deleteUser(currentPassword);
+            await forgetSession();
+            onClose();
+          } finally {
+            setBusy(false);
+          }
         }}
       />
-      {confirm && (
-        <Text style={ui.error}>
-          Xóa tài khoản sẽ xóa vĩnh viễn toàn bộ dữ liệu thu chi và tài sản của bạn.
-        </Text>
-      )}
     </SheetTemplate>
   );
 }

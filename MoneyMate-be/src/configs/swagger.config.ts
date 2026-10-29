@@ -147,6 +147,7 @@ const paths: Record<string, unknown> = {
 };
 
 const transactionQueryParameters = [
+  { in: 'query', name: 'categoryId', schema: { type: 'string', format: 'uuid' } },
   {
     in: 'query',
     name: 'month',

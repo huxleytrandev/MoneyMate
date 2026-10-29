@@ -27,6 +27,8 @@ export function assetPayload(asset: Asset) {
 }
 export function categoryPayload(category: Category) {
   return {
+    icon: category.icon,
+    color: category.color,
     name: category.name,
     kind: category.kind,
     isArchived: category.isArchived ?? false,

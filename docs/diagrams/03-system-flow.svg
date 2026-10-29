@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2220" height="2370" viewBox="0 0 2220 2370">
+<rect width="100%" height="100%" fill="white"/>
+<text x="55" y="73" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#18332F">MoneyMate · System flow</text>
+<text x="55" y="112" font-family="Arial, sans-serif" font-size="21" font-weight="400" fill="#546761">03 / 03   •   Luồng đang triển khai: giao diện → API → nghiệp vụ → PostgreSQL → giao diện</text>
+<rect x="40" y="155" width="640" height="70" rx="13" fill="#EAF4F1" stroke="#C9D8D3" stroke-width="2"/>
+<text x="58" y="190" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#18332F">FRONTEND · MoneyMate-fe</text>
+<text x="58" y="218" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Expo / React Native / TypeScript</text>
+<rect x="780" y="155" width="670" height="70" rx="13" fill="#EAF4F1" stroke="#C9D8D3" stroke-width="2"/>
+<text x="798" y="190" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#18332F">BACKEND · MoneyMate-be</text>
+<text x="798" y="218" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Node.js / Express / Better Auth / Drizzle</text>
+<rect x="1550" y="155" width="630" height="70" rx="13" fill="#EAF4F1" stroke="#C9D8D3" stroke-width="2"/>
+<text x="1568" y="190" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#18332F">DATABASE · Supabase</text>
+<text x="1568" y="218" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">PostgreSQL · dữ liệu thật</text>
+<rect x="40" y="260" width="640" height="145" rx="13" fill="#F4F8F6" stroke="#C9D8D3" stroke-width="2"/>
+<text x="60" y="298" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">1. App, route và providers</text>
+<text x="60" y="335" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">AppProviders → AuthProvider → Stack / Tabs</text>
+<text x="60" y="363" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">FinanceProvider cấp state và thao tác tài chính.</text>
+<text x="60" y="391" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">app → routes → screens → components.</text>
+<rect x="40" y="455" width="640" height="160" rx="13" fill="#F4F8F6" stroke="#C9D8D3" stroke-width="2"/>
+<text x="60" y="493" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">2. Người dùng thao tác trên màn hình</text>
+<text x="60" y="530" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Form giao dịch, tài sản, danh mục, kế hoạch…</text>
+<text x="60" y="558" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Hook quản lý state; Zod kiểm tra dữ liệu đầu vào.</text>
+<text x="60" y="586" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">UI có phân cách tiền; state giữ số nguyên VNĐ.</text>
+<rect x="40" y="665" width="640" height="145" rx="13" fill="#F4F8F6" stroke="#C9D8D3" stroke-width="2"/>
+<text x="60" y="703" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">3. Service gọi HTTP API</text>
+<text x="60" y="740" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">finance-actions → finance.service → api.service</text>
+<text x="60" y="768" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">POST /api/transactions + category + allocations</text>
+<text x="60" y="796" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">JSON tiền dạng chuỗi; gửi cookie xác thực.</text>
+<polyline points="360,405 360,455" fill="none" stroke="#15776B" stroke-width="3"/>
+<polygon points="360,455 353,443 367,443" fill="#15776B"/>
+<polyline points="360,615 360,665" fill="none" stroke="#15776B" stroke-width="3"/>
+<polygon points="360,665 353,653 367,653" fill="#15776B"/>
+<polyline points="680,735 780,735" fill="none" stroke="#15776B" stroke-width="3"/>
+<polygon points="780,735 768,728 768,742" fill="#15776B"/>
+<text x="692" y="713" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">HTTP</text>
+<rect x="780" y="665" width="670" height="145" rx="13" fill="#F4F8F6" stroke="#C9D8D3" stroke-width="2"/>
+<text x="800" y="703" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">4. Express và middlewares</text>
+<text x="800" y="740" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Helmet → CORS → parser JSON (API nghiệp vụ).</text>
+<text x="800" y="768" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">browserOrigin kiểm tra nguồn ghi; requireAuth</text>
+<text x="800" y="796" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">xác nhận phiên Better Auth và lấy user hiện tại.</text>
+<rect x="780" y="865" width="670" height="145" rx="13" fill="#F4F8F6" stroke="#C9D8D3" stroke-width="2"/>
+<text x="800" y="903" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">5. Route → controller</text>
+<text x="800" y="940" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Route chọn endpoint của từng đối tượng.</text>
+<text x="800" y="968" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Controller đọc params / body / user đã xác thực.</text>
+<text x="800" y="996" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Chuyển yêu cầu sang service; trả status + JSON.</text>
+<rect x="780" y="1065" width="670" height="175" rx="13" fill="#F4F8F6" stroke="#C9D8D3" stroke-width="2"/>
+<text x="800" y="1103" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">6. Service · logic nghiệp vụ</text>
+<text x="800" y="1140" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Zod kiểm tra lại input; kiểm tra owner, phiên bản,</text>
+<text x="800" y="1168" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">nguồn tiền, danh mục, thời điểm và tổng phân bổ.</text>
+<text x="800" y="1196" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Ghi tài chính trong transaction + khóa theo user.</text>
+<text x="800" y="1224" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Lỗi bất kỳ → rollback, không lưu một phần.</text>
+<rect x="780" y="1295" width="670" height="145" rx="13" fill="#F4F8F6" stroke="#C9D8D3" stroke-width="2"/>
+<text x="800" y="1333" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">7. Repository → Drizzle models</text>
+<text x="800" y="1370" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Repository đọc / ghi trực tiếp database.</text>
+<text x="800" y="1398" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Models định nghĩa bảng, cột, PK / FK và index.</text>
+<text x="800" y="1426" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">SQL có user_id, lọc xóa mềm, truy vấn có giới hạn.</text>
+<polyline points="1115,810 1115,865" fill="none" stroke="#15776B" stroke-width="3"/>
+<polygon points="1115,865 1108,853 1122,853" fill="#15776B"/>
+<polyline points="1115,1010 1115,1065" fill="none" stroke="#15776B" stroke-width="3"/>
+<polygon points="1115,1065 1108,1053 1122,1053" fill="#15776B"/>
+<polyline points="1115,1240 1115,1295" fill="none" stroke="#15776B" stroke-width="3"/>
+<polygon points="1115,1295 1108,1283 1122,1283" fill="#15776B"/>
+<rect x="1550" y="1295" width="630" height="230" rx="13" fill="#F4F8F6" stroke="#C9D8D3" stroke-width="2"/>
+<text x="1570" y="1333" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">8. PostgreSQL thực thi</text>
+<text x="1570" y="1370" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">BEGIN + advisory lock theo user khi ghi tài chính.</text>
+<text x="1570" y="1398" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Kiểm tra NOT NULL / CHECK / UNIQUE / FK.</text>
+<text x="1570" y="1426" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">INSERT transaction + allocations;</text>
+<text x="1570" y="1454" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">cập nhật phiên bản tài sản liên quan.</text>
+<text x="1570" y="1482" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">COMMIT khi thành công; ROLLBACK nếu lỗi.</text>
+<polyline points="1450,1365 1550,1365" fill="none" stroke="#15776B" stroke-width="3"/>
+<polygon points="1550,1365 1538,1358 1538,1372" fill="#15776B"/>
+<rect x="1550" y="1590" width="630" height="175" rx="13" fill="#F4F8F6" stroke="#C9D8D3" stroke-width="2"/>
+<text x="1570" y="1628" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">9. Đọc dữ liệu · yêu cầu HTTP riêng</text>
+<text x="1570" y="1665" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">GET /state?month=…&amp;limit=50</text>
+<text x="1570" y="1693" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">GET /transactions: phân trang bằng cursor.</text>
+<text x="1570" y="1721" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">GET /statistics: SUM / GROUP BY trên SQL.</text>
+<text x="1570" y="1749" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Số dư và actual lấy từ tổng đầy đủ, không cộng page.</text>
+<polyline points="1730,1525 1730,1555 1115,1555 1115,1590" fill="none" stroke="#15776B" stroke-width="3"/>
+<polygon points="1115,1590 1108,1578 1122,1578" fill="#15776B"/>
+<rect x="780" y="1590" width="670" height="175" rx="13" fill="#F4F8F6" stroke="#C9D8D3" stroke-width="2"/>
+<text x="800" y="1628" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">10. Response / lỗi thống nhất</text>
+<text x="800" y="1665" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Controller serialize bigint thành chuỗi JSON.</text>
+<text x="800" y="1693" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">200 đọc/sửa; 201 tạo; 204 xóa.</text>
+<text x="800" y="1721" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">error.middleware: 401 / 403 / 409 / 422 / 500.</text>
+<text x="800" y="1749" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Không gửi thông tin kết nối database ra client.</text>
+<polyline points="1550,1675 1450,1675" fill="none" stroke="#15776B" stroke-width="3"/>
+<polygon points="1450,1675 1462,1668 1462,1682" fill="#15776B"/>
+<rect x="40" y="1590" width="640" height="175" rx="13" fill="#F4F8F6" stroke="#C9D8D3" stroke-width="2"/>
+<text x="60" y="1628" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">11. Frontend cập nhật giao diện</text>
+<text x="60" y="1665" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Thành công: tải lại state, tăng revision, làm mới</text>
+<text x="60" y="1693" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">danh sách / cache tháng và hiển thị thông báo.</text>
+<text x="60" y="1721" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Lỗi: giữ dữ liệu nhập để sửa; 409 tải lại dữ liệu.</text>
+<text x="60" y="1749" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">401 xóa trạng thái đăng nhập và về màn hình auth.</text>
+<polyline points="780,1675 680,1675" fill="none" stroke="#15776B" stroke-width="3"/>
+<polygon points="680,1675 692,1668 692,1682" fill="#15776B"/>
+<polyline points="360,1765 360,1800 1865,1800 1865,1765" fill="none" stroke="#386C9D" stroke-width="3" stroke-dasharray="8 7"/>
+<polygon points="1865,1765 1858,1777 1872,1777" fill="#386C9D"/>
+<text x="600" y="1788" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#386C9D">Sau khi lưu: FE gọi GET /state qua cùng middleware → controller → read service → repository</text>
+<rect x="780" y="270" width="670" height="170" rx="13" fill="#EEF3FA" stroke="#C9D8D3" stroke-width="2"/>
+<text x="800" y="308" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">Luồng riêng · đăng ký / đăng nhập</text>
+<text x="800" y="345" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">FE authClient → /api/auth/* → Better Auth</text>
+<text x="800" y="373" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Auth handler được gắn trước express.json().</text>
+<text x="800" y="401" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Validations riêng cho register / login.</text>
+<text x="800" y="429" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Đăng ký thành công: tạo danh mục mặc định.</text>
+<rect x="1550" y="270" width="630" height="170" rx="13" fill="#EEF3FA" stroke="#C9D8D3" stroke-width="2"/>
+<text x="1570" y="308" font-family="Arial, sans-serif" font-size="23" font-weight="700" fill="#18332F">Drizzle adapter cho Better Auth</text>
+<text x="1570" y="345" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">users / auth_accounts / auth_sessions</text>
+<text x="1570" y="373" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">auth_verifications (khi có nghiệp vụ xác minh).</text>
+<text x="1570" y="401" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Web: cookie HttpOnly; native: Expo plugin</text>
+<text x="1570" y="429" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">lưu cookie bằng SecureStore trên thiết bị.</text>
+<polyline points="680,330 780,330" fill="none" stroke="#386C9D" stroke-width="3"/>
+<polygon points="780,330 768,323 768,337" fill="#386C9D"/>
+<polyline points="1450,350 1550,350" fill="none" stroke="#386C9D" stroke-width="3"/>
+<polygon points="1550,350 1538,343 1538,357" fill="#386C9D"/>
+<polyline points="1865,440 1865,520 1115,520 1115,665" fill="none" stroke="#386C9D" stroke-width="3" stroke-dasharray="8 7"/>
+<polygon points="1115,665 1108,653 1122,653" fill="#386C9D"/>
+<text x="1170" y="558" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#386C9D">Cookie dùng lại cho các API đã bảo vệ</text>
+<rect x="40" y="1840" width="2140" height="177" rx="13" fill="#F7FAF9" stroke="#C9D8D3" stroke-width="2"/>
+<text x="58" y="1876" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#18332F">Ví dụ cụ thể · tạo chi tiêu 150.000 VNĐ</text>
+<text x="58" y="1912" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Người dùng chọn Ăn uống + tiền mặt → frontend validate → POST /api/transactions với amount=&quot;150000&quot; và allocation=&quot;150000&quot;.</text>
+<text x="58" y="1941" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Backend kiểm tra danh mục cùng user và cùng loại expense; nguồn tiền còn hoạt động; ngày hợp lệ; tổng allocation bằng amount.</text>
+<text x="58" y="1970" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Trong một transaction: ghi transactions + transaction_allocations, cập nhật version tài sản → commit → trả 201.</text>
+<text x="58" y="1999" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Frontend gọi lại dữ liệu: số dư tiền mặt giảm 150.000; Actual Ăn uống tháng tăng 150.000; Planned giữ nguyên; chênh lệch tính lại.</text>
+<rect x="40" y="2070" width="2140" height="177" rx="13" fill="#F7FAF9" stroke="#C9D8D3" stroke-width="2"/>
+<text x="58" y="2106" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#18332F">Các thành phần hỗ trợ và giới hạn của luồng</text>
+<text x="58" y="2142" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">types: interface TypeScript. schemas: validate / chuẩn hóa runtime. constants: enum / thông báo. helpers / utils: hàm tái sử dụng.</text>
+<text x="58" y="2171" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">GET dữ liệu dùng read/statistics service và truy vấn tổng hợp; không cần đi qua transaction ghi hoặc tải toàn bộ lịch sử.</text>
+<text x="58" y="2200" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Swagger /api/docs mô tả và thử API; /api/health và /api/ready phục vụ kiểm tra hoạt động, không đi qua luồng tài chính.</text>
+<text x="58" y="2229" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Sơ đồ thể hiện kiến trúc trong mã nguồn; kết nối điện thoại phụ thuộc API_URL, mạng và cấu hình origin thực tế.</text>
+</svg>

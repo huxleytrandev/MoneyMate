@@ -1,0 +1,253 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2260" height="2440" viewBox="0 0 2260 2440">
+<rect width="100%" height="100%" fill="white"/>
+<text x="55" y="73" font-family="Arial, sans-serif" font-size="38" font-weight="700" fill="#18332F">MoneyMate · ERD tài chính</text>
+<text x="55" y="112" font-family="Arial, sans-serif" font-size="21" font-weight="400" fill="#546761">01 / 03   •   Theo Drizzle models hiện tại   •   Tên cột là tên vật lý trong PostgreSQL   •   Nền trắng</text>
+<polyline points="685,240 800,240" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="697" y="228" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">1 → 0..N</text>
+<polyline points="1430,250 1545,250" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="1440" y="238" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">1 → 0..N</text>
+<polyline points="200,540 200,790" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="215" y="698" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">1 → 0..N</text>
+<polyline points="1100,643 1100,790" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="1115" y="748" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">1 → 0..N</text>
+<polyline points="1430,980 1545,980" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="1440" y="968" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">1 → 0..N</text>
+<polyline points="685,1110 737,1110 737,1410 1850,1410 1850,1118" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="1050" y="1388" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">asset 1 → 0..N allocations</text>
+<polyline points="200,1273 200,1570" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="215" y="1498" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">1 → 0..N</text>
+<polyline points="685,1190 710,1190 710,1690 800,1690" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="715" y="1528" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">1 → 0..N (nguồn)</text>
+<polyline points="685,1240 755,1240 755,1760 800,1760" fill="none" stroke="#386C9D" stroke-width="3"/>
+<text x="775" y="1553" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#386C9D">1 → 0..N (đích)</text>
+<rect x="55" y="160" width="630" height="390" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="55" y="160" width="630" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="73" y="196" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">users</text>
+<text x="73" y="225" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Người dùng · bảng gốc của quyền sở hữu</text>
+<text x="73" y="275" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="532" y="273" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="73" y="306" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">email · varchar(254)</text>
+<text x="532" y="304" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">UQ / NN</text>
+<text x="73" y="337" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">display_name · varchar(100)</text>
+<text x="532" y="335" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="368" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">email_verified · boolean</text>
+<text x="532" y="366" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="399" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">image · text</text>
+<text x="532" y="397" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="73" y="430" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">password_hash · text [legacy]</text>
+<text x="532" y="428" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="73" y="461" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">timezone · text</text>
+<text x="532" y="459" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="492" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="532" y="490" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="523" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="532" y="521" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<rect x="800" y="160" width="630" height="483" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="800" y="160" width="630" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="818" y="196" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">categories</text>
+<text x="818" y="225" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Danh mục thu nhập hoặc chi tiêu</text>
+<text x="818" y="275" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="1277" y="273" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="818" y="306" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">user_id · uuid → users.id</text>
+<text x="1277" y="304" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK / NN</text>
+<text x="818" y="337" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">name · varchar(100)</text>
+<text x="1277" y="335" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="368" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">kind · income | expense</text>
+<text x="1277" y="366" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">UQ* / NN</text>
+<text x="818" y="399" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">icon · varchar(50)</text>
+<text x="1277" y="397" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="818" y="430" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">color · varchar(7)</text>
+<text x="1277" y="428" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="818" y="461" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">sort_order · integer = 0</text>
+<text x="1277" y="459" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="492" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">is_archived · boolean = false</text>
+<text x="1277" y="490" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="523" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="1277" y="521" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="554" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="1277" y="552" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="585" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">version · integer = 1</text>
+<text x="1277" y="583" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="616" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">deleted_at · timestamptz</text>
+<text x="1277" y="614" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<rect x="1545" y="160" width="630" height="452" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="1545" y="160" width="630" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="1563" y="196" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">monthly_category_plans</text>
+<text x="1563" y="225" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Planned theo danh mục, mỗi tháng</text>
+<text x="1563" y="275" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="2022" y="273" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="1563" y="306" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">user_id · uuid → users.id</text>
+<text x="2022" y="304" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK / NN</text>
+<text x="1563" y="337" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">category_id · uuid</text>
+<text x="2022" y="335" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK* / NN</text>
+<text x="1563" y="368" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">kind · income | expense</text>
+<text x="2022" y="366" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK* / NN</text>
+<text x="1563" y="399" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">month · date (ngày 01)</text>
+<text x="2022" y="397" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="1563" y="430" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">planned_amount · bigint ≥ 0</text>
+<text x="2022" y="428" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="1563" y="461" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">note · text</text>
+<text x="2022" y="459" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="1563" y="492" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="2022" y="490" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="1563" y="523" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="2022" y="521" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="1563" y="554" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">version · integer = 1</text>
+<text x="2022" y="552" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="1563" y="585" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">deleted_at · timestamptz</text>
+<text x="2022" y="583" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<rect x="55" y="790" width="630" height="483" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="55" y="790" width="630" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="73" y="826" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">asset_accounts</text>
+<text x="73" y="855" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Tiền mặt / ngân hàng / tài sản khác</text>
+<text x="73" y="905" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="532" y="903" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="73" y="936" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">user_id · uuid → users.id</text>
+<text x="532" y="934" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK / NN</text>
+<text x="73" y="967" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">name · varchar(100)</text>
+<text x="532" y="965" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="998" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">type · cash | bank | other</text>
+<text x="532" y="996" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1029" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">opening_value · bigint ≥ 0</text>
+<text x="532" y="1027" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1060" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">opening_at · timestamptz</text>
+<text x="532" y="1058" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1091" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">note · text</text>
+<text x="532" y="1089" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="73" y="1122" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">is_archived · boolean = false</text>
+<text x="532" y="1120" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1153" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="532" y="1151" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1184" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="532" y="1182" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1215" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">version · integer = 1</text>
+<text x="532" y="1213" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1246" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">deleted_at · timestamptz</text>
+<text x="532" y="1244" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<rect x="800" y="790" width="630" height="483" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="800" y="790" width="630" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="818" y="826" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">transactions</text>
+<text x="818" y="855" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Giao dịch thực tế · Actual</text>
+<text x="818" y="905" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="1277" y="903" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="818" y="936" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">user_id · uuid → users.id</text>
+<text x="1277" y="934" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK / NN</text>
+<text x="818" y="967" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">category_id · uuid</text>
+<text x="1277" y="965" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK* / NN</text>
+<text x="818" y="998" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">kind · income | expense</text>
+<text x="1277" y="996" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK* / NN</text>
+<text x="818" y="1029" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">amount · bigint &gt; 0</text>
+<text x="1277" y="1027" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="1060" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">title · varchar(200)</text>
+<text x="1277" y="1058" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="1091" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">note · text</text>
+<text x="1277" y="1089" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="818" y="1122" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">occurred_at · timestamptz</text>
+<text x="1277" y="1120" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="1153" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="1277" y="1151" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="1184" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="1277" y="1182" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="1215" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">version · integer = 1</text>
+<text x="1277" y="1213" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="1246" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">deleted_at · timestamptz</text>
+<text x="1277" y="1244" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<rect x="1545" y="790" width="630" height="328" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="1545" y="790" width="630" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="1563" y="826" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">transaction_allocations</text>
+<text x="1563" y="855" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Phân bổ giao dịch vào từng nguồn tiền</text>
+<text x="1563" y="905" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="2022" y="903" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="1563" y="936" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">user_id · uuid → users.id</text>
+<text x="2022" y="934" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK / NN</text>
+<text x="1563" y="967" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">transaction_id · uuid</text>
+<text x="2022" y="965" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK* / NN</text>
+<text x="1563" y="998" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">asset_account_id · uuid</text>
+<text x="2022" y="996" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK* / NN</text>
+<text x="1563" y="1029" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">amount · bigint &gt; 0</text>
+<text x="2022" y="1027" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="1563" y="1060" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="2022" y="1058" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="1563" y="1091" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="2022" y="1089" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<rect x="55" y="1570" width="630" height="452" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="55" y="1570" width="630" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="73" y="1606" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">asset_adjustments</text>
+<text x="73" y="1635" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Điều chỉnh / đối soát số dư</text>
+<text x="73" y="1685" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="532" y="1683" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="73" y="1716" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">user_id · uuid → users.id</text>
+<text x="532" y="1714" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK / NN</text>
+<text x="73" y="1747" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">asset_account_id · uuid</text>
+<text x="532" y="1745" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK* / NN</text>
+<text x="73" y="1778" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">delta_amount · bigint ≠ 0</text>
+<text x="532" y="1776" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1809" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">reason · valuation | reconciliation</text>
+<text x="532" y="1807" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1840" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">note · text</text>
+<text x="532" y="1838" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1871" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">occurred_at · timestamptz</text>
+<text x="532" y="1869" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1902" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="532" y="1900" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1933" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="532" y="1931" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1964" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">version · integer = 1</text>
+<text x="532" y="1962" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="73" y="1995" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">deleted_at · timestamptz</text>
+<text x="532" y="1993" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<rect x="800" y="1570" width="630" height="452" rx="13" fill="white" stroke="#C9D8D3" stroke-width="2"/>
+<rect x="800" y="1570" width="630" height="82" rx="13" fill="#EAF4F1" stroke="#B7D4CA" stroke-width="2"/>
+<text x="818" y="1606" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#18332F">transfers</text>
+<text x="818" y="1635" font-family="Arial, sans-serif" font-size="18" font-weight="400" fill="#546761">Chuyển nội bộ · không tính vào thu/chi</text>
+<text x="818" y="1685" font-family="Arial, sans-serif" font-size="19" font-weight="700" fill="#15776B">id · uuid</text>
+<text x="1277" y="1683" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#15776B">PK</text>
+<text x="818" y="1716" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">user_id · uuid → users.id</text>
+<text x="1277" y="1714" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK / NN</text>
+<text x="818" y="1747" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">from_asset_account_id · uuid</text>
+<text x="1277" y="1745" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK* / NN</text>
+<text x="818" y="1778" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#386C9D">to_asset_account_id · uuid</text>
+<text x="1277" y="1776" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#386C9D">FK* / NN</text>
+<text x="818" y="1809" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">amount · bigint &gt; 0</text>
+<text x="1277" y="1807" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="1840" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">occurred_at · timestamptz</text>
+<text x="1277" y="1838" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="1871" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">note · text</text>
+<text x="1277" y="1869" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<text x="818" y="1902" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">created_at · timestamptz</text>
+<text x="1277" y="1900" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="1933" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">updated_at · timestamptz</text>
+<text x="1277" y="1931" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="1964" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">version · integer = 1</text>
+<text x="1277" y="1962" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NOT NULL</text>
+<text x="818" y="1995" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#18332F">deleted_at · timestamptz</text>
+<text x="1277" y="1993" font-family="Arial, sans-serif" font-size="17" font-weight="400" fill="#18332F">NULL</text>
+<rect x="1545" y="1470" width="630" height="351" rx="13" fill="#F7FAF9" stroke="#C9D8D3" stroke-width="2"/>
+<text x="1563" y="1506" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#18332F">Đọc ký hiệu và quan hệ</text>
+<text x="1563" y="1542" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">PK: khóa chính. FK: khóa ngoại. UQ: duy nhất.</text>
+<text x="1563" y="1571" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">NN / NOT NULL: bắt buộc. NULL: có thể trống.</text>
+<text x="1563" y="1600" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">1 → 0..N: một bản ghi có thể có nhiều con.</text>
+<text x="1563" y="1629" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Mỗi bản ghi con tham chiếu đúng một cha.</text>
+<text x="1563" y="1658" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Mọi user_id đều có FK trực tiếp → users.id.</text>
+<text x="1563" y="1687" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Các đường chủ sở hữu được rút gọn bằng nhãn.</text>
+<text x="1563" y="1716" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">FK*: thuộc khóa ngoại ghép; xem danh sách dưới.</text>
+<text x="1563" y="1745" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">UQ*: categories(user_id, id, kind) là duy nhất.</text>
+<text x="1563" y="1774" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">DB cho phép transaction chưa có allocation;</text>
+<text x="1563" y="1803" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">service bắt buộc ≥ 1 và tổng bằng amount.</text>
+<rect x="1545" y="1860" width="630" height="264" rx="13" fill="#F7FAF9" stroke="#C9D8D3" stroke-width="2"/>
+<text x="1563" y="1896" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#18332F">Ràng buộc và số liệu tính toán</text>
+<text x="1563" y="1932" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">UQ plan hoạt động: user + category + month.</text>
+<text x="1563" y="1961" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">UQ allocation: transaction + asset.</text>
+<text x="1563" y="1990" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Nguồn và đích transfer phải khác nhau.</text>
+<text x="1563" y="2019" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Tiền là bigint VNĐ; JSON truyền dạng chuỗi.</text>
+<text x="1563" y="2048" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Actual = tổng transaction theo danh mục/tháng.</text>
+<text x="1563" y="2077" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Số dư = mở đầu ± giao dịch ± chuyển + chỉnh.</text>
+<text x="1563" y="2106" font-family="Arial, sans-serif" font-size="19" font-weight="400" fill="#546761">Actual và currentBalance không phải cột lưu.</text>
+<text x="55" y="2185" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#18332F">Khóa ngoại ghép vật lý · ON DELETE RESTRICT cho toàn bộ quan hệ tài chính</text>
+<text x="55" y="2227" font-family="Arial, sans-serif" font-size="21" font-weight="400" fill="#546761">transactions / monthly_category_plans: (user_id, category_id, kind) → categories(user_id, id, kind).</text>
+<text x="55" y="2259" font-family="Arial, sans-serif" font-size="21" font-weight="400" fill="#546761">transaction_allocations: (user_id, transaction_id) → transactions(user_id, id); (user_id, asset_account_id) → asset_accounts(user_id, id).</text>
+<text x="55" y="2291" font-family="Arial, sans-serif" font-size="21" font-weight="400" fill="#546761">asset_adjustments: (user_id, asset_account_id) → asset_accounts(user_id, id).</text>
+<text x="55" y="2323" font-family="Arial, sans-serif" font-size="21" font-weight="400" fill="#546761">transfers: (user_id, from_asset_account_id) và (user_id, to_asset_account_id) → asset_accounts(user_id, id).</text>
+<text x="55" y="2355" font-family="Arial, sans-serif" font-size="21" font-weight="400" fill="#546761">created_at / updated_at / version / deleted_at: audit, chống ghi đè và xóa mềm; allocations chỉ có created_at / updated_at.</text>
+<text x="55" y="2387" font-family="Arial, sans-serif" font-size="21" font-weight="400" fill="#546761">Planned − Actual: với chi tiêu là ngân sách còn lại; với thu nhập là khoản còn cần đạt. Không có bảng riêng cho Actual.</text>
+</svg>

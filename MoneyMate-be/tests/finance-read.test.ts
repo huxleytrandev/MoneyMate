@@ -128,6 +128,29 @@ test(
         page = next;
       }
       assert.equal(ids.size, 10);
+      const categoryId = snapshot.transactions[0].categoryId;
+      const categoryRows = snapshot.transactions.filter(
+        (record) => record.categoryId === categoryId && record.occurredAt.startsWith('2025-03'),
+      );
+      const categoryPage = await read.list({
+        user,
+        resource: 'transactions',
+        query: { ...query, categoryId, limit: 1 },
+      });
+      assert.ok('totals' in categoryPage);
+      assert.equal(categoryPage.totals.total, categoryRows.length);
+      assert.ok(categoryPage.data.every((record) => record.categoryId === categoryId));
+      assert.equal(
+        BigInt(categoryPage.totals.income) + BigInt(categoryPage.totals.expense),
+        categoryRows.reduce((sum, record) => sum + record.amount, 0n),
+      );
+      const foreignCategory = await read.list({
+        user,
+        resource: 'transactions',
+        query: { ...query, categoryId: randomUUID() },
+      });
+      assert.ok('totals' in foreignCategory);
+      assert.equal(foreignCategory.totals.total, 0);
       const window = await read.state({ user, query });
       assert.ok('summary' in window);
       assert.equal(window.transactions.length, 3);

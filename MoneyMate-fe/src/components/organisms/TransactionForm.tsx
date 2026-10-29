@@ -1,3 +1,4 @@
+import { ConfirmActionButton } from '@/components/molecules/ConfirmActionButton';
 import { Button } from '@/components/atoms/Button';
 import { FormField } from '@/components/molecules/FormField';
 import { SheetTemplate } from '@/components/templates/SheetTemplate';
@@ -23,6 +24,8 @@ export function TransactionForm(props: Parameters<typeof useTransactionForm>[0])
           : 'Phân bổ tài sản'
       }
       onClose={form.onClose}
+      dirty={form.dirty}
+      busy={form.busy}
     >
       {form.stage === 'details' ? (
         <>
@@ -59,19 +62,14 @@ export function TransactionForm(props: Parameters<typeof useTransactionForm>[0])
         onPress={form.stage === 'allocation' ? form.submitAllocation : form.submitDetails}
       />
       {transaction && (
-        <Button
-          title={form.confirmDelete ? 'Xác nhận xóa giao dịch' : 'Xóa giao dịch'}
-          variant="text"
+        <ConfirmActionButton
+          label="Xóa giao dịch"
+          title="Xóa giao dịch này?"
+          description="Số dư tài sản và thống kê thực tế của danh mục sẽ được tính lại."
           disabled={form.busy}
-          onPress={() => {
-            if (!form.confirmDelete) {
-              form.setConfirmDelete(true);
-              return;
-            }
-            void form
-              .removeRecord('transactions', transaction.id, transaction.version)
-              .then(form.onClose)
-              .catch((failure) => form.setError(failure.message));
+          onConfirm={async () => {
+            await form.removeRecord('transactions', transaction.id, transaction.version);
+            form.onClose();
           }}
         />
       )}

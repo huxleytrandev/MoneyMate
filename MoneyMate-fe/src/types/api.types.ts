@@ -13,6 +13,8 @@ export interface ApiAsset extends ApiRecord {
   isArchived: boolean;
 }
 export interface ApiCategory extends ApiRecord {
+  icon?: string | null;
+  color?: string | null;
   name: string;
   kind: 'income' | 'expense';
   isArchived: boolean;

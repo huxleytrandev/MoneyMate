@@ -1,3 +1,5 @@
+import { MonthSwitcher } from '@/components/molecules/MonthSwitcher';
+import { useRouter } from 'expo-router';
 import { Button } from '@/components/atoms/Button';
 import { PlanCard } from '@/components/molecules/PlanCard';
 import { BudgetComparisonChart } from '@/components/organisms/BudgetComparisonChart';
@@ -6,7 +8,6 @@ import { CategoryEditor } from '@/components/organisms/CategoryEditor';
 import { NewBudgetCategory } from '@/components/organisms/NewBudgetCategory';
 import { PlanEditor } from '@/components/organisms/PlanEditor';
 import { ScreenTemplate } from '@/components/templates/ScreenTemplate';
-import { monthLabel, shiftMonth } from '@/helpers/date';
 import { useBudgetScreen } from '@/hooks/useBudgetScreen';
 import { styles } from '@/screens/BudgetScreen/BudgetScreen.styles';
 import { colors } from '@/theme/colors';
@@ -14,6 +15,7 @@ import { ui } from '@/theme/layout';
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 export default function BudgetScreen() {
+  const router = useRouter();
   const {
     loading,
     error,
@@ -55,28 +57,7 @@ export default function BudgetScreen() {
         </Pressable>
       </View>
 
-      <View style={styles.month}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Tháng trước"
-          onPress={() => setMonth(shiftMonth(month, -1))}
-          style={styles.monthArrow}
-        >
-          <Ionicons name="chevron-back" size={18} color={colors.ink} />
-        </Pressable>
-        <View style={styles.monthLabel}>
-          <Ionicons name="calendar-outline" size={16} color={colors.green} />
-          <Text style={styles.monthText}>{monthLabel(month)}</Text>
-        </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Tháng sau"
-          onPress={() => setMonth(shiftMonth(month, 1))}
-          style={styles.monthArrow}
-        >
-          <Ionicons name="chevron-forward" size={18} color={colors.ink} />
-        </Pressable>
-      </View>
+      <MonthSwitcher month={month} onChange={setMonth} />
 
       <View style={styles.segment}>
         {(
@@ -127,28 +108,20 @@ export default function BudgetScreen() {
           </View>
           <View style={{ gap: 12 }}>
             {rows.map((row) => (
-              <View key={row.category.id} style={{ gap: 5 }}>
-                <PlanCard
-                  key={row.category.id}
-                  category={row.category}
-                  planned={row.planned}
-                  actual={row.actual}
-                  onEdit={() =>
-                    row.category.isArchived
-                      ? setCategoryEditor(row.category)
-                      : setEditor(row.category)
-                  }
-                />
-                <Button
-                  title={
-                    (row.category.isArchived ? 'Đã lưu trữ · ' : '') +
-                    'Quản lý ' +
-                    row.category.name
-                  }
-                  variant="text"
-                  onPress={() => setCategoryEditor(row.category)}
-                />
-              </View>
+              <PlanCard
+                key={row.category.id}
+                category={row.category}
+                planned={row.planned}
+                actual={row.actual}
+                onOpen={() =>
+                  router.push({
+                    pathname: '/category/[id]',
+                    params: { id: row.category.id, month },
+                  })
+                }
+                onEdit={() => setEditor(row.category)}
+                onManage={() => setCategoryEditor(row.category)}
+              />
             ))}
           </View>
         </>

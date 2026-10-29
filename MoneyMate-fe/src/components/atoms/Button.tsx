@@ -1,57 +1,47 @@
+import { useSheetBusy } from '@/hooks/useSheetBusy';
+import type { ComponentProps } from 'react';
+import { Button as PaperButton } from 'react-native-paper';
 import { colors } from '@/theme/colors';
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+
 type Props = {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'text';
+  variant?: 'primary' | 'secondary' | 'text' | 'danger';
   loading?: boolean;
   disabled?: boolean;
   accessibilityLabel?: string;
 };
+const appearance = {
+  primary: { mode: 'contained', buttonColor: colors.green, textColor: 'white' },
+  secondary: { mode: 'contained-tonal', buttonColor: colors.lime, textColor: colors.green },
+  text: { mode: 'text', textColor: colors.green },
+  danger: { mode: 'text', textColor: colors.expense },
+} satisfies Record<NonNullable<Props['variant']>, Partial<ComponentProps<typeof PaperButton>>>;
 export function Button({
   title,
   onPress,
   variant = 'primary',
-  loading = false,
-  disabled = false,
+  loading,
+  disabled,
   accessibilityLabel,
 }: Props) {
+  const busy = useSheetBusy();
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel ?? title}
-      accessibilityState={{ disabled: disabled || loading, busy: loading }}
-      disabled={disabled || loading}
+    <PaperButton
+      {...appearance[variant]}
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.base,
-        variant === 'primary'
-          ? styles.primary
-          : variant === 'secondary'
-            ? styles.secondary
-            : styles.text,
-        (pressed || disabled || loading) && { opacity: 0.6 },
-      ]}
+      loading={loading}
+      disabled={disabled || loading || busy}
+      accessibilityLabel={accessibilityLabel ?? title}
+      accessibilityState={{
+        disabled: Boolean(disabled || loading || busy),
+        busy: Boolean(loading),
+      }}
+      contentStyle={{ minHeight: 50 }}
+      labelStyle={{ fontSize: 14, fontWeight: '700' }}
+      style={{ borderRadius: 18 }}
     >
-      {loading ? (
-        <ActivityIndicator color={variant === 'primary' ? 'white' : colors.green} />
-      ) : (
-        <Text style={[styles.label, variant === 'primary' && { color: 'white' }]}>{title}</Text>
-      )}
-    </Pressable>
+      {title}
+    </PaperButton>
   );
 }
-const styles = StyleSheet.create({
-  base: {
-    minHeight: 54,
-    borderRadius: 20,
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  primary: { backgroundColor: colors.green },
-  secondary: { backgroundColor: colors.lime },
-  text: { backgroundColor: 'transparent' },
-  label: { fontSize: 14, fontWeight: '700', color: colors.green },
-});

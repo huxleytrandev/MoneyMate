@@ -2,25 +2,35 @@ import { dateKey, localDateTime, timeKey } from '@/helpers/date';
 import { createId } from '@/helpers/id';
 import { useFinance } from '@/hooks/useFinance';
 import { categorySchema, transactionSchema } from '@/schemas/finance.schema';
-import type { Transaction, TransactionKind } from '@/types/finance.types';
+import { useDirtyFields } from './useDirtyFields';
+import type { Category, Transaction, TransactionKind } from '@/types/finance.types';
 import { useState } from 'react';
 export function useTransactionForm({
   onClose,
   transaction,
+  initialCategory,
+  initialMonth,
 }: {
   onClose: () => void;
   transaction?: Transaction;
+  initialCategory?: Category;
+  initialMonth?: string;
 }) {
   const { state, saveTransaction, addCategory, removeRecord, busy } = useFinance();
   const [now] = useState(() => new Date(transaction?.occurredAt ?? Date.now()));
   const [recordId] = useState(() => transaction?.id ?? createId());
-  const [confirmDelete, setConfirmDelete] = useState(false);
-  const [kind, setKind] = useState<TransactionKind>(transaction?.kind ?? 'expense');
+  const [kind, setKind] = useState<TransactionKind>(
+    transaction?.kind ?? initialCategory?.kind ?? 'expense',
+  );
   const [title, setTitle] = useState(transaction?.title ?? '');
   const [amount, setAmount] = useState(transaction ? String(transaction.amount) : '');
-  const [date, setDate] = useState(dateKey(now));
+  const [date, setDate] = useState(
+    initialMonth && !transaction && initialMonth !== dateKey(now).slice(0, 7)
+      ? initialMonth + '-01'
+      : dateKey(now),
+  );
   const [time, setTime] = useState(timeKey(now));
-  const [categoryId, setCategory] = useState(transaction?.categoryId ?? '');
+  const [categoryId, setCategory] = useState(transaction?.categoryId ?? initialCategory?.id ?? '');
   const [source, setSource] = useState(
     transaction?.allocations.length === 1 ? transaction.allocations[0].assetId : '',
   );
@@ -39,6 +49,22 @@ export function useTransactionForm({
   );
   const [error, setError] = useState('');
   const [newCategory, setNewCategory] = useState('');
+  const [newIcon, setNewIcon] = useState('receipt');
+  const [newColor, setNewColor] = useState('#0F766E');
+  const dirty = useDirtyFields({
+    kind,
+    title,
+    amount,
+    date,
+    time,
+    categoryId,
+    source,
+    sourceType,
+    shares,
+    newCategory,
+    newIcon,
+    newColor,
+  });
   const categories = state.categories.filter(
     (category) => category.kind === kind && !category.isArchived,
   );
@@ -109,7 +135,12 @@ export function useTransactionForm({
     }
   }
   async function createCategory() {
-    const result = categorySchema.safeParse({ name: newCategory, kind });
+    const result = categorySchema.safeParse({
+      name: newCategory,
+      kind,
+      icon: newIcon,
+      color: newColor,
+    });
     if (!result.success) {
       setError(result.error.issues[0].message);
       return;
@@ -171,8 +202,11 @@ export function useTransactionForm({
     error,
     submitAllocation,
     submitDetails,
-    confirmDelete,
-    setConfirmDelete,
+    dirty,
+    newIcon,
+    setNewIcon,
+    newColor,
+    setNewColor,
     removeRecord,
   };
 }

@@ -14,7 +14,7 @@
       "package": "com.moneymate.app"
     },
     "web": {
-      "output": "static"
+      "output": "single"
     },
     "plugins": [
       "expo-router",

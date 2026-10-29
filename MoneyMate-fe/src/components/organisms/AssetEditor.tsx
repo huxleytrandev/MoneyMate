@@ -1,42 +1,34 @@
+import { Text, View } from 'react-native';
 import { Button } from '@/components/atoms/Button';
 import { Chip } from '@/components/atoms/Chip';
 import { FormField } from '@/components/molecules/FormField';
+import { MoneyField } from '@/components/molecules/MoneyField';
+import { ConfirmActionButton } from '@/components/molecules/ConfirmActionButton';
 import { SheetTemplate } from '@/components/templates/SheetTemplate';
-import { AssetAdjustmentHistory } from './AssetAdjustmentHistory';
 import { useAssetEditor } from '@/hooks/useAssetEditor';
 import { ui } from '@/theme/layout';
-import { Text, View } from 'react-native';
+import { AssetAdjustmentHistory } from './AssetAdjustmentHistory';
 export function AssetEditor(props: Parameters<typeof useAssetEditor>[0]) {
-  const {
-    asset,
-    onClose,
-    name,
-    setName,
-    type,
-    setType,
-    openingDate,
-    setOpeningDate,
-    busy,
-    persistAsset,
-    value,
-    setValue,
-    error,
-    save,
-    restoreAsset,
-    archiveAsset,
-    confirm,
-    setConfirm,
-    removeRecord,
-    setError,
-    history,
-  } = useAssetEditor(props);
+  const model = useAssetEditor(props);
+  const { asset, busy } = model;
+  async function removeAsset() {
+    if (!asset) return;
+    await model.removeRecord('assets', asset.id, asset.version);
+    model.onClose();
+  }
   return (
-    <SheetTemplate title={asset ? 'Quản lý · ' + asset.name : 'Thêm tài sản'} onClose={onClose}>
+    <SheetTemplate
+      title={asset ? asset.name : 'Thêm tài sản'}
+      onClose={model.onClose}
+      dirty={model.dirty}
+      busy={busy}
+    >
       <FormField
         label="Tên tài sản"
         placeholder="Ví dụ: Vietcombank"
-        value={name}
-        onChangeText={setName}
+        value={model.name}
+        onChangeText={model.setName}
+        editable={!busy && !asset?.isArchived}
       />
       {!asset && (
         <>
@@ -47,78 +39,62 @@ export function AssetEditor(props: Parameters<typeof useAssetEditor>[0]) {
                 { type: 'bank', label: 'Ngân hàng' },
                 { type: 'other', label: 'Khác' },
               ] as const
-            ).map((asset) => (
+            ).map((option) => (
               <Chip
-                key={asset.type}
-                label={asset.label}
-                selected={type === asset.type}
-                onPress={() => setType(asset.type)}
+                key={option.type}
+                label={option.label}
+                selected={model.type === option.type}
+                onPress={() => model.setType(option.type)}
               />
             ))}
           </View>
           <FormField
             label="Ngày bắt đầu (YYYY-MM-DD)"
-            value={openingDate}
-            onChangeText={setOpeningDate}
+            value={model.openingDate}
+            onChangeText={model.setOpeningDate}
           />
         </>
       )}
-      {asset && (
-        <Button
-          title="Lưu tên tài sản"
-          variant="secondary"
-          disabled={busy}
-          onPress={() => asset && void persistAsset(asset)}
-        />
-      )}
-      <FormField
-        label={asset ? 'Giá trị thực tế hiện tại (VND)' : 'Giá trị ban đầu (VND)'}
-        value={value}
-        onChangeText={setValue}
-        keyboardType="number-pad"
+      <MoneyField
+        label={asset ? 'Số dư thực tế hiện tại' : 'Giá trị ban đầu'}
+        value={model.value}
+        onChangeText={model.setValue}
+        sign={asset ? 'signed' : 'positive'}
+        editable={!busy && !asset?.isArchived}
       />
       <Text style={ui.body}>
         {asset
-          ? 'Đối soát ghi nhận chênh lệch tài sản; không tính vào thu nhập hoặc chi tiêu.'
-          : 'Nhập số tiền bạn có ở ngày bắt đầu, sau đó ghi các giao dịch phát sinh từ ngày đó. Tài sản Khác dùng giá trị ước tính bằng VNĐ.'}
+          ? 'Đối soát cập nhật số dư thực tế, không tính vào thu nhập hoặc chi tiêu.'
+          : 'Nhập số tiền bạn có ở ngày bắt đầu. Tài sản Khác dùng giá trị ước tính bằng VNĐ.'}
       </Text>
-      {!!error && <Text style={ui.error}>{error}</Text>}
-      <Button
-        title={asset ? 'Lưu số dư đối soát' : 'Lưu tài sản'}
-        onPress={() => void save()}
-        loading={busy}
-        disabled={asset?.isArchived}
-      />
+      {!!model.error && (
+        <Text accessibilityRole="alert" style={ui.error}>
+          {model.error}
+        </Text>
+      )}
+      <Button title="Lưu tài sản" onPress={() => void model.save()} loading={busy} />
       {asset && (
         <>
           <Button
             title={asset.isArchived ? 'Sử dụng lại tài sản' : 'Lưu trữ tài sản'}
             variant="secondary"
-            disabled={busy}
-            onPress={asset.isArchived ? restoreAsset : archiveAsset}
+            disabled={busy || model.dirty}
+            onPress={asset.isArchived ? model.restoreAsset : model.archiveAsset}
           />
-          <Button
-            title={confirm ? 'Xác nhận xóa tài sản' : 'Xóa tài sản chưa sử dụng'}
-            variant="text"
+          <ConfirmActionButton
+            label="Xóa tài sản"
+            title={'Xóa “' + asset.name + '”?'}
             disabled={busy}
-            onPress={() => {
-              if (!confirm) {
-                setConfirm(true);
-                return;
-              }
-              void removeRecord('assets', asset.id, asset.version)
-                .then(onClose)
-                .catch((failure) => setError(failure.message));
-            }}
+            description="Chỉ xóa được tài sản chưa có phát sinh. Tài sản đã dùng nên được lưu trữ để giữ đúng lịch sử tài chính."
+            onConfirm={removeAsset}
           />
           <Text style={ui.heading}>Lịch sử đối soát</Text>
           <AssetAdjustmentHistory
-            history={history}
+            history={model.history}
             busy={busy}
-            onUndo={(adjustment) => {
-              void removeRecord('adjustments', adjustment.id, adjustment.version)
-                .then(onClose)
-                .catch((failure) => setError(failure.message));
+            onUndo={async (adjustment) => {
+              await model.removeRecord('adjustments', adjustment.id, adjustment.version);
+              model.onClose();
             }}
           />
         </>
