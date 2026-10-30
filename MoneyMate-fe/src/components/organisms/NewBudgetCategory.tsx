@@ -65,6 +65,7 @@ export function NewBudgetCategory({
       />
       {!created && (
         <CategoryAppearancePicker
+          kind={kind}
           icon={icon}
           color={color}
           onIconChange={setIcon}

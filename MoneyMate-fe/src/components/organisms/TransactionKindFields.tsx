@@ -17,6 +17,7 @@ export function TransactionKindFields({
           label="Chi tiêu"
           selected={kind === 'expense'}
           onPress={() => {
+            if (kind === 'expense') return;
             setKind('expense');
             setCategory('');
             setError('');
@@ -26,6 +27,7 @@ export function TransactionKindFields({
           label="Thu nhập"
           selected={kind === 'income'}
           onPress={() => {
+            if (kind === 'income') return;
             setKind('income');
             setCategory('');
             setError('');

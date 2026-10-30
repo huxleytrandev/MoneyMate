@@ -2,21 +2,28 @@ import { useSheetBusy } from '@/hooks/useSheetBusy';
 import { Pressable, Text, View } from 'react-native';
 import Check from 'lucide-react-native/icons/check';
 import { CategoryIcon } from '@/components/atoms/CategoryIcon';
-import { categoryIcons, categoryColors } from '@/constants/category-options';
+import { categoryIcons, categoryColors, incomeIcons } from '@/constants/category-options';
 import { ui } from '@/theme/layout';
 interface Props {
+  kind?: 'income' | 'expense';
   icon: string;
   color: string;
   onIconChange: (icon: string) => void;
   onColorChange: (color: string) => void;
 }
-export function CategoryAppearancePicker({ icon, color, onIconChange, onColorChange }: Props) {
+export function CategoryAppearancePicker({
+  icon,
+  color,
+  onIconChange,
+  onColorChange,
+  kind = 'expense',
+}: Props) {
   const busy = useSheetBusy();
   return (
     <View style={{ gap: 12 }}>
       <Text style={ui.label}>Biểu tượng danh mục</Text>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-        {categoryIcons.map((option) => (
+        {(kind === 'income' ? incomeIcons : categoryIcons).map((option) => (
           <Pressable
             key={option.value}
             accessibilityRole="button"
@@ -31,9 +38,7 @@ export function CategoryAppearancePicker({ icon, color, onIconChange, onColorCha
               padding: 2,
             }}
           >
-            <CategoryIcon
-              category={{ name: option.label, kind: 'expense', icon: option.value, color }}
-            />
+            <CategoryIcon category={{ name: option.label, kind, icon: option.value, color }} />
           </Pressable>
         ))}
       </View>

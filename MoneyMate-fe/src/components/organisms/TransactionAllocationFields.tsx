@@ -9,10 +9,10 @@ export function TransactionAllocationFields({
 }: {
   model: Pick<
     ReturnType<typeof useTransactionForm>,
-    'kind' | 'amount' | 'state' | 'shares' | 'setShares' | 'setStage' | 'setError'
+    'kind' | 'amount' | 'activeAssets' | 'shares' | 'setShares' | 'setStage' | 'setError'
   >;
 }) {
-  const { kind, amount, state, shares, setShares, setStage, setError } = model;
+  const { kind, amount, activeAssets, shares, setShares, setStage, setError } = model;
   return (
     <>
       <>
@@ -20,7 +20,7 @@ export function TransactionAllocationFields({
           {kind === 'expense' ? 'Giảm' : 'Tăng'} tổng cộng {formatMoney(Number(amount) || 0)} vào
           các nguồn dưới đây. Chỉ lưu khi phân bổ đủ.
         </Text>
-        {state.assets.map((asset) => (
+        {activeAssets.map((asset) => (
           <MoneyField
             key={asset.id}
             label={asset.name + ' (VND)'}
@@ -32,7 +32,7 @@ export function TransactionAllocationFields({
         <Text style={ui.label}>
           Đã phân bổ:{' '}
           {formatMoney(
-            Object.values(shares).reduce((total, value) => total + (Number(value) || 0), 0),
+            activeAssets.reduce((total, asset) => total + (Number(shares[asset.id]) || 0), 0),
           )}
         </Text>
         <Button

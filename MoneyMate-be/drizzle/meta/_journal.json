@@ -36,6 +36,13 @@
       "when": 1793098196019,
       "tag": "0004_finance_query_indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793264773369,
+      "tag": "0005_modern_bullseye",
+      "breakpoints": true
     }
   ]
 }

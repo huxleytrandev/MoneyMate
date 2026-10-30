@@ -71,3 +71,13 @@ GET /statistics?start=YYYY-MM-DD&end=YYYY-MM-DD&period=week|month|quarter|year t
 401: phiên không hợp lệ. 403: origin không được phép. 404: không có dữ liệu hoặc không thuộc người dùng. 409: trùng/xung đột phiên bản/dữ liệu đang được sử dụng. 422: input hoặc quan hệ không hợp lệ. 429: quá nhiều lần đăng nhập. 500: lỗi nội bộ đã ẩn chi tiết database.
 
 Lỗi validation trả error và fields=[{path,message}]. Không trả credential hash hay thông tin kết nối database.
+
+
+## Hồ sơ cá nhân (29/10/2026)
+
+- GET /api/users/me/profile: trả đúng displayName, gender, dateOfBirth, avatarData của phiên hiện tại.
+- PUT /api/users/me/profile: thay toàn bộ bốn trường trên; không nhận userId, email, password hoặc các trường khác. Dùng Better Auth cookie, browserOrigin và rate limit cho thao tác cập nhật.
+- gender: male / female / other / undisclosed / null. dateOfBirth: YYYY-MM-DD hoặc null; ngày hợp lệ từ 1900 đến ngày hiện tại theo UTC, không chuyển ngày sinh sang timestamp.
+- avatarData: null hoặc data:image/jpeg;base64,...; giới hạn 128 KiB byte ảnh, kiểm tra JPEG signature. FE crop vuông và resize 256×256, tái mã hóa JPEG trước khi gửi. Không nhận file://, URL máy khác hay SVG.
+- Ảnh nằm trong users.avatar_data, không thêm vào schema Better Auth và không trả trong auth session / SecureStore. Chỉ profile endpoint đã xác thực đọc ảnh.
+- Migration 0005_modern_bullseye thêm gender, date_of_birth, avatar_data nullable và CHECK giới tính; đã áp dụng Supabase theo chấp thuận của người dùng.

@@ -64,12 +64,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
     acceptUser(result.user);
   }
   async function logout() {
-    try {
-      await logoutRequest();
-      clearLocalState();
-    } catch (failure) {
-      setError(failure instanceof Error ? failure.message : 'Chưa thể đăng xuất.');
-    }
+    await logoutRequest();
+    clearLocalState();
   }
   async function forgetSession() {
     await logoutRequest();

@@ -42,6 +42,13 @@ export const transactionSchema = z
         path: ['date'],
         message: 'Ngày giờ chưa hợp lệ (YYYY-MM-DD và HH:mm).',
       });
+    const occurredAt = localDateTime(value.date, value.time);
+    if (occurredAt && Date.parse(occurredAt) > Date.now() + 60000)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['date'],
+        message: 'Ngày giờ phát sinh không được ở tương lai.',
+      });
     if (
       value.allocations.reduce((total, allocation) => total + allocation.amount, 0) !== value.amount
     )

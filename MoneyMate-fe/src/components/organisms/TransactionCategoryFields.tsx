@@ -10,6 +10,7 @@ export function TransactionCategoryFields({
 }: {
   model: Pick<
     ReturnType<typeof useTransactionForm>,
+    | 'kind'
     | 'categories'
     | 'categoryId'
     | 'setCategory'
@@ -63,6 +64,7 @@ export function TransactionCategoryFields({
             onChangeText={setNewCategory}
           />
           <CategoryAppearancePicker
+            kind={model.kind}
             icon={model.newIcon}
             color={model.newColor}
             onIconChange={model.setNewIcon}

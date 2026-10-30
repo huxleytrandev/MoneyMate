@@ -262,6 +262,12 @@ test('sensitive user routes share a rate limit while profile reads remain availa
   app.use(
     '/users',
     createUserRoutes({
+      profile: (_request, response) => {
+        response.json({ ok: true });
+      },
+      updateProfile: (_request, response) => {
+        response.json({ ok: true });
+      },
       me: (_request, response) => {
         response.json({ ok: true });
       },

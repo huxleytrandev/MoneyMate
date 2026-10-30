@@ -1,5 +1,4 @@
 import { Button } from '@/components/atoms/Button';
-import { ProfileForm } from '@/components/organisms/ProfileForm';
 import { StatisticsPanel } from '@/components/organisms/StatisticsPanel';
 import { TransactionForm } from '@/components/organisms/TransactionForm';
 import { TransactionList } from '@/components/organisms/TransactionList';
@@ -19,8 +18,7 @@ import {
 export default function DashboardScreen(props: Parameters<typeof useDashboardScreen>[0]) {
   const {
     displayName,
-    onLogout,
-    setProfile,
+    onProfile,
     state,
     onAssets,
     total,
@@ -39,7 +37,6 @@ export default function DashboardScreen(props: Parameters<typeof useDashboardScr
     refresh,
     setRefreshError,
     setAdd,
-    profile,
     add,
   } = useDashboardScreen(props);
   return (
@@ -52,20 +49,11 @@ export default function DashboardScreen(props: Parameters<typeof useDashboardScr
           </View>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Đăng xuất"
-            onPress={onLogout}
+            accessibilityLabel="Mở hồ sơ tài khoản"
+            onPress={onProfile}
             style={styles.circle}
           >
-            <Ionicons name="log-out-outline" size={23} color={colors.ink} />
-          </Pressable>
-        </View>
-        <View style={styles.connection}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Mở hồ sơ tài khoản"
-            onPress={() => setProfile(true)}
-          >
-            <Text style={{ color: colors.green, fontWeight: '600' }}>Hồ sơ tài khoản</Text>
+            <Ionicons name="person-circle-outline" size={23} color={colors.ink} />
           </Pressable>
         </View>
         <View style={styles.connection}>
@@ -143,7 +131,6 @@ export default function DashboardScreen(props: Parameters<typeof useDashboardScr
       >
         <Ionicons name="add" size={32} color="white" />
       </Pressable>
-      {profile && <ProfileForm onClose={() => setProfile(false)} />}
       {add && <TransactionForm onClose={() => setAdd(false)} />}
     </View>
   );

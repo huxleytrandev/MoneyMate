@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { once } from 'node:events';
 import { createDatabase } from '../src/configs/database.ts';
@@ -114,6 +115,59 @@ test(
         password,
       });
       assert.equal(logged.user.id, a.user.id);
+      const emptyProfile = await request<Record<string, unknown>>(
+        'GET',
+        '/users/me/profile',
+        undefined,
+        token,
+      );
+      assert.deepEqual(Object.keys(emptyProfile).sort(), [
+        'avatarData',
+        'dateOfBirth',
+        'displayName',
+        'gender',
+      ]);
+      const avatarData =
+        'data:image/jpeg;base64,' +
+        readFileSync(new URL('./fixtures/profile-avatar.jpg', import.meta.url)).toString('base64');
+      const profileBody = {
+        displayName: 'Updated personal profile',
+        gender: 'female',
+        dateOfBirth: '2000-02-29',
+        avatarData,
+      };
+      const profile = await request<Record<string, unknown>>(
+        'PUT',
+        '/users/me/profile',
+        profileBody,
+        token,
+      );
+      assert.deepEqual(profile, profileBody);
+      await request(
+        'PUT',
+        '/users/me/profile',
+        { ...profileBody, dateOfBirth: '2001-02-29' },
+        token,
+        422,
+      );
+      await request('PUT', '/users/me/profile', { ...profileBody, userId: b.user.id }, token, 422);
+      await request('GET', '/users/me/profile', undefined, undefined, 401);
+      const otherProfile = await request<Record<string, unknown>>(
+        'GET',
+        '/users/me/profile',
+        undefined,
+        b.cookie,
+      );
+      assert.equal(otherProfile.displayName, 'Integration B');
+      assert.equal(otherProfile.dateOfBirth, null);
+      const authSession = await request<{ user: Record<string, unknown> }>(
+        'GET',
+        '/auth/get-session',
+        undefined,
+        token,
+      );
+      assert.equal(authSession.user.name, profileBody.displayName);
+      assert.equal('avatarData' in authSession.user, false);
       const start = new Date(Date.now() - 86400000).toISOString();
       const occurredAt = new Date().toISOString();
       const cash = await request(

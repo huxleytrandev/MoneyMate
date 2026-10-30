@@ -1,0 +1,20 @@
+import { en, registerTranslation } from 'react-native-paper-dates';
+registerTranslation('vi', {
+  ...en,
+  minute: 'Phút',
+  hour: 'Giờ',
+  save: 'Chọn',
+  selectSingle: 'Chọn ngày',
+  selectMultiple: 'Chọn ngày',
+  selectRange: 'Chọn khoảng ngày',
+  notAccordingToDateFormat: (format) => 'Ngày cần có định dạng ' + format,
+  mustBeHigherThan: (date) => 'Chọn ngày từ ' + date,
+  mustBeLowerThan: (date) => 'Chọn ngày đến ' + date,
+  mustBeBetween: (start, end) => 'Chọn ngày từ ' + start + ' đến ' + end,
+  dateIsDisabled: 'Ngày này không khả dụng',
+  previous: 'Trước',
+  next: 'Sau',
+  typeInDate: 'Chọn ngày',
+  pickDateFromCalendar: 'Chọn từ lịch',
+  close: 'Đóng',
+});

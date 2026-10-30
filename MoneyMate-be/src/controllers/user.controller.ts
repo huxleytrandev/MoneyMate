@@ -18,5 +18,11 @@ export function userController(service: ReturnType<typeof userService>) {
   const verifyPassword: RequestHandler = async (request, response) => {
     response.json(await service.verifyPassword({ body: request.body, headers: request.headers }));
   };
-  return { me, remove, verifyPassword };
+  const profile: RequestHandler = async (_request, response) => {
+    response.json(await service.profile(authenticatedUser(response).id));
+  };
+  const updateProfile: RequestHandler = async (request, response) => {
+    response.json(await service.updateProfile(authenticatedUser(response).id, request.body));
+  };
+  return { me, remove, verifyPassword, profile, updateProfile };
 }

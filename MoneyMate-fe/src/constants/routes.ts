@@ -7,4 +7,5 @@ export const ROUTES = {
   budget: '/budget',
   transactions: '/transactions',
   assistant: '/assistant',
+  profile: '/profile',
 } as const;

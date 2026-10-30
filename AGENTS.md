@@ -50,3 +50,6 @@
 
 - UI: use the shared Paper theme, SheetTemplate/ConfirmActionButton and MoneyField. Store unformatted integer VND in form state; do not send formatted text to APIs. Lock controls while submitting and confirm dismissal of dirty forms.
 - Keep category detail in the (main) Stack outside (tabs), with server-side categoryId filtering and cursor paging. Use SDK 58 layout anchor settings. Import Lucide via public per-icon subpaths and keep the Paper Babel plugin to avoid bundling unused components.
+
+- Profile: migration 0005 applied with user approval. Profile photo lives in users.avatar_data and only authenticated /users/me/profile responses; never add avatar bytes to Better Auth session fields/SecureStore. Birthdays remain date-only.
+- Use DateSelectField/TimeSelectField for date/time UI; still validate calendar, clock, timezone, future and asset-opening constraints. Source auto-selection must preserve existing transaction allocations when editing.

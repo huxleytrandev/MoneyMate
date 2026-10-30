@@ -33,7 +33,7 @@ export function TransactionForm(props: Parameters<typeof useTransactionForm>[0])
           <TransactionAmountField model={form} />
           <FormField
             label="Tên giao dịch"
-            placeholder="Ví dụ: Ăn trưa"
+            placeholder={form.kind === 'income' ? 'Ví dụ: Nhận lương tháng này' : 'Ví dụ: Ăn trưa'}
             value={form.title}
             onChangeText={form.setTitle}
           />
@@ -54,7 +54,7 @@ export function TransactionForm(props: Parameters<typeof useTransactionForm>[0])
         title={
           form.stage === 'allocation'
             ? 'Xác nhận phân bổ và lưu'
-            : form.source
+            : form.directSource
               ? 'Lưu giao dịch'
               : 'Tiếp tục phân bổ tài sản'
         }

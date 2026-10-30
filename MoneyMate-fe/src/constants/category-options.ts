@@ -16,6 +16,15 @@ export const categoryIcons = [
   { value: 'receipt', label: 'Hóa đơn' },
   { value: 'tags', label: 'Khác' },
 ] as const;
+export const incomeIcons = [
+  { value: 'wallet', label: 'Thu nhập' },
+  { value: 'briefcase', label: 'Lương' },
+  { value: 'gift', label: 'Tiền thưởng' },
+  { value: 'trending-up', label: 'Đầu tư' },
+  { value: 'coins', label: 'Lợi nhuận' },
+  { value: 'hand-coins', label: 'Làm thêm' },
+  { value: 'piggy-bank', label: 'Tiết kiệm' },
+] as const;
 export const categoryColors = [
   '#0F766E',
   '#3777C8',

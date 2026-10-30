@@ -1,3 +1,5 @@
+import { profileSchema } from '../schemas/profile.schema.ts';
+import { requireRecord } from '../utils/finance-validation.ts';
 import { fromNodeHeaders } from 'better-auth/node';
 import type { IncomingHttpHeaders } from 'node:http';
 import { repositories, withUserWrite } from '../repositories/finance.repository.ts';
@@ -38,5 +40,12 @@ export function userService(database: Database, auth: Authentication) {
     const { password } = deleteUserSchema.parse(input.body);
     return auth.api.verifyPassword({ headers: fromNodeHeaders(input.headers), body: { password } });
   }
-  return { remove, verifyPassword };
+  const users = userRepository(database);
+  async function profile(userId: string) {
+    return requireRecord(await users.profile(userId));
+  }
+  async function updateProfile(userId: string, body: unknown) {
+    return requireRecord(await users.updateProfile(userId, profileSchema.parse(body)));
+  }
+  return { remove, verifyPassword, profile, updateProfile };
 }

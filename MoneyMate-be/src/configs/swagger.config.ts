@@ -1,3 +1,4 @@
+import { profileSchema } from '../schemas/profile.schema.ts';
 import swaggerUi from 'swagger-ui-express';
 import { z } from 'zod';
 import { createSchemas, RESOURCE_NAMES } from '../schemas/api.schema.ts';
@@ -13,6 +14,19 @@ function authPost(summary: string, schema: z.ZodType) {
   return { post: { summary, requestBody: body(schema), responses: { 200: response } } };
 }
 const paths: Record<string, unknown> = {
+  '/api/users/me/profile': {
+    get: {
+      summary: 'Hồ sơ cá nhân và ảnh đại diện của người dùng hiện tại',
+      security,
+      responses: { 200: response, 401: { description: 'Chưa đăng nhập' } },
+    },
+    put: {
+      summary: 'Cập nhật tên, giới tính, ngày sinh và ảnh JPEG tối đa 128 KB',
+      security,
+      requestBody: body(profileSchema),
+      responses: { 200: response, 422: { description: 'Thông tin không hợp lệ' } },
+    },
+  },
   '/api/health': { get: { summary: 'API health', responses: { 200: response } } },
   '/api/ready': {
     get: {

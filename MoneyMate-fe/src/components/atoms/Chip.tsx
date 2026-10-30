@@ -5,7 +5,9 @@ export function Chip({
   label,
   selected,
   onPress,
+  disabled = false,
 }: {
+  disabled?: boolean;
   label: string;
   selected: boolean;
   onPress: () => void;
@@ -14,8 +16,8 @@ export function Chip({
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityState={{ selected, disabled: busy }}
-      disabled={busy}
+      accessibilityState={{ selected, disabled: busy || disabled }}
+      disabled={busy || disabled}
       onPress={onPress}
       style={[styles.chip, selected && { backgroundColor: colors.green }]}
     >

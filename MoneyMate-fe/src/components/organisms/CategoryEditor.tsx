@@ -22,6 +22,7 @@ export function CategoryEditor(props: Parameters<typeof useCategoryEditor>[0]) {
         editable={!model.busy}
       />
       <CategoryAppearancePicker
+        kind={model.category.kind}
         icon={model.icon}
         color={model.color}
         onIconChange={model.setIcon}

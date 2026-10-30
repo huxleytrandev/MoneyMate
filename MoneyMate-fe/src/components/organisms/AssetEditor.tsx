@@ -1,3 +1,5 @@
+import { DateSelectField } from '@/components/molecules/DateSelectField';
+import { dateKey } from '@/helpers/date';
 import { Text, View } from 'react-native';
 import { Button } from '@/components/atoms/Button';
 import { Chip } from '@/components/atoms/Chip';
@@ -48,10 +50,11 @@ export function AssetEditor(props: Parameters<typeof useAssetEditor>[0]) {
               />
             ))}
           </View>
-          <FormField
-            label="Ngày bắt đầu (YYYY-MM-DD)"
+          <DateSelectField
+            label="Ngày bắt đầu"
             value={model.openingDate}
-            onChangeText={model.setOpeningDate}
+            onChange={model.setOpeningDate}
+            maximum={dateKey(new Date())}
           />
         </>
       )}

@@ -21,10 +21,16 @@ export function categoryIconName(category: Pick<Category, 'name' | 'kind' | 'ico
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/đ/g, 'd');
-  return (
-    suggestions.find(([pattern]) => pattern.test(name))?.[1] ??
-    (category.kind === 'income' ? 'wallet' : 'receipt')
-  );
+  if (category.kind === 'income') {
+    const incomeSuggestions: [RegExp, string][] = [
+      [/luong|cong viec/, 'briefcase'],
+      [/thuong|qua/, 'gift'],
+      [/dau tu|lai/, 'trending-up'],
+      [/lam them|freelance/, 'hand-coins'],
+    ];
+    return incomeSuggestions.find(([pattern]) => pattern.test(name))?.[1] ?? 'wallet';
+  }
+  return suggestions.find(([pattern]) => pattern.test(name))?.[1] ?? 'receipt';
 }
 export function categoryColor(category: Pick<Category, 'color'>) {
   return category.color && /^#[0-9a-f]{6}$/i.test(category.color) ? category.color : '#0F766E';

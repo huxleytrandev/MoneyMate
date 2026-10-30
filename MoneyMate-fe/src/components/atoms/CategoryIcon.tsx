@@ -1,3 +1,5 @@
+import Coins from 'lucide-react-native/icons/coins';
+import HandCoins from 'lucide-react-native/icons/hand-coins';
 import Utensils from 'lucide-react-native/icons/utensils';
 import Coffee from 'lucide-react-native/icons/coffee';
 import Bus from 'lucide-react-native/icons/bus';
@@ -19,6 +21,8 @@ import { View } from 'react-native';
 import { categoryIconName, categoryColor } from '@/helpers/category';
 import type { Category } from '@/types/finance.types';
 const icons: Record<string, LucideIcon> = {
+  coins: Coins,
+  'hand-coins': HandCoins,
   utensils: Utensils,
   coffee: Coffee,
   bus: Bus,

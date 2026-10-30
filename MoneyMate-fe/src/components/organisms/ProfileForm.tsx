@@ -11,13 +11,13 @@ import { useState } from 'react';
 import { Text } from 'react-native';
 export function ProfileForm({ onClose }: { onClose: () => void }) {
   const { session, updateSession, forgetSession } = useAuth();
-  const [name, setName] = useState(session?.displayName ?? '');
+  const name = session?.displayName ?? '';
   const [email, setEmail] = useState(session?.email ?? '');
   const [currentPassword, setCurrent] = useState('');
   const [newPassword, setNew] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  const dirty = useDirtyFields({ name, email, currentPassword, newPassword });
+  const dirty = useDirtyFields({ email, currentPassword, newPassword });
   async function save() {
     setBusy(true);
     try {
@@ -41,8 +41,7 @@ export function ProfileForm({ onClose }: { onClose: () => void }) {
     }
   }
   return (
-    <SheetTemplate title="Tài khoản của bạn" onClose={onClose} dirty={dirty} busy={busy}>
-      <FormField label="Họ và tên" value={name} onChangeText={setName} />
+    <SheetTemplate title="Bảo mật tài khoản" onClose={onClose} dirty={dirty} busy={busy}>
       <FormField
         label="Email"
         value={email}

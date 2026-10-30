@@ -10,6 +10,7 @@ export default function MainRoute() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="category/[id]" />
+        <Stack.Screen name="profile" />
       </Stack>
     </FinanceProvider>
   );

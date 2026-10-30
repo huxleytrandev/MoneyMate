@@ -1,4 +1,6 @@
 import { dateKey, localDateTime, timeKey } from '@/helpers/date';
+import { availableSources, defaultSource, cashAllocations } from '@/helpers/payment-source';
+import { assetBalance } from '@/helpers/finance';
 import { createId } from '@/helpers/id';
 import { useFinance } from '@/hooks/useFinance';
 import { categorySchema, transactionSchema } from '@/schemas/finance.schema';
@@ -19,7 +21,7 @@ export function useTransactionForm({
   const { state, saveTransaction, addCategory, removeRecord, busy } = useFinance();
   const [now] = useState(() => new Date(transaction?.occurredAt ?? Date.now()));
   const [recordId] = useState(() => transaction?.id ?? createId());
-  const [kind, setKind] = useState<TransactionKind>(
+  const [kind, setKindValue] = useState<TransactionKind>(
     transaction?.kind ?? initialCategory?.kind ?? 'expense',
   );
   const [title, setTitle] = useState(transaction?.title ?? '');
@@ -31,12 +33,33 @@ export function useTransactionForm({
   );
   const [time, setTime] = useState(timeKey(now));
   const [categoryId, setCategory] = useState(transaction?.categoryId ?? initialCategory?.id ?? '');
-  const [source, setSource] = useState(
+  const [chosenSource, setSource] = useState(
     transaction?.allocations.length === 1 ? transaction.allocations[0].assetId : '',
   );
   const [sourceType, setSourceType] = useState(
     state.assets.find((asset) => asset.id === transaction?.allocations[0]?.assetId)?.type ?? 'cash',
   );
+  const [allocationMode, setAllocationMode] = useState<'source' | 'split'>(
+    transaction && transaction.allocations.length > 1 ? 'split' : 'source',
+  );
+  const sources = availableSources(state.assets, sourceType);
+  const source = allocationMode === 'split' ? '' : defaultSource(sources, chosenSource);
+  const activeAssets = state.assets.filter((asset) => !asset.isArchived);
+  const automaticCash = allocationMode === 'source' && sourceType === 'cash';
+  const directSource = automaticCash || !!source;
+  const balances = new Map(activeAssets.map((asset) => [asset.id, assetBalance(state, asset.id)]));
+  function selectSourceType(type: typeof sourceType) {
+    if (
+      allocationMode === 'source' &&
+      sourceType === type &&
+      (!chosenSource || sources.some((asset) => asset.id === chosenSource))
+    )
+      return;
+    setSourceType(type);
+    setSource('');
+    setAllocationMode('source');
+    setError('');
+  }
   const [creatingCategory, setCreatingCategory] = useState(false);
   const [stage, setStage] = useState<'details' | 'allocation'>('details');
   const [shares, setShares] = useState<Record<string, string>>(
@@ -49,7 +72,12 @@ export function useTransactionForm({
   );
   const [error, setError] = useState('');
   const [newCategory, setNewCategory] = useState('');
-  const [newIcon, setNewIcon] = useState('receipt');
+  const [customIcon, setNewIcon] = useState('');
+  function setKind(next: TransactionKind) {
+    setKindValue(next);
+    setNewIcon('');
+  }
+  const newIcon = customIcon || (kind === 'income' ? 'wallet' : 'receipt');
   const [newColor, setNewColor] = useState('#0F766E');
   const dirty = useDirtyFields({
     kind,
@@ -60,6 +88,7 @@ export function useTransactionForm({
     categoryId,
     source,
     sourceType,
+    allocationMode,
     shares,
     newCategory,
     newIcon,
@@ -70,11 +99,46 @@ export function useTransactionForm({
   );
 
   function splitAllocations() {
-    return state.assets
+    return activeAssets
       .filter((asset) => (shares[asset.id] ?? '').trim() !== '' && Number(shares[asset.id]) !== 0)
       .map((asset) => ({ assetId: asset.id, amount: shares[asset.id] }));
   }
   function submitDetails() {
+    if (
+      allocationMode === 'source' &&
+      chosenSource &&
+      !sources.some((asset) => asset.id === chosenSource)
+    ) {
+      setError('Nguồn tiền cũ không còn khả dụng. Hãy chọn lại loại nguồn tiền trước khi lưu.');
+      return;
+    }
+    if (automaticCash) {
+      if (!sources.length) {
+        setError('Bạn chưa có tài sản tiền mặt. Hãy thêm tại màn hình Tài sản.');
+        return;
+      }
+      void persistTransaction(
+        cashAllocations({
+          assets: source ? sources.filter((asset) => asset.id === source) : sources,
+          amount: Number(amount),
+          kind,
+          balances,
+        }),
+      );
+      return;
+    }
+    if (allocationMode === 'source' && !source) {
+      setError(
+        sources.length
+          ? 'Chọn một tài khoản bên dưới hoặc chọn phân bổ nhiều nguồn.'
+          : 'Bạn chưa có nguồn tiền loại này. Hãy thêm tài sản hoặc chọn nguồn khác.',
+      );
+      return;
+    }
+    if (!activeAssets.length) {
+      setError('Thêm tài sản trước khi ghi giao dịch.');
+      return;
+    }
     if (source) {
       void persistTransaction([{ assetId: source, amount }]);
       return;
@@ -86,7 +150,7 @@ export function useTransactionForm({
       amount,
       date,
       time,
-      allocations: [{ assetId: state.assets[0]?.id ?? '', amount }],
+      allocations: [{ assetId: activeAssets[0]?.id ?? '', amount }],
     });
     if (!validation.success) {
       setError(validation.error.issues[0].message);
@@ -114,7 +178,22 @@ export function useTransactionForm({
       return;
     }
     const occurredAt = localDateTime(date, time);
-    if (!occurredAt) return;
+    if (!occurredAt) {
+      setError('Ngày giờ không hợp lệ.');
+      return;
+    }
+    if (Date.parse(occurredAt) > Date.now() + 60000) {
+      setError('Ngày giờ phát sinh không được ở tương lai.');
+      return;
+    }
+    const invalidSource = allocations.some((allocation) => {
+      const asset = activeAssets.find((candidate) => candidate.id === allocation.assetId);
+      return !asset || (asset.openingAt && Date.parse(asset.openingAt) > Date.parse(occurredAt));
+    });
+    if (invalidSource) {
+      setError('Nguồn tiền không khả dụng hoặc ngày phát sinh trước ngày bắt đầu tài sản.');
+      return;
+    }
     const timestamp = new Date().toISOString();
     try {
       await saveTransaction({
@@ -192,7 +271,12 @@ export function useTransactionForm({
     createCategory,
     busy,
     sourceType,
-    setSourceType,
+    setSourceType: selectSourceType,
+    allocationMode,
+    setAllocationMode,
+    sources,
+    directSource,
+    activeAssets,
     setSource,
     state,
     source,

@@ -1,23 +1,22 @@
-import { FormField } from '@/components/molecules/FormField';
-import { useTransactionForm } from '@/hooks/useTransactionForm';
-import { ui } from '@/theme/layout';
 import { View } from 'react-native';
+import { DateSelectField } from '@/components/molecules/DateSelectField';
+import { TimeSelectField } from '@/components/molecules/TimeSelectField';
+import { dateKey } from '@/helpers/date';
+import type { useTransactionForm } from '@/hooks/useTransactionForm';
 export function TransactionDateFields({
   model,
 }: {
   model: Pick<ReturnType<typeof useTransactionForm>, 'date' | 'setDate' | 'time' | 'setTime'>;
 }) {
-  const { date, setDate, time, setTime } = model;
   return (
-    <>
-      <View style={ui.row}>
-        <View style={{ flex: 1 }}>
-          <FormField label="Ngày (YYYY-MM-DD)" value={date} onChangeText={setDate} />
-        </View>
-        <View style={{ width: 100 }}>
-          <FormField label="Giờ (HH:mm)" value={time} onChangeText={setTime} />
-        </View>
-      </View>
-    </>
+    <View style={{ gap: 14 }}>
+      <DateSelectField
+        label="Ngày phát sinh"
+        value={model.date}
+        onChange={model.setDate}
+        maximum={dateKey(new Date())}
+      />
+      <TimeSelectField value={model.time} onChange={model.setTime} />
+    </View>
   );
 }

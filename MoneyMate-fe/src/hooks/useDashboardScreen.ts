@@ -6,13 +6,13 @@ import { colors } from '@/theme/colors';
 import { useState } from 'react';
 export function useDashboardScreen({
   displayName,
-  onLogout,
+  onProfile,
   onAssets,
   onBudget,
   onTransactions,
 }: {
   displayName: string;
-  onLogout: () => void;
+  onProfile: () => void;
   onAssets: () => void;
   onBudget: () => void;
   onTransactions: () => void;
@@ -22,7 +22,6 @@ export function useDashboardScreen({
   const { state } = useMonthlyFinance(month);
   const [refreshError, setRefreshError] = useState('');
   const [add, setAdd] = useState(false);
-  const [profile, setProfile] = useState(false);
   const transactions = monthlyTransactions(state, month).sort(
     (firstTransaction, secondTransaction) =>
       secondTransaction.occurredAt.localeCompare(firstTransaction.occurredAt),
@@ -57,8 +56,7 @@ export function useDashboardScreen({
 
   return {
     displayName,
-    onLogout,
-    setProfile,
+    onProfile,
     state,
     onAssets,
     total,
@@ -77,7 +75,6 @@ export function useDashboardScreen({
     refresh,
     setRefreshError,
     setAdd,
-    profile,
     add,
   };
 }

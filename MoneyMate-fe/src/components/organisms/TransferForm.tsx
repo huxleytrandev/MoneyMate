@@ -1,3 +1,5 @@
+import { DateSelectField } from '@/components/molecules/DateSelectField';
+import { TimeSelectField } from '@/components/molecules/TimeSelectField';
 import { ConfirmActionButton } from '@/components/molecules/ConfirmActionButton';
 import { useDirtyFields } from '@/hooks/useDirtyFields';
 import { MoneyField } from '@/components/molecules/MoneyField';
@@ -29,6 +31,22 @@ export function TransferForm({ onClose, transfer }: { onClose: () => void; trans
     const occurredAt = localDateTime(date, time);
     if (!parsed.success || parsed.data <= 0 || !from || !to || from === to || !occurredAt) {
       setError('Chọn hai nguồn khác nhau, số tiền dương và ngày giờ hợp lệ.');
+      return;
+    }
+    if (Date.parse(occurredAt) > Date.now() + 60000) {
+      setError('Không thể ghi chuyển tiền ở tương lai.');
+      return;
+    }
+    const selectedAssets = state.assets.filter((asset) => asset.id === from || asset.id === to);
+    if (
+      selectedAssets.length !== 2 ||
+      selectedAssets.some(
+        (asset) =>
+          asset.isArchived ||
+          (asset.openingAt && Date.parse(asset.openingAt) > Date.parse(occurredAt)),
+      )
+    ) {
+      setError('Nguồn tiền không khả dụng hoặc ngày phát sinh trước ngày bắt đầu tài sản.');
       return;
     }
     try {
@@ -84,8 +102,13 @@ export function TransferForm({ onClose, transfer }: { onClose: () => void; trans
             />
           ))}
       </View>
-      <FormField label="Ngày (YYYY-MM-DD)" value={date} onChangeText={setDate} />
-      <FormField label="Giờ (HH:mm)" value={time} onChangeText={setTime} />
+      <DateSelectField
+        label="Ngày phát sinh"
+        value={date}
+        onChange={setDate}
+        maximum={dateKey(new Date())}
+      />
+      <TimeSelectField value={time} onChange={setTime} />
       <FormField label="Ghi chú" value={note} onChangeText={setNote} />
       {!!error && <Text style={ui.error}>{error}</Text>}
       <Button title="Lưu chuyển tiền" onPress={() => void save()} loading={busy} />

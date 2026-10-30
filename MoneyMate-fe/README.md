@@ -76,3 +76,17 @@ npx.cmd pnpm start --clear
 ```
 
 Kiểm chứng UI: web ở 390 × 844, gõ số có phân cách rồi đối chiếu API lưu raw VND, lưu icon, xác nhận bỏ thay đổi/xóa, mở chi tiết từ card và quay lại đúng tab ngân sách. Android/web export kiểm tra bundle; chưa kiểm tra trên điện thoại thật. Lỗi native unrs-resolver trên Windows vẫn có thể chặn pnpm check; không giảm quy tắc lint để né lỗi này.
+
+## Hồ sơ và bộ chọn ngày/giờ
+
+- Nhấn biểu tượng người dùng trên Dashboard để vào /profile (Stack ngoài Tabs). Đăng xuất, đổi email/mật khẩu và xóa tài khoản nằm trong Hồ sơ.
+- Hồ sơ lưu thật qua GET/PUT /users/me/profile. Tên, giới tính và ngày sinh có validation FE/BE; bỏ trống ngày sinh/giới tính được phép. Ảnh chọn bằng expo-image-picker, crop/resize/re-encode qua expo-image-manipulator; JPEG 256×256, tối đa 128 KiB.
+- react-native-paper-dates cung cấp DatePickerModal và TimePicker; trường bên ngoài chỉ có nút, calendar tắt nhập tay, đồng hồ giữ inputType=picker và không hiển thị nút chuyển bàn phím. Có validation calendar, giờ/phút, timezone/DST và thời điểm không ở tương lai; backend vẫn kiểm tra ngày bắt đầu tài sản.
+- Tiền mặt được chọn trực tiếp. Nếu có nhiều ví, chi được phân bổ theo số dư các ví (phần thiếu vào ví đầu), thu vào ví đầu; thông báo rõ trên form và có chế độ phân bổ thủ công. Khi sửa giao dịch một nguồn, giữ đúng nguồn cũ.
+- Ngân hàng/Khác: một tài khoản thì tự chọn; nhiều tài khoản hiển thị các card số dư để chọn; nguồn lưu trữ không được chọn mới.
+- Ngày sinh lưu date-only, không đổi timezone. Ảnh không nhét vào session native, tránh giới hạn SecureStore.
+- Sau khi cài dependency mới, khởi động lại Expo bằng pnpm start --clear. Development build riêng cần rebuild khi thêm native modules; Expo Go cần phiên bản SDK phù hợp.
+
+### Kiểm tra đợt này
+
+TypeScript và các kiểm thử unit/API được chạy. Full ESLint FE vẫn bị chặn bởi lỗi native binding unrs-resolver trên môi trường Windows này. Android/web export kiểm tra bundle; công cụ Computer Use bị dừng do không xác định được URL Chrome nên chưa xác nhận thao tác UI trên điện thoại/máy ảo.
