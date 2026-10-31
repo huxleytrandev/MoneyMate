@@ -1,3 +1,4 @@
+import { telegramConfirmLinkSchema } from '../schemas/telegram.schema.ts';
 import { profileSchema } from '../schemas/profile.schema.ts';
 import swaggerUi from 'swagger-ui-express';
 import { z } from 'zod';
@@ -14,6 +15,35 @@ function authPost(summary: string, schema: z.ZodType) {
   return { post: { summary, requestBody: body(schema), responses: { 200: response } } };
 }
 const paths: Record<string, unknown> = {
+  '/api/telegram/status': {
+    get: {
+      summary: 'Trạng thái và ứng viên liên kết Telegram của phiên hiện tại',
+      security,
+      responses: { 200: response, 401: { description: 'Chưa đăng nhập' } },
+    },
+  },
+  '/api/telegram/link-requests': {
+    post: {
+      summary: 'Tạo deep link Telegram một lần, hết hạn sau 10 phút',
+      security,
+      responses: { 200: response, 429: { description: 'Quá nhiều yêu cầu' } },
+    },
+  },
+  '/api/telegram/confirm': {
+    post: {
+      summary: 'Xác nhận đúng ứng viên Telegram từ app',
+      security,
+      requestBody: body(telegramConfirmLinkSchema),
+      responses: { 200: response, 409: { description: 'Yêu cầu hết hạn hoặc đã thay đổi' } },
+    },
+  },
+  '/api/telegram/link': {
+    delete: {
+      summary: 'Thu hồi liên kết và yêu cầu Telegram của user hiện tại',
+      security,
+      responses: { 204: response },
+    },
+  },
   '/api/users/me/profile': {
     get: {
       summary: 'Hồ sơ cá nhân và ảnh đại diện của người dùng hiện tại',

@@ -7,6 +7,12 @@ import { createDatabase } from '../src/configs/database.ts';
 import { loadEnvironment } from '../src/configs/environment.ts';
 import { createApplication } from '../src/configs/express.config.ts';
 import { repositories, withUserWrite } from '../src/repositories/finance.repository.ts';
+import { eq, or } from 'drizzle-orm';
+import {
+  TelegramInboxModel,
+  TelegramOutboxModel,
+  TelegramLinkModel,
+} from '../src/models/telegram.model.ts';
 import { userRepository } from '../src/repositories/user.repository.ts';
 
 function cookieTransport(baseURL: string) {
@@ -65,6 +71,8 @@ test(
     const newPassword = 'Better-Auth-new-test-456!';
     const email = 'moneymate-auth-test-' + randomUUID() + '@example.invalid';
     const changedEmail = 'moneymate-auth-test-' + randomUUID() + '@example.invalid';
+    const privacyBot = 'privacy-' + randomUUID();
+    const otherBot = privacyBot + '-other';
     let userId: string | undefined;
     try {
       const registered = await first.client.signUp.email({
@@ -150,16 +158,76 @@ test(
         body: JSON.stringify({ name: 'Must not apply' }),
       });
       assert.equal(blocked.status, 403);
+      const actor = String(100000000 + Number.parseInt(userId!.slice(0, 6), 16));
+      await database.db.insert(TelegramLinkModel).values({
+        userId: userId!,
+        botId: privacyBot,
+        telegramUserId: actor,
+        chatId: actor,
+        displayName: 'Privacy fixture',
+      });
+      const payload = {
+        update_id: 1,
+        message: {
+          message_id: 1,
+          from: { id: Number(actor), first_name: 'Fixture' },
+          chat: { id: Number(actor), type: 'private' },
+          text: 'Private fixture',
+        },
+      };
+      await database.db.insert(TelegramInboxModel).values([
+        { botId: privacyBot, updateId: 1, userId: userId!, payload },
+        { botId: privacyBot, updateId: 2, payload },
+        { botId: otherBot, updateId: 1, payload },
+      ]);
+      const outgoing = {
+        method: 'sendMessage' as const,
+        body: { chat_id: actor, text: 'Private fixture' },
+      };
+      await database.db.insert(TelegramOutboxModel).values([
+        { botId: privacyBot, userId: userId!, sourceKey: privacyBot + ':1:0', outgoing },
+        { botId: privacyBot, sourceKey: privacyBot + ':2:0', outgoing },
+        { botId: otherBot, sourceKey: otherBot + ':1:0', outgoing },
+      ]);
+      const deniedDeletion = await first.request('/api/users/me', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+      assert.equal(deniedDeletion.status, 400);
+      assert.equal(
+        (
+          await database.db
+            .select()
+            .from(TelegramInboxModel)
+            .where(eq(TelegramInboxModel.botId, privacyBot))
+        ).length,
+        2,
+      );
       const deleted = await first.request('/api/users/me', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: newPassword }),
       });
       assert.equal(deleted.status, 204);
+      for (const table of [TelegramInboxModel, TelegramOutboxModel]) {
+        assert.equal(
+          (await database.db.select().from(table).where(eq(table.botId, privacyBot))).length,
+          0,
+        );
+        assert.equal(
+          (await database.db.select().from(table).where(eq(table.botId, otherBot))).length,
+          1,
+        );
+      }
       assert.ok(deleted.headers.getSetCookie().some((cookie) => cookie.includes('Max-Age=0')));
       assert.equal(await userRepository(database.db).byId(userId), undefined);
       assert.equal((await second.request('/api/state')).status, 401);
     } finally {
+      for (const table of [TelegramInboxModel, TelegramOutboxModel])
+        await database.db
+          .delete(table)
+          .where(or(eq(table.botId, privacyBot), eq(table.botId, otherBot)));
       if (userId)
         await withUserWrite(database.db, userId, async (transaction) => {
           const finance = repositories(transaction);

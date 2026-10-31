@@ -1,3 +1,5 @@
+import { telegramSettings } from './configs/telegram.config.ts';
+import { startTelegramWorker } from './services/telegram-worker.service.ts';
 import { connectDB, checkDatabase } from './configs/database.ts';
 import { createApplication } from './configs/express.config.ts';
 import { configureLifecycle } from './configs/lifecycle.config.ts';
@@ -23,7 +25,21 @@ async function main() {
       console.log('MoneyMate API: http://' + SECRETS.HOST + ':' + SECRETS.PORT + '/api');
       console.log('Swagger UI: http://' + SECRETS.HOST + ':' + SECRETS.PORT + '/api/docs');
     });
-    configureLifecycle(server, () => database.pool.end());
+    let stopTelegram = async () => {};
+    const startup = startTelegramWorker(database, telegramSettings())
+      .then((stop) => {
+        stopTelegram = stop;
+      })
+      .catch(() => {
+        console.error(
+          'Telegram worker could not start. Check token, migration, webhook mode and connectivity. Credentials are not logged.',
+        );
+      });
+    configureLifecycle(server, async () => {
+      await startup;
+      await stopTelegram();
+      await database.pool.end();
+    });
   } catch {
     await database.pool.end();
     throw new Error('Cannot initialize MoneyMate API.');

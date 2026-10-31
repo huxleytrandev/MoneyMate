@@ -20,7 +20,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node src/scripts/migrate-database.ts",
     "benchmark:statistics": "node src/scripts/benchmark-statistics.ts",
-    "benchmark:finance": "node src/scripts/benchmark-finance.ts"
+    "benchmark:finance": "node src/scripts/benchmark-finance.ts",
+    "telegram:check": "node src/scripts/check-telegram.ts",
+    "telegram:setup": "node src/scripts/setup-telegram.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

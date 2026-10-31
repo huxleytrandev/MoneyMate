@@ -43,6 +43,41 @@
       "when": 1793264773369,
       "tag": "0005_modern_bullseye",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793441183931,
+      "tag": "0006_acoustic_vulture",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793441532026,
+      "tag": "0007_zippy_kate_bishop",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793442124870,
+      "tag": "0008_ambiguous_the_enforcers",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793445861367,
+      "tag": "0009_acoustic_bloodscream",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793445941636,
+      "tag": "0010_slippery_red_ghost",
+      "breakpoints": true
     }
   ]
 }

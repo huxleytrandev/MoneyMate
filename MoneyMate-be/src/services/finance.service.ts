@@ -75,10 +75,16 @@ async function reconcileAsset(context: FinanceOperationContext, recordId: string
     occurredAt: new Date().toISOString(),
   });
 }
-export function financeService(database: Database) {
+export function financeService(database: Database, existingTransaction?: DatabaseTransaction) {
+  function write<Result>(
+    userId: string,
+    work: (transaction: DatabaseTransaction) => Promise<Result>,
+  ) {
+    return existingTransaction ? work(existingTransaction) : withUserWrite(database, userId, work);
+  }
   async function create(command: CreateFinanceCommand) {
     const body = createBody(command.input);
-    return withUserWrite(database, command.userId, async (transaction) => {
+    return write(command.userId, async (transaction) => {
       const context = operationContext(transaction, command.userId);
       const writer = await resourcePreparers[command.resource](context, body);
       const result = await writer.create();
@@ -87,7 +93,7 @@ export function financeService(database: Database) {
     });
   }
   async function update(command: UpdateFinanceCommand) {
-    return withUserWrite(database, command.userId, async (transaction) => {
+    return write(command.userId, async (transaction) => {
       const context = operationContext(transaction, command.userId);
       const current = await requireCurrentRecord(context, command);
       const body = updateBody(command.input, command.recordId);
@@ -101,7 +107,7 @@ export function financeService(database: Database) {
     });
   }
   async function remove(command: UpdateFinanceCommand) {
-    return withUserWrite(database, command.userId, async (transaction) => {
+    return write(command.userId, async (transaction) => {
       const context = operationContext(transaction, command.userId);
       const current = await requireCurrentRecord(context, command);
       await assertRemovable(context, command);
@@ -124,7 +130,7 @@ export function financeService(database: Database) {
     update,
     remove,
     reconcile: (userId: string, recordId: string, input: unknown) =>
-      withUserWrite(database, userId, (transaction) =>
+      write(userId, (transaction) =>
         reconcileAsset(operationContext(transaction, userId), recordId, input),
       ),
   };

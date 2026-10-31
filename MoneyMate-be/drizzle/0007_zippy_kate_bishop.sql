@@ -1,0 +1,1 @@
+CREATE INDEX "telegram_inbox_recent_idx" ON "telegram_inbox" USING btree ("bot_id","created_at");

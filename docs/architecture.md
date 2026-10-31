@@ -67,3 +67,8 @@ FinanceProvider bao ngoài Stack trong (main). Stack chứa (tabs) với năm m�
 Button/ConfirmDialog dùng React Native Paper, SheetTemplate dùng @expo/ui, MoneyInput dùng react-native-currency-input; theme giữ bảng màu chung. MoneyField chỉ định dạng hiển thị, không thay đổi đơn vị hoặc hợp đồng tiền nguyên VNĐ. Icon/màu danh mục được truyền đầy đủ qua types, schema và payload.
 
 Bộ lọc categoryId thực hiện tại transaction-read.repository cùng bộ lọc chủ sở hữu/tháng/xóa mềm, dùng chung cho trang và tổng hợp. Trang chi tiết không lọc từ snapshot 50 giao dịch đầu. Không cần migration mới vì category.icon/color và index theo user/category/date đã có.
+
+
+## Telegram và MoneyMate-ai
+
+Tích hợp Telegram nằm trong backend, dùng lại dịch vụ tài chính và quyền xác thực hiện có. Hồ sơ frontend quản lý liên kết; MoneyMate-ai là package NLP độc lập. Xem [hướng dẫn Telegram](telegram.md) về thiết lập, bảo mật, lệnh, giới hạn và kiểm thử.

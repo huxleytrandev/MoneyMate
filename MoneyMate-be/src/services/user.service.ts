@@ -1,5 +1,5 @@
-import { profileSchema } from '../schemas/profile.schema.ts';
-import { requireRecord } from '../utils/finance-validation.ts';
+import { telegramPrivacyRepository } from '../repositories/telegram-privacy.repository.ts';
+import { profileService } from './profile.service.ts';
 import { fromNodeHeaders } from 'better-auth/node';
 import type { IncomingHttpHeaders } from 'node:http';
 import { repositories, withUserWrite } from '../repositories/finance.repository.ts';
@@ -31,6 +31,7 @@ export function userService(database: Database, auth: Authentication) {
         .where(eq(AuthAccountModel.userId, input.userId))
         .for('update');
       await auth.api.verifyPassword({ headers, body: { password } });
+      await telegramPrivacyRepository(transaction).removeAccountCopies(input.userId);
       await removeFinancialData(transaction, input.userId);
       await userRepository(transaction).remove(input.userId);
     });
@@ -40,12 +41,12 @@ export function userService(database: Database, auth: Authentication) {
     const { password } = deleteUserSchema.parse(input.body);
     return auth.api.verifyPassword({ headers: fromNodeHeaders(input.headers), body: { password } });
   }
-  const users = userRepository(database);
+  const users = profileService(database);
   async function profile(userId: string) {
-    return requireRecord(await users.profile(userId));
+    return users.profile(userId);
   }
   async function updateProfile(userId: string, body: unknown) {
-    return requireRecord(await users.updateProfile(userId, profileSchema.parse(body)));
+    return users.updateProfile(userId, body);
   }
   return { remove, verifyPassword, profile, updateProfile };
 }

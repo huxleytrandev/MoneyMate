@@ -1,3 +1,5 @@
+import { telegramSettings } from './telegram.config.ts';
+import { createTelegramWebhookRoutes } from '../routes/telegram-webhook.route.ts';
 import type { ApplicationConfig } from '../types/application.types.ts';
 import cors from 'cors';
 import express, { json } from 'express';
@@ -26,6 +28,7 @@ export function createApplication(options: ApplicationConfig) {
   // Better Auth reads the request stream before express.json().
   if (auth) mountAuthRoutes(app, auth);
   app.use(json({ limit: '1mb' }));
+  if (database) app.use(createTelegramWebhookRoutes(database, telegramSettings()));
   app.get(ROUTES.OPENAPI, (_request, response) => {
     response.json(swaggerSpec);
   });

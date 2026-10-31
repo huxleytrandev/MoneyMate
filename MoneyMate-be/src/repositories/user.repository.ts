@@ -10,6 +10,13 @@ export function userRepository(database: Executor) {
     avatarData: UserModel.avatarData,
   };
   return {
+    chatUser: async (id: string) =>
+      (
+        await database
+          .select({ id: UserModel.id, timezone: UserModel.timezone })
+          .from(UserModel)
+          .where(eq(UserModel.id, id))
+      )[0],
     profile: async (userId: string) =>
       (await database.select(profileColumns).from(UserModel).where(eq(UserModel.id, userId)))[0],
     updateProfile: async (userId: string, profile: UserProfile) =>

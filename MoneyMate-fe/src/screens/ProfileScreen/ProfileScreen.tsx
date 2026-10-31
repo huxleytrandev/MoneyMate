@@ -6,6 +6,7 @@ import { ScreenTemplate } from '@/components/templates/ScreenTemplate';
 import { Button } from '@/components/atoms/Button';
 import { ConfirmDialog } from '@/components/molecules/ConfirmDialog';
 import { ConfirmActionButton } from '@/components/molecules/ConfirmActionButton';
+import { TelegramConnectionCard } from '@/components/organisms/TelegramConnectionCard';
 import { ProfileForm } from '@/components/organisms/ProfileForm';
 import { PersonalProfileFields } from '@/components/organisms/PersonalProfileFields';
 import { useUserProfile } from '@/hooks/useUserProfile';
@@ -51,6 +52,7 @@ export default function ProfileScreen() {
           {model.message}
         </Text>
       )}
+      <TelegramConnectionCard disabled={model.busy || model.dirty} />
       <View style={ui.card}>
         <Text style={ui.heading}>Tài khoản và bảo mật</Text>
         <Button

@@ -1,3 +1,7 @@
+import { telegramSettings } from '../configs/telegram.config.ts';
+import { authTelegramService } from '../services/auth-telegram.service.ts';
+import { telegramController } from '../controllers/telegram.controller.ts';
+import { createTelegramRoutes } from './telegram.route.ts';
 import { financeReadService } from '../services/finance-read.service.ts';
 import { Router } from 'express';
 import type { Database } from '../types/database.types.ts';
@@ -34,6 +38,10 @@ export function createApiRoutes(db: Database, auth: Authentication, frontendBase
   const services = { commands: finance, queries };
   router.use(browserOrigin(frontendBaseUrl));
   router.use(requireAuth(auth));
+  router.use(
+    '/telegram',
+    createTelegramRoutes(telegramController(authTelegramService(db, telegramSettings()))),
+  );
   router.use('/users', createUserRoutes(userController(userService(db, auth))));
   router.use(createFinanceRoutes(financeController(queries)));
   router.use('/statistics', createStatisticsRoutes(statisticsController(statisticsService(db))));

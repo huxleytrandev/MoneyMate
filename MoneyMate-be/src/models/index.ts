@@ -6,6 +6,7 @@ export * from './transaction.model.ts';
 export * from './transfer.model.ts';
 export * from './transaction-allocation.model.ts';
 export * from './user.model.ts';
+export * from './telegram.model.ts';
 export * from './session.model.ts';
 export * from './legacy-session.model.ts';
 export * from './auth-account.model.ts';

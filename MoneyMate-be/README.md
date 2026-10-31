@@ -96,3 +96,7 @@ BETTER_AUTH_SECRET là bắt buộc và phải giữ riêng trong .env. BETTER_A
 Các endpoint xác nhận mật khẩu/xóa tài khoản của ứng dụng dùng express-rate-limit (10 yêu cầu/phút/IP). Bộ giới hạn của Better Auth áp dụng cho auth handler. Cả hai đang dùng memory store; nhiều instance cần shared storage.
 
 Migration 0004_finance_query_indexes đã áp dụng để hỗ trợ truy vấn mới. /state?month=YYYY-MM là luồng tải mobile; bare /state giữ tương thích toàn lịch sử. Đọc thêm [performance.md](../docs/performance.md).
+
+## Telegram và MoneyMate-ai
+
+Tích hợp Telegram nằm trong backend, dùng lại dịch vụ tài chính và quyền xác thực hiện có. Hồ sơ frontend quản lý liên kết; MoneyMate-ai là package NLP độc lập. Xem [hướng dẫn Telegram](../docs/telegram.md) về thiết lập, bảo mật, lệnh, giới hạn và kiểm thử.

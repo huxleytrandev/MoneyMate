@@ -90,3 +90,7 @@ Kiểm chứng UI: web ở 390 × 844, gõ số có phân cách rồi đối chi
 ### Kiểm tra đợt này
 
 TypeScript và các kiểm thử unit/API được chạy. Full ESLint FE vẫn bị chặn bởi lỗi native binding unrs-resolver trên môi trường Windows này. Android/web export kiểm tra bundle; công cụ Computer Use bị dừng do không xác định được URL Chrome nên chưa xác nhận thao tác UI trên điện thoại/máy ảo.
+
+## Telegram và MoneyMate-ai
+
+Tích hợp Telegram nằm trong backend, dùng lại dịch vụ tài chính và quyền xác thực hiện có. Hồ sơ frontend quản lý liên kết; MoneyMate-ai là package NLP độc lập. Xem [hướng dẫn Telegram](../docs/telegram.md) về thiết lập, bảo mật, lệnh, giới hạn và kiểm thử.
